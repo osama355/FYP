@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "62161975997",
+    "project_id": "drive-sharing-app-52fbf",
+    "storage_bucket": "drive-sharing-app-52fbf.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:62161975997:android:1876e244d69c822c7995d4",
+        "android_client_info": {
+          "package_name": "com.example.drive_sharing_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "62161975997-ml9mgjc0ptdfl8vksipq1qlgpkdrm3ao.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAoI4vL4V5cxYLaPHrTKr_w_-Sg0c-JQzE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "62161975997-ml9mgjc0ptdfl8vksipq1qlgpkdrm3ao.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
