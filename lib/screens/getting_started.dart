@@ -1,4 +1,5 @@
 import 'package:drive_sharing_app/screens/login_screen.dart';
+import 'package:drive_sharing_app/screens/signup_screen.dart';
 import 'package:flutter/material.dart';
 
 class GettingStarted extends StatefulWidget {
@@ -40,7 +41,10 @@ class _GettingStartedState extends State<GettingStarted> {
               style: ButtonStyle(
                   shape: MaterialStateProperty.all(RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(25)))),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => const SignUp()));
+              },
               child: Row(
                 // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: const [
@@ -79,8 +83,10 @@ class _GettingStartedState extends State<GettingStarted> {
                     style: TextStyle(color: Color(0xff4BA0FE), fontSize: 15),
                   ),
                   onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => LoginScreen()));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const LoginScreen()));
                   },
                 ),
               ],
