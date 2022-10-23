@@ -8,7 +8,7 @@ class LoginScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Login"),
-        backgroundColor: Color(0xff4BA0FE),
+        backgroundColor: const Color(0xff4BA0FE),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -30,7 +30,7 @@ class LoginScreen extends StatelessWidget {
               child: TextField(
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
-                  hintText: "Enter your Email",
+                  hintText: "Email",
                   hintStyle: TextStyle(color: Colors.grey, fontSize: 17.0),
                   suffixIcon: Icon(
                     Icons.email,
@@ -63,6 +63,9 @@ class LoginScreen extends StatelessWidget {
             SizedBox(
               width: 100,
               child: ElevatedButton(
+                  style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.all(const Color(0xff4BA0FE))),
                   onPressed: () {},
                   child: const Text(
                     'Login',
