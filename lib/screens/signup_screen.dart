@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:drive_sharing_app/screens/drive_signup_screen.dart';
-import 'package:drive_sharing_app/screens/pess_signup.dart';
+import 'package:drive_sharing_app/screens/driver/drive_signup_screen.dart';
+import 'package:drive_sharing_app/screens/pessenger/pess_login.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -17,7 +17,7 @@ class _SignUpState extends State<SignUp> {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: const Color(0xff4BA0FE),
-          title: const Text("Sign Up"),
+          title: const Text("Register"),
           bottom: const TabBar(
             unselectedLabelColor: Colors.white,
             labelColor: Colors.white,
@@ -33,7 +33,7 @@ class _SignUpState extends State<SignUp> {
           ),
         ),
         body: const TabBarView(children: [
-          PessengerSignUp(),
+          PessengerLogin(),
           DriveSignUp(),
         ]),
       ),

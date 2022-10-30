@@ -3,17 +3,17 @@ import 'package:drive_sharing_app/utils/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:drive_sharing_app/screens/home.dart';
+import 'package:drive_sharing_app/screens/driver/driver_post_screen.dart';
 import 'package:drive_sharing_app/widgets/round_button.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class DriveLoginScreen extends StatefulWidget {
+  const DriveLoginScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<DriveLoginScreen> createState() => _DriveLoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _DriveLoginScreenState extends State<DriveLoginScreen> {
   bool loading = false;
   final _formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
@@ -39,7 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
         .then((value) {
       Utils().toastMessage(value.user!.email.toString());
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => const Home()));
+          context, MaterialPageRoute(builder: (context) => const DriverPost()));
       setState(() {
         loading = false;
       });

@@ -1,17 +1,17 @@
-import 'package:flutter/material.dart';
-import 'package:drive_sharing_app/screens/login_screen.dart';
+import 'package:drive_sharing_app/screens/driver/driver_login_screen.dart';
 import 'package:drive_sharing_app/utils/utils.dart';
 import 'package:drive_sharing_app/widgets/round_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 
-class PessengerSignUp extends StatefulWidget {
-  const PessengerSignUp({super.key});
+class DriveSignUp extends StatefulWidget {
+  const DriveSignUp({super.key});
 
   @override
-  State<PessengerSignUp> createState() => _PessengerSignUpState();
+  State<DriveSignUp> createState() => _DriveSignUp();
 }
 
-class _PessengerSignUpState extends State<PessengerSignUp> {
+class _DriveSignUp extends State<DriveSignUp> {
   bool loading = false;
   final _formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
@@ -49,6 +49,8 @@ class _PessengerSignUpState extends State<PessengerSignUp> {
       conPassController.clear();
       passController.clear();
       phoneController.clear();
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => const DriveLoginScreen()));
     }).onError((error, stackTrace) {
       Utils().toastMessage(error.toString());
       setState(() {
@@ -216,7 +218,7 @@ class _PessengerSignUpState extends State<PessengerSignUp> {
                 height: 15,
               ),
               RoundButton(
-                title: "CONTINUE AS PESSENGER",
+                title: "CONTINUE AS DRIVER",
                 loading: loading,
                 onTap: () {
                   if (_formKey.currentState!.validate()) {
@@ -233,7 +235,8 @@ class _PessengerSignUpState extends State<PessengerSignUp> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const LoginScreen()));
+                                builder: (context) =>
+                                    const DriveLoginScreen()));
                       },
                       child: const Text("Login"))
                 ],

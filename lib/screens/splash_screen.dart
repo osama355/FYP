@@ -1,6 +1,4 @@
-import 'dart:async';
-
-import 'package:drive_sharing_app/screens/getting_started.dart';
+import 'package:drive_sharing_app/firebase_services/splash_services.dart';
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -11,13 +9,11 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  SplashServices splashScreen = SplashServices();
   @override
   void initState() {
     super.initState();
-    Timer(const Duration(seconds: 3), () {
-      Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (context) => const GettingStarted()));
-    });
+    splashScreen.isLogin(context);
   }
 
   @override
