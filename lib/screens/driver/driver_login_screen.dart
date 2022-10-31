@@ -1,4 +1,3 @@
-import 'package:drive_sharing_app/screens/signup_screen.dart';
 import 'package:drive_sharing_app/utils/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -60,10 +59,6 @@ class _DriveLoginScreenState extends State<DriveLoginScreen> {
         return true;
       },
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text("Login"),
-          backgroundColor: const Color(0xff4BA0FE),
-        ),
         body: SingleChildScrollView(
           child: Form(
             key: _formKey,
@@ -145,21 +140,6 @@ class _DriveLoginScreenState extends State<DriveLoginScreen> {
                     }
                   },
                 ),
-                const SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text("Don't have an account?"),
-                    TextButton(
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const SignUp()));
-                        },
-                        child: const Text("Singup"))
-                  ],
-                )
               ],
             ),
           ),

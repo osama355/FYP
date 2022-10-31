@@ -29,12 +29,12 @@ class _VerifyMblCodeScreenState extends State<VerifyMblCodeScreen> {
             width: 200,
             child: Column(
               children: [
-                SizedBox(
+                const SizedBox(
                   height: 100,
                 ),
                 TextFormField(
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 20, letterSpacing: 5),
+                  style: const TextStyle(fontSize: 20, letterSpacing: 5),
                   controller: verifyCodeController,
                   keyboardType: TextInputType.number,
                   decoration: const InputDecoration(
@@ -60,10 +60,11 @@ class _VerifyMblCodeScreenState extends State<VerifyMblCodeScreen> {
                           smsCode: verifyCodeController.text.toString());
                       try {
                         await auth.signInWithCredential(credentials);
+                        // ignore: use_build_context_synchronously
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => PessePostScreen()));
+                                builder: (context) => const PessePostScreen()));
                       } catch (e) {
                         setState(() {
                           loading = false;

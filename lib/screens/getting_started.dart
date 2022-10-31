@@ -1,4 +1,4 @@
-import 'package:drive_sharing_app/screens/driver/driver_login_screen.dart';
+import 'package:drive_sharing_app/screens/pessenger/pess_login.dart';
 import 'package:drive_sharing_app/screens/signup_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -42,7 +42,32 @@ class _GettingStartedState extends State<GettingStarted> {
                       fontWeight: FontWeight.w500),
                 ),
                 const SizedBox(
-                  height: 180,
+                  height: 120,
+                ),
+                ElevatedButton(
+                  style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.all(const Color(0xff4BA0FE)),
+                      shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(25)))),
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const PessengerLogin()));
+                  },
+                  child: const SizedBox(
+                    height: 50,
+                    child: Center(
+                      child: Text(
+                        "CONTINUE AS PESSENGER",
+                        style: TextStyle(fontSize: 15),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 15,
                 ),
                 ElevatedButton(
                   style: ButtonStyle(
@@ -56,54 +81,16 @@ class _GettingStartedState extends State<GettingStarted> {
                         MaterialPageRoute(
                             builder: (context) => const SignUp()));
                   },
-                  child: Row(
-                    // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
-                      SizedBox(
-                        height: 50,
-                        width: 100,
+                  child: const SizedBox(
+                    height: 50,
+                    child: Center(
+                      child: Text(
+                        "CONTINUE AS DRIVER",
+                        style: TextStyle(fontSize: 15),
                       ),
-                      Text(
-                        "Get Started",
-                        style: TextStyle(fontSize: 18),
-                      ),
-                      SizedBox(
-                        height: 50,
-                        width: 80,
-                      ),
-                      Icon(
-                        Icons.arrow_forward,
-                        size: 24,
-                      )
-                    ],
+                    ),
                   ),
                 ),
-                const SizedBox(
-                  height: 15,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text(
-                      "Already have an account ?",
-                      style: TextStyle(fontSize: 15),
-                    ),
-                    TextButton(
-                      child: const Text(
-                        'Login',
-                        style:
-                            TextStyle(color: Color(0xff4BA0FE), fontSize: 15),
-                      ),
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    const DriveLoginScreen()));
-                      },
-                    ),
-                  ],
-                )
               ],
             ),
           ),

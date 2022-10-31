@@ -34,6 +34,5 @@ class _PessePostScreenState extends State<PessePostScreen> {
         ],
       ),
     );
-    ;
   }
 }

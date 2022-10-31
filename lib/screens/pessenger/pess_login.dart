@@ -19,6 +19,10 @@ class _PessengerLoginState extends State<PessengerLogin> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Color(0xff4BA0FE),
+        title: Text("Pessenger"),
+      ),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -28,8 +32,8 @@ class _PessengerLoginState extends State<PessengerLogin> {
             Center(
                 child: Image.asset(
               'assets/logo.png',
-              height: 100,
-              width: 100,
+              height: 150,
+              width: 150,
             )),
             const SizedBox(
               height: 15,
@@ -91,7 +95,7 @@ class _PessengerLoginState extends State<PessengerLogin> {
               height: 15,
             ),
             RoundButton(
-                title: "CONTINUE",
+                title: "LOGIN",
                 loading: loading,
                 onTap: () {
                   setState(() {

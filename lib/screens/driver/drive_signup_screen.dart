@@ -218,7 +218,7 @@ class _DriveSignUp extends State<DriveSignUp> {
                 height: 15,
               ),
               RoundButton(
-                title: "CONTINUE AS DRIVER",
+                title: "CONTINUE",
                 loading: loading,
                 onTap: () {
                   if (_formKey.currentState!.validate()) {
@@ -226,21 +226,6 @@ class _DriveSignUp extends State<DriveSignUp> {
                   }
                 },
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text("Already have an Account?"),
-                  TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    const DriveLoginScreen()));
-                      },
-                      child: const Text("Login"))
-                ],
-              )
             ],
           ),
         ),
