@@ -3,6 +3,7 @@ import 'package:drive_sharing_app/utils/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:drive_sharing_app/widgets/round_button.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PessengerLogin extends StatefulWidget {
   const PessengerLogin({super.key});
@@ -14,14 +15,16 @@ class PessengerLogin extends StatefulWidget {
 class _PessengerLoginState extends State<PessengerLogin> {
   bool loading = false;
   final phoneNumberController = TextEditingController();
+  final nameController = TextEditingController();
   final auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xff4BA0FE),
-        title: Text("Pessenger"),
+        backgroundColor: const Color(0xff4BA0FE),
+        title: const Text("Pessenger"),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -71,6 +74,7 @@ class _PessengerLoginState extends State<PessengerLogin> {
             Padding(
               padding: const EdgeInsets.only(left: 30, right: 30),
               child: TextFormField(
+                controller: nameController,
                 keyboardType: TextInputType.name,
                 validator: (value) {
                   if (value!.isEmpty) {
@@ -121,6 +125,11 @@ class _PessengerLoginState extends State<PessengerLogin> {
                                 builder: (context) => VerifyMblCodeScreen(
                                       verificationId: verificationId,
                                     )));
+                        final user = auth.currentUser;
+                        _firestore.collection("pessenger/").doc(user?.uid).set({
+                          'phone': phoneNumberController.text,
+                          'name': nameController.text,
+                        });
                         setState(() {
                           loading = false;
                         });

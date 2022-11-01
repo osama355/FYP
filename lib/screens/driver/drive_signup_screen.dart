@@ -3,6 +3,7 @@ import 'package:drive_sharing_app/utils/utils.dart';
 import 'package:drive_sharing_app/widgets/round_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DriveSignUp extends StatefulWidget {
   const DriveSignUp({super.key});
@@ -21,6 +22,7 @@ class _DriveSignUp extends State<DriveSignUp> {
   final conPassController = TextEditingController();
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
   void dispose() {
@@ -40,9 +42,16 @@ class _DriveSignUp extends State<DriveSignUp> {
             email: emailController.text.toString(),
             password: passController.text.toString())
         .then((value) {
+      final user = _auth.currentUser;
+      _firestore.collection("driver/").doc(user?.uid).set({
+        'email': emailController.text,
+        'phone': phoneController.text,
+        'name': nameController.text,
+      });
       setState(() {
         loading = false;
       });
+
       emailController.clear();
       passController.clear();
       nameController.clear();

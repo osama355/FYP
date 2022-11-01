@@ -1,4 +1,4 @@
-import 'package:drive_sharing_app/screens/signup_screen.dart';
+import 'package:drive_sharing_app/screens/pessenger/pess_login.dart';
 import 'package:drive_sharing_app/utils/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -16,13 +16,16 @@ class _PessePostScreenState extends State<PessePostScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text("Pessenger"),
         actions: [
           IconButton(
               onPressed: () {
                 auth.signOut().then((value) {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => const SignUp()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const PessengerLogin()));
                 }).onError((error, stackTrace) {
                   Utils().toastMessage(error.toString());
                 });

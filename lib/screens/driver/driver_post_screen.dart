@@ -1,4 +1,4 @@
-import 'package:drive_sharing_app/screens/driver/driver_login_screen.dart';
+import 'package:drive_sharing_app/screens/signup_screen.dart';
 import 'package:drive_sharing_app/utils/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -17,15 +17,14 @@ class _DriverPost extends State<DriverPost> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text("Driver"),
         actions: [
           IconButton(
               onPressed: () {
                 auth.signOut().then((value) {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const DriveLoginScreen()));
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => const SignUp()));
                 }).onError((error, stackTrace) {
                   Utils().toastMessage(error.toString());
                 });
