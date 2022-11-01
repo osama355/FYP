@@ -235,6 +235,9 @@ class _DriveSignUp extends State<DriveSignUp> {
                   }
                 },
               ),
+              const SizedBox(
+                height: 30,
+              )
             ],
           ),
         ),

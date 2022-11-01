@@ -1,4 +1,5 @@
 import 'package:drive_sharing_app/screens/driver/driver_login_screen.dart';
+import 'package:drive_sharing_app/screens/getting_started.dart';
 import 'package:flutter/material.dart';
 import 'package:drive_sharing_app/screens/driver/drive_signup_screen.dart';
 
@@ -16,7 +17,17 @@ class _SignUpState extends State<SignUp> {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           backgroundColor: const Color(0xff4BA0FE),
+          leading: GestureDetector(
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const GettingStarted()));
+            },
+            child: const Icon(Icons.arrow_back),
+          ),
           title: const Text("Driver"),
           bottom: const TabBar(
             unselectedLabelColor: Colors.white,

@@ -1,3 +1,4 @@
+import 'package:drive_sharing_app/screens/getting_started.dart';
 import 'package:drive_sharing_app/screens/pessenger/verify_mbl_code.dart';
 import 'package:drive_sharing_app/utils/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -23,8 +24,18 @@ class _PessengerLoginState extends State<PessengerLogin> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: const Color(0xff4BA0FE),
         title: const Text("Pessenger"),
+        leading: GestureDetector(
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const GettingStarted()));
+          },
+          child: const Icon(Icons.arrow_back),
+        ),
       ),
       body: SingleChildScrollView(
         child: Column(

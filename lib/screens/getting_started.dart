@@ -1,5 +1,5 @@
 import 'package:drive_sharing_app/screens/pessenger/pess_login.dart';
-import 'package:drive_sharing_app/screens/signup_screen.dart';
+import 'package:drive_sharing_app/screens/driver/main_driver_signup.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
