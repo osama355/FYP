@@ -15,6 +15,7 @@ class PessengerLogin extends StatefulWidget {
 
 class _PessengerLoginState extends State<PessengerLogin> {
   bool loading = false;
+  final _formKey = GlobalKey<FormState>();
   final phoneNumberController = TextEditingController();
   final nameController = TextEditingController();
   final auth = FirebaseAuth.instance;
@@ -38,121 +39,132 @@ class _PessengerLoginState extends State<PessengerLogin> {
         ),
       ),
       body: SingleChildScrollView(
-        child: Column(
-          children: [
-            const SizedBox(
-              height: 70,
-            ),
-            Center(
-                child: Image.asset(
-              'assets/logo.png',
-              height: 150,
-              width: 150,
-            )),
-            const SizedBox(
-              height: 15,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 30, right: 30),
-              child: TextFormField(
-                controller: phoneNumberController,
-                keyboardType: TextInputType.phone,
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return "Enter phone number";
-                  }
-                  if (!RegExp(r'^\+?0[0-9]{10}$').hasMatch(value)) {
-                    return "Enter correct number";
-                  }
-                  return null;
-                },
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: "Phone Number",
-                  hintStyle: TextStyle(
-                      color: Color.fromARGB(255, 162, 150, 150),
-                      fontSize: 17.0),
-                  suffixIcon: Icon(
-                    Icons.phone,
-                    color: Color(0xff4BA0FE),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              const SizedBox(
+                height: 70,
+              ),
+              Center(
+                  child: Image.asset(
+                'assets/logo.png',
+                height: 150,
+                width: 150,
+              )),
+              const SizedBox(
+                height: 15,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 30, right: 30),
+                child: TextFormField(
+                  controller: phoneNumberController,
+                  keyboardType: TextInputType.phone,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return "Enter phone number";
+                    }
+                    if (!RegExp(r'(^(?:[+0]9)?[0-9]{11}$)').hasMatch(value)) {
+                      return "Enter correct number";
+                    }
+                    if (value.startsWith("0")) {
+                      return "please start with country code";
+                    }
+                    return null;
+                  },
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: "Phone Number",
+                    hintStyle: TextStyle(
+                        color: Color.fromARGB(255, 162, 150, 150),
+                        fontSize: 17.0),
+                    suffixIcon: Icon(
+                      Icons.phone,
+                      color: Color(0xff4BA0FE),
+                    ),
                   ),
                 ),
               ),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 30, right: 30),
-              child: TextFormField(
-                controller: nameController,
-                keyboardType: TextInputType.name,
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return "Enter your name";
-                  }
-                  if (!RegExp(r'^[a-z A-Z]+$').hasMatch(value)) {
-                    return "Enter correct name";
-                  }
-                  return null;
-                },
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: "Name",
-                  hintStyle: TextStyle(color: Colors.grey, fontSize: 17.0),
+              const SizedBox(
+                height: 20,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 30, right: 30),
+                child: TextFormField(
+                  controller: nameController,
+                  keyboardType: TextInputType.name,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return "Enter your name";
+                    }
+                    if (!RegExp(r'^[a-z A-Z]+$').hasMatch(value)) {
+                      return "Enter correct name";
+                    }
+                    return null;
+                  },
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: "Name",
+                    hintStyle: TextStyle(color: Colors.grey, fontSize: 17.0),
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(
-              height: 15,
-            ),
-            const SizedBox(
-              height: 15,
-            ),
-            RoundButton(
-                title: "LOGIN",
-                loading: loading,
-                onTap: () {
-                  setState(() {
-                    loading = true;
-                  });
-                  auth.verifyPhoneNumber(
-                      phoneNumber: phoneNumberController.text,
-                      verificationCompleted: (_) {
-                        setState(() {
-                          loading = false;
-                        });
-                      },
-                      verificationFailed: (e) {
-                        setState(() {
-                          loading = false;
-                        });
-                        Utils().toastMessage(e.toString());
-                      },
-                      codeSent: (String verificationId, int? token) {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => VerifyMblCodeScreen(
-                                      verificationId: verificationId,
-                                    )));
-                        final user = auth.currentUser;
-                        _firestore.collection("pessenger/").doc(user?.uid).set({
-                          'phone': phoneNumberController.text,
-                          'name': nameController.text,
-                        });
-                        setState(() {
-                          loading = false;
-                        });
-                      },
-                      codeAutoRetrievalTimeout: (e) {
-                        Utils().toastMessage(e.toString());
-                        setState(() {
-                          loading = false;
-                        });
+              const SizedBox(
+                height: 15,
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              RoundButton(
+                  title: "LOGIN",
+                  loading: loading,
+                  onTap: () {
+                    if (_formKey.currentState!.validate()) {
+                      setState(() {
+                        loading = true;
                       });
-                })
-          ],
+                      auth.verifyPhoneNumber(
+                          phoneNumber: phoneNumberController.text,
+                          verificationCompleted: (_) {
+                            setState(() {
+                              loading = false;
+                            });
+                          },
+                          verificationFailed: (e) {
+                            setState(() {
+                              loading = false;
+                            });
+                            Utils().toastMessage(e.toString());
+                          },
+                          codeSent: (String verificationId, int? token) {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => VerifyMblCodeScreen(
+                                          verificationId: verificationId,
+                                        )));
+                            final user = auth.currentUser;
+                            _firestore
+                                .collection("pessenger/")
+                                .doc(user?.uid)
+                                .set({
+                              'phone': phoneNumberController.text,
+                              'name': nameController.text,
+                            });
+                            setState(() {
+                              loading = false;
+                            });
+                          },
+                          codeAutoRetrievalTimeout: (e) {
+                            Utils().toastMessage(e.toString());
+                            setState(() {
+                              loading = false;
+                            });
+                          });
+                    }
+                  })
+            ],
+          ),
         ),
       ),
     );

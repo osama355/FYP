@@ -14,6 +14,8 @@ class DriveSignUp extends StatefulWidget {
 
 class _DriveSignUp extends State<DriveSignUp> {
   bool loading = false;
+  bool obsecureText1 = true;
+  bool obsecureText2 = true;
   final _formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final nameController = TextEditingController();
@@ -125,15 +127,18 @@ class _DriveSignUp extends State<DriveSignUp> {
                     if (value!.isEmpty) {
                       return "Enter phone number";
                     }
-                    if (!RegExp(r'^\+?0[0-9]{10}$').hasMatch(value)) {
+                    if (!RegExp(r'(^(?:[+0]9)?[0-9]{11}$)').hasMatch(value)) {
                       return "Enter correct number";
+                    }
+                    if (value.startsWith("0")) {
+                      return "Please start with country code";
                     }
                     return null;
                   },
                   controller: phoneController,
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
-                    hintText: "Phone Number",
+                    hintText: "+923589637442",
                     hintStyle: TextStyle(
                         color: Color.fromARGB(255, 162, 150, 150),
                         fontSize: 17.0),
@@ -182,16 +187,25 @@ class _DriveSignUp extends State<DriveSignUp> {
                     }
                     return null;
                   },
-                  obscureText: true,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    hintText: "Password",
-                    hintStyle: TextStyle(color: Colors.grey, fontSize: 17.0),
-                    suffixIcon: Icon(
-                      Icons.visibility_off,
-                      color: Color(0xff4BA0FE),
-                    ),
-                  ),
+                  obscureText: obsecureText1,
+                  decoration: InputDecoration(
+                      border: const OutlineInputBorder(),
+                      hintText: "Password",
+                      hintStyle:
+                          const TextStyle(color: Colors.grey, fontSize: 17.0),
+                      suffixIcon: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            obsecureText1 = !obsecureText1;
+                          });
+                        },
+                        child: Icon(
+                          obsecureText1
+                              ? Icons.visibility_off
+                              : Icons.visibility,
+                          color: const Color(0xff4BA0FE),
+                        ),
+                      )),
                 ),
               ),
               const SizedBox(
@@ -211,16 +225,25 @@ class _DriveSignUp extends State<DriveSignUp> {
                     return null;
                   },
                   controller: conPassController,
-                  obscureText: true,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    hintText: "Confirm Password",
-                    hintStyle: TextStyle(color: Colors.grey, fontSize: 17.0),
-                    suffixIcon: Icon(
-                      Icons.visibility_off,
-                      color: Color(0xff4BA0FE),
-                    ),
-                  ),
+                  obscureText: obsecureText2,
+                  decoration: InputDecoration(
+                      border: const OutlineInputBorder(),
+                      hintText: "Confirm Password",
+                      hintStyle:
+                          const TextStyle(color: Colors.grey, fontSize: 17.0),
+                      suffixIcon: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            obsecureText2 = !obsecureText2;
+                          });
+                        },
+                        child: Icon(
+                          obsecureText2
+                              ? Icons.visibility_off
+                              : Icons.visibility,
+                          color: const Color(0xff4BA0FE),
+                        ),
+                      )),
                 ),
               ),
               const SizedBox(

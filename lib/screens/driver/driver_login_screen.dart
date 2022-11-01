@@ -14,10 +14,10 @@ class DriveLoginScreen extends StatefulWidget {
 
 class _DriveLoginScreenState extends State<DriveLoginScreen> {
   bool loading = false;
+  bool obsecureText = true;
   final _formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final passController = TextEditingController();
-
   final _auth = FirebaseAuth.instance;
 
   @override
@@ -116,16 +116,25 @@ class _DriveLoginScreenState extends State<DriveLoginScreen> {
                       }
                       return null;
                     },
-                    obscureText: true,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      hintText: "Password",
-                      hintStyle: TextStyle(color: Colors.grey, fontSize: 17.0),
-                      suffixIcon: Icon(
-                        Icons.visibility_off,
-                        color: Color(0xff4BA0FE),
-                      ),
-                    ),
+                    obscureText: obsecureText,
+                    decoration: InputDecoration(
+                        border: const OutlineInputBorder(),
+                        hintText: "Password",
+                        hintStyle:
+                            const TextStyle(color: Colors.grey, fontSize: 17.0),
+                        suffixIcon: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              obsecureText = !obsecureText;
+                            });
+                          },
+                          child: Icon(
+                            obsecureText
+                                ? Icons.visibility_off
+                                : Icons.visibility,
+                            color: const Color(0xff4BA0FE),
+                          ),
+                        )),
                   ),
                 ),
                 const SizedBox(
