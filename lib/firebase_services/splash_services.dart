@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:drive_sharing_app/screens/getting_started.dart';
-import 'package:drive_sharing_app/screens/driver/driver_post_screen.dart';
+import 'package:drive_sharing_app/screens/driver/driverscreens/driver_post_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 

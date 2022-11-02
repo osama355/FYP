@@ -1,5 +1,5 @@
 import 'package:drive_sharing_app/screens/getting_started.dart';
-import 'package:drive_sharing_app/screens/pessenger/verify_mbl_code.dart';
+import 'package:drive_sharing_app/screens/pessenger/auth/verify_mbl_code.dart';
 import 'package:drive_sharing_app/utils/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -74,7 +74,7 @@ class _PessengerLoginState extends State<PessengerLogin> {
                   },
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
-                    hintText: "Phone Number",
+                    hintText: "+923012587759",
                     hintStyle: TextStyle(
                         color: Color.fromARGB(255, 162, 150, 150),
                         fontSize: 17.0),
@@ -162,7 +162,7 @@ class _PessengerLoginState extends State<PessengerLogin> {
                             });
                           });
                     }
-                  })
+                  }),
             ],
           ),
         ),

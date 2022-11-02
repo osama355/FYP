@@ -1,8 +1,9 @@
+import 'package:drive_sharing_app/screens/driver/auth/forgot_passowrd.dart';
 import 'package:drive_sharing_app/utils/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:drive_sharing_app/screens/driver/driver_post_screen.dart';
+import 'package:drive_sharing_app/screens/driver/driverscreens/driver_post_screen.dart';
 import 'package:drive_sharing_app/widgets/round_button.dart';
 
 class DriveLoginScreen extends StatefulWidget {
@@ -148,6 +149,21 @@ class _DriveLoginScreenState extends State<DriveLoginScreen> {
                       login();
                     }
                   },
+                ),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    const ForgotPasswordScreen()));
+                      },
+                      child: const Text(
+                        "Forgot Password ?",
+                        style: TextStyle(color: Color(0xff4BA0FE)),
+                      )),
                 ),
               ],
             ),

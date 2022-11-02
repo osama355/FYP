@@ -1,7 +1,7 @@
-import 'package:drive_sharing_app/screens/driver/driver_login_screen.dart';
+import 'package:drive_sharing_app/screens/driver/auth/driver_login_screen.dart';
 import 'package:drive_sharing_app/screens/getting_started.dart';
 import 'package:flutter/material.dart';
-import 'package:drive_sharing_app/screens/driver/drive_signup_screen.dart';
+import 'package:drive_sharing_app/screens/driver/auth/drive_signup_screen.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});

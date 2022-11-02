@@ -1,4 +1,4 @@
-import 'package:drive_sharing_app/screens/driver/driver_login_screen.dart';
+import 'package:drive_sharing_app/screens/driver/auth/driver_login_screen.dart';
 import 'package:drive_sharing_app/utils/utils.dart';
 import 'package:drive_sharing_app/widgets/round_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -60,8 +60,8 @@ class _DriveSignUp extends State<DriveSignUp> {
       conPassController.clear();
       passController.clear();
       phoneController.clear();
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => const DriveLoginScreen()));
+      // Navigator.push(context,
+      //     MaterialPageRoute(builder: (context) => const DriveLoginScreen()));
     }).onError((error, stackTrace) {
       Utils().toastMessage(error.toString());
       setState(() {

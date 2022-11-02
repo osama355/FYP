@@ -1,30 +1,31 @@
-import 'package:drive_sharing_app/screens/driver/main_driver_signup.dart';
+import 'package:drive_sharing_app/screens/pessenger/auth/pess_login.dart';
 import 'package:drive_sharing_app/utils/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class DriverPost extends StatefulWidget {
-  const DriverPost({super.key});
+class PessePostScreen extends StatefulWidget {
+  const PessePostScreen({super.key});
 
   @override
-  State<DriverPost> createState() => _DriverPost();
+  State<PessePostScreen> createState() => _PessePostScreenState();
 }
 
-class _DriverPost extends State<DriverPost> {
+class _PessePostScreenState extends State<PessePostScreen> {
   final auth = FirebaseAuth.instance;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Text("Driver"),
+        title: const Text("Pessenger"),
         actions: [
           IconButton(
               onPressed: () {
                 auth.signOut().then((value) {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => const SignUp()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const PessengerLogin()));
                 }).onError((error, stackTrace) {
                   Utils().toastMessage(error.toString());
                 });
