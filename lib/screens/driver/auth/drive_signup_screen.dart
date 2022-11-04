@@ -1,4 +1,3 @@
-import 'package:drive_sharing_app/screens/driver/auth/driver_login_screen.dart';
 import 'package:drive_sharing_app/utils/utils.dart';
 import 'package:drive_sharing_app/widgets/round_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -20,8 +19,10 @@ class _DriveSignUp extends State<DriveSignUp> {
   final emailController = TextEditingController();
   final nameController = TextEditingController();
   final phoneController = TextEditingController();
+  final nicController = TextEditingController();
   final passController = TextEditingController();
   final conPassController = TextEditingController();
+  final carNumController = TextEditingController();
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -32,8 +33,12 @@ class _DriveSignUp extends State<DriveSignUp> {
     emailController.dispose();
     phoneController.dispose();
     nameController.dispose();
+    nicController.dispose();
+    carNumController.dispose();
     passController.dispose();
   }
+
+  // _firestore.collection("driver/").doc(user?.uid).set({
 
   void signUp() {
     setState(() {
@@ -44,24 +49,30 @@ class _DriveSignUp extends State<DriveSignUp> {
             email: emailController.text.toString(),
             password: passController.text.toString())
         .then((value) {
-      final user = _auth.currentUser;
-      _firestore.collection("driver/").doc(user?.uid).set({
-        'email': emailController.text,
-        'phone': phoneController.text,
-        'name': nameController.text,
-      });
       setState(() {
         loading = false;
       });
-
+      final user = _auth.currentUser;
+      _firestore
+          .collection("app")
+          .doc("user")
+          .collection("driver")
+          .doc(user?.uid)
+          .set({
+        'email': emailController.text,
+        'phone': phoneController.text,
+        'name': nameController.text,
+        'cnic': nicController.text,
+        'car_number': carNumController.text,
+      });
       emailController.clear();
       passController.clear();
       nameController.clear();
       conPassController.clear();
-      passController.clear();
       phoneController.clear();
-      // Navigator.push(context,
-      //     MaterialPageRoute(builder: (context) => const DriveLoginScreen()));
+      nicController.clear();
+      carNumController.clear();
+      Utils().toastMessage("Successfully Registered");
     }).onError((error, stackTrace) {
       Utils().toastMessage(error.toString());
       setState(() {
@@ -111,6 +122,7 @@ class _DriveSignUp extends State<DriveSignUp> {
                     hintStyle: TextStyle(color: Colors.grey, fontSize: 17.0),
                     suffixIcon: Icon(
                       Icons.email,
+                      size: 20,
                       color: Color(0xff4BA0FE),
                     ),
                   ),
@@ -144,6 +156,7 @@ class _DriveSignUp extends State<DriveSignUp> {
                         fontSize: 17.0),
                     suffixIcon: Icon(
                       Icons.phone,
+                      size: 20,
                       color: Color(0xff4BA0FE),
                     ),
                   ),
@@ -179,6 +192,67 @@ class _DriveSignUp extends State<DriveSignUp> {
               Padding(
                 padding: const EdgeInsets.only(left: 30, right: 30),
                 child: TextFormField(
+                  keyboardType: TextInputType.number,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return "Enter your CNIC";
+                    }
+                    if (!RegExp(r'^[0-9]{5}-[0-9]{7}-[0-9]$').hasMatch(value)) {
+                      return "Enter correct CNIC ";
+                    }
+
+                    return null;
+                  },
+                  controller: nicController,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: "CNIC : xxxxx-xxxxxxx-x",
+                    hintStyle: TextStyle(
+                        color: Color.fromARGB(255, 162, 150, 150),
+                        fontSize: 17.0),
+                    suffixIcon: Icon(
+                      Icons.perm_identity,
+                      size: 20,
+                      color: Color(0xff4BA0FE),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 30, right: 30),
+                child: TextFormField(
+                  keyboardType: TextInputType.text,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return "Please enter car number";
+                    }
+                    if (!RegExp(r'^[A-Z]{1,3}-[0-9]{1,4}$').hasMatch(value)) {
+                      return "Enter correct car number";
+                    }
+                    return null;
+                  },
+                  controller: carNumController,
+                  decoration: const InputDecoration(
+                    suffixIcon: Icon(
+                      Icons.car_rental,
+                      color: Color(0xff4BA0FE),
+                      size: 20,
+                    ),
+                    border: OutlineInputBorder(),
+                    hintText: "Car Number",
+                    hintStyle: TextStyle(color: Colors.grey, fontSize: 17.0),
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 30, right: 30),
+                child: TextFormField(
                   keyboardType: TextInputType.text,
                   controller: passController,
                   validator: (value) {
@@ -203,6 +277,7 @@ class _DriveSignUp extends State<DriveSignUp> {
                           obsecureText1
                               ? Icons.visibility_off
                               : Icons.visibility,
+                          size: 20,
                           color: const Color(0xff4BA0FE),
                         ),
                       )),
@@ -217,7 +292,7 @@ class _DriveSignUp extends State<DriveSignUp> {
                   keyboardType: TextInputType.text,
                   validator: (value) {
                     if (value!.isEmpty) {
-                      return "confirm password";
+                      return "Please confirm password";
                     }
                     if (value != passController.text) {
                       return "Password does not match";
@@ -241,6 +316,7 @@ class _DriveSignUp extends State<DriveSignUp> {
                           obsecureText2
                               ? Icons.visibility_off
                               : Icons.visibility,
+                          size: 20,
                           color: const Color(0xff4BA0FE),
                         ),
                       )),
@@ -250,7 +326,7 @@ class _DriveSignUp extends State<DriveSignUp> {
                 height: 15,
               ),
               RoundButton(
-                title: "CONTINUE",
+                title: "Register",
                 loading: loading,
                 onTap: () {
                   if (_formKey.currentState!.validate()) {

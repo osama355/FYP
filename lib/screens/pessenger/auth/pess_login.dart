@@ -22,6 +22,63 @@ class _PessengerLoginState extends State<PessengerLogin> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
+  void dispose() {
+    super.dispose();
+    phoneNumberController.dispose();
+    nameController.dispose();
+  }
+
+  void loginWithPhone() {
+    setState(() {
+      loading = true;
+    });
+    auth.verifyPhoneNumber(
+        phoneNumber: phoneNumberController.text,
+        timeout: const Duration(seconds: 120),
+        verificationCompleted: (_) {
+          setState(() {
+            loading = false;
+          });
+        },
+        verificationFailed: (e) {
+          setState(() {
+            loading = false;
+          });
+          Utils().toastMessage(e.toString());
+        },
+        codeSent: (String verificationId, int? token) {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => VerifyMblCodeScreen(
+                        verificationId: verificationId,
+                      )));
+          final user = auth.currentUser;
+          final uid = user?.uid;
+          _firestore
+              .collection("app")
+              .doc("user")
+              .collection("pessenger")
+              .doc(uid)
+              .set({
+            'phone': phoneNumberController.text,
+            'name': nameController.text,
+          });
+          setState(() {
+            loading = false;
+          });
+        },
+        codeAutoRetrievalTimeout: (String verificationId) {
+          verificationId = verificationId;
+          // Utils().toastMessage(verificationId.toString());
+          // Utils().toastMessage("Timeout");
+          setState(() {
+            loading = false;
+          });
+        });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -120,47 +177,7 @@ class _PessengerLoginState extends State<PessengerLogin> {
                   loading: loading,
                   onTap: () {
                     if (_formKey.currentState!.validate()) {
-                      setState(() {
-                        loading = true;
-                      });
-                      auth.verifyPhoneNumber(
-                          phoneNumber: phoneNumberController.text,
-                          verificationCompleted: (_) {
-                            setState(() {
-                              loading = false;
-                            });
-                          },
-                          verificationFailed: (e) {
-                            setState(() {
-                              loading = false;
-                            });
-                            Utils().toastMessage(e.toString());
-                          },
-                          codeSent: (String verificationId, int? token) {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => VerifyMblCodeScreen(
-                                          verificationId: verificationId,
-                                        )));
-                            final user = auth.currentUser;
-                            _firestore
-                                .collection("pessenger/")
-                                .doc(user?.uid)
-                                .set({
-                              'phone': phoneNumberController.text,
-                              'name': nameController.text,
-                            });
-                            setState(() {
-                              loading = false;
-                            });
-                          },
-                          codeAutoRetrievalTimeout: (e) {
-                            Utils().toastMessage(e.toString());
-                            setState(() {
-                              loading = false;
-                            });
-                          });
+                      loginWithPhone();
                     }
                   }),
             ],

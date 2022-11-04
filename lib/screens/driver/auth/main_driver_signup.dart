@@ -38,7 +38,7 @@ class _SignUpState extends State<SignUp> {
                 child: Text("Login"),
               ),
               Tab(
-                child: Text("Sign up"),
+                child: Text("Register"),
               )
             ],
           ),
