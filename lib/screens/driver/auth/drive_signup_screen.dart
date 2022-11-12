@@ -6,6 +6,7 @@ import 'package:drive_sharing_app/widgets/round_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/services.dart';
 
 class DriveSignUp extends StatefulWidget {
   const DriveSignUp({super.key});
@@ -21,7 +22,7 @@ class _DriveSignUp extends State<DriveSignUp> {
   final _formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final nameController = TextEditingController();
-  final phoneController = TextEditingController();
+  final phoneController = TextEditingController(text: "+92");
   final nicController = TextEditingController();
   final passController = TextEditingController();
   final conPassController = TextEditingController();
@@ -202,6 +203,9 @@ class _DriveSignUp extends State<DriveSignUp> {
                 padding: const EdgeInsets.only(left: 30, right: 30),
                 child: TextFormField(
                   keyboardType: TextInputType.number,
+                  inputFormatters: [
+                    CardFormatter(sample: 'xxxxx-xxxxxxx-x', separator: '-')
+                  ],
                   validator: (value) {
                     if (value!.isEmpty) {
                       return "Enter your CNIC";
@@ -232,6 +236,9 @@ class _DriveSignUp extends State<DriveSignUp> {
               Padding(
                 padding: const EdgeInsets.only(left: 30, right: 30),
                 child: TextFormField(
+                  inputFormatters: [
+                    CardFormatter(sample: 'xxx-xxxx', separator: '-')
+                  ],
                   keyboardType: TextInputType.text,
                   validator: (value) {
                     if (value!.isEmpty) {
@@ -330,44 +337,6 @@ class _DriveSignUp extends State<DriveSignUp> {
                       )),
                 ),
               ),
-              // const SizedBox(
-              //   height: 15,
-              // ),
-              // Row(
-              //   mainAxisAlignment: MainAxisAlignment.center,
-              //   children: [
-              //     DocumentUploader(
-              //       title: "NIC front",
-              //       stateImage: nicFront,
-              //     ),
-              //     SizedBox(
-              //       width: 30,
-              //     ),
-              //     DocumentUploader(
-              //       title: "NIC back",
-              //       stateImage: nicBack,
-              //     )
-              //   ],
-              // ),
-              // const SizedBox(
-              //   height: 15,
-              // ),
-              // Row(
-              //   mainAxisAlignment: MainAxisAlignment.center,
-              //   children: [
-              //     DocumentUploader(
-              //       title: "License front",
-              //       stateImage: licFront,
-              //     ),
-              //     SizedBox(
-              //       width: 30,
-              //     ),
-              //     DocumentUploader(
-              //       title: "License back",
-              //       stateImage: licBack,
-              //     )
-              //   ],
-              // ),
               const SizedBox(
                 height: 15,
               ),
@@ -388,5 +357,39 @@ class _DriveSignUp extends State<DriveSignUp> {
         ),
       ),
     );
+  }
+}
+
+class CardFormatter extends TextInputFormatter {
+  final String sample;
+  final String separator;
+
+  CardFormatter({
+    required this.sample,
+    required this.separator,
+  }) {
+    assert(sample != null);
+    assert(separator != null);
+  }
+
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    if (newValue.text.length > 0) {
+      if (newValue.text.length > oldValue.text.length) {
+        if (newValue.text.length > sample.length) return oldValue;
+        if (newValue.text.length < sample.length &&
+            sample[newValue.text.length - 1] == separator) {
+          return TextEditingValue(
+            text:
+                '${oldValue.text}$separator${newValue.text.substring(newValue.text.length - 1)}',
+            selection: TextSelection.collapsed(
+              offset: newValue.selection.end + 1,
+            ),
+          );
+        }
+      }
+    }
+    return newValue;
   }
 }

@@ -2,6 +2,7 @@ import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/pessenger_ho
 import 'package:drive_sharing_app/utils/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../../widgets/round_button.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -75,6 +76,9 @@ class _VerifyMblCodeScreenState extends State<VerifyMblCodeScreen> {
                   height: 100,
                 ),
                 TextFormField(
+                  inputFormatters: [
+                    LengthLimitingTextInputFormatter(6),
+                  ],
                   textAlign: TextAlign.center,
                   style: const TextStyle(fontSize: 20, letterSpacing: 5),
                   controller: verifyCodeController,

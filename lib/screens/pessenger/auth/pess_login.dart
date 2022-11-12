@@ -15,7 +15,7 @@ class PessengerLogin extends StatefulWidget {
 class _PessengerLoginState extends State<PessengerLogin> {
   bool loading = false;
   final _formKey = GlobalKey<FormState>();
-  final phoneNumberController = TextEditingController();
+  final phoneNumberController = TextEditingController(text: "+92");
   final nameController = TextEditingController();
   final auth = FirebaseAuth.instance;
 
