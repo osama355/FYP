@@ -1,3 +1,6 @@
+// ignore_for_file: prefer_const_constructors
+import 'dart:io';
+import 'package:drive_sharing_app/screens/driver/auth/main_driver_signup.dart';
 import 'package:drive_sharing_app/utils/utils.dart';
 import 'package:drive_sharing_app/widgets/round_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -27,6 +30,11 @@ class _DriveSignUp extends State<DriveSignUp> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+  File? nicFront;
+  File? nicBack;
+  File? licFront;
+  File? licBack;
+
   @override
   void dispose() {
     super.dispose();
@@ -37,8 +45,6 @@ class _DriveSignUp extends State<DriveSignUp> {
     carNumController.dispose();
     passController.dispose();
   }
-
-  // _firestore.collection("driver/").doc(user?.uid).set({
 
   void signUp() {
     setState(() {
@@ -64,6 +70,7 @@ class _DriveSignUp extends State<DriveSignUp> {
         'name': nameController.text,
         'cnic': nicController.text,
         'car_number': carNumController.text,
+        'status': 'driver'
       });
       emailController.clear();
       passController.clear();
@@ -73,6 +80,8 @@ class _DriveSignUp extends State<DriveSignUp> {
       nicController.clear();
       carNumController.clear();
       Utils().toastMessage("Successfully Registered");
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => SignUp()));
     }).onError((error, stackTrace) {
       Utils().toastMessage(error.toString());
       setState(() {
@@ -200,7 +209,6 @@ class _DriveSignUp extends State<DriveSignUp> {
                     if (!RegExp(r'^[0-9]{5}-[0-9]{7}-[0-9]$').hasMatch(value)) {
                       return "Enter correct CNIC ";
                     }
-
                     return null;
                   },
                   controller: nicController,
@@ -322,6 +330,44 @@ class _DriveSignUp extends State<DriveSignUp> {
                       )),
                 ),
               ),
+              // const SizedBox(
+              //   height: 15,
+              // ),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.center,
+              //   children: [
+              //     DocumentUploader(
+              //       title: "NIC front",
+              //       stateImage: nicFront,
+              //     ),
+              //     SizedBox(
+              //       width: 30,
+              //     ),
+              //     DocumentUploader(
+              //       title: "NIC back",
+              //       stateImage: nicBack,
+              //     )
+              //   ],
+              // ),
+              // const SizedBox(
+              //   height: 15,
+              // ),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.center,
+              //   children: [
+              //     DocumentUploader(
+              //       title: "License front",
+              //       stateImage: licFront,
+              //     ),
+              //     SizedBox(
+              //       width: 30,
+              //     ),
+              //     DocumentUploader(
+              //       title: "License back",
+              //       stateImage: licBack,
+              //     )
+              //   ],
+              // ),
               const SizedBox(
                 height: 15,
               ),

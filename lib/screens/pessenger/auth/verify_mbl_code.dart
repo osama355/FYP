@@ -3,14 +3,18 @@ import 'package:drive_sharing_app/utils/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../../../widgets/round_button.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class VerifyMblCodeScreen extends StatefulWidget {
   final String verificationId;
+  final TextEditingController phonenumber;
+  final TextEditingController name;
 
-  const VerifyMblCodeScreen({
-    super.key,
-    required this.verificationId,
-  });
+  const VerifyMblCodeScreen(
+      {super.key,
+      required this.verificationId,
+      required this.phonenumber,
+      required this.name});
 
   @override
   State<VerifyMblCodeScreen> createState() => _VerifyMblCodeScreenState();
@@ -20,6 +24,40 @@ class _VerifyMblCodeScreenState extends State<VerifyMblCodeScreen> {
   bool loading = false;
   final verifyCodeController = TextEditingController();
   final auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  void verifyCode() async {
+    setState(() {
+      loading = true;
+    });
+    final credentials = PhoneAuthProvider.credential(
+        verificationId: widget.verificationId,
+        smsCode: verifyCodeController.text.toString());
+    try {
+      await auth.signInWithCredential(credentials);
+      final currentUser = auth.currentUser;
+      final uid = currentUser?.uid;
+      _firestore
+          .collection("app")
+          .doc("user")
+          .collection("pessenger")
+          .doc(uid)
+          .set({
+        'phone': widget.phonenumber.text,
+        'name': widget.name.text,
+        'status': 'pessenger',
+      });
+
+      // ignore: use_build_context_synchronously
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => const PessePostScreen()));
+    } catch (e) {
+      setState(() {
+        loading = false;
+      });
+      Utils().toastMessage(e.toString());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,27 +93,20 @@ class _VerifyMblCodeScreenState extends State<VerifyMblCodeScreen> {
                 RoundButton(
                     title: "VERIFY",
                     loading: loading,
-                    onTap: () async {
-                      setState(() {
-                        loading = true;
-                      });
-                      final credentials = PhoneAuthProvider.credential(
-                          verificationId: widget.verificationId,
-                          smsCode: verifyCodeController.text.toString());
-                      try {
-                        await auth.signInWithCredential(credentials);
-                        // ignore: use_build_context_synchronously
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const PessePostScreen()));
-                      } catch (e) {
-                        setState(() {
-                          loading = false;
-                        });
-                        Utils().toastMessage(e.toString());
-                      }
-                    })
+                    onTap: () {
+                      verifyCode();
+                    }),
+                // Row(
+                //   children: [
+                //     const Text("Didn't recieve code ? "),
+                //     TextButton(
+                //         onPressed: () {},
+                //         child: const Text(
+                //           "Resend",
+                //           style: TextStyle(color: Color(0xff4BA0FE)),
+                //         ))
+                //   ],
+                // )
               ],
             ),
           ),

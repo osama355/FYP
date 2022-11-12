@@ -60,7 +60,7 @@ class _GettingStartedState extends State<GettingStarted> {
                     height: 50,
                     child: Center(
                       child: Text(
-                        "CONTINUE AS PESSENGER",
+                        "CONTINUE AS PASSENGER",
                         style: TextStyle(fontSize: 15),
                       ),
                     ),

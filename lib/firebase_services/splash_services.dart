@@ -1,19 +1,38 @@
 import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drive_sharing_app/screens/getting_started.dart';
 import 'package:drive_sharing_app/screens/driver/driverscreens/driver_home_screen.dart';
+import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/pessenger_home_screen.dart';
+import 'package:drive_sharing_app/utils/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class SplashServices {
-  void isLogin(BuildContext context) {
+  Future<void> isLogin(BuildContext context) async {
     final auth = FirebaseAuth.instance;
     final user = auth.currentUser;
 
+    final driverDoc = await FirebaseFirestore.instance
+        .collection('app')
+        .doc('user')
+        .collection("driver")
+        .doc(user?.uid)
+        .get();
+
     if (user != null) {
-      Timer(
-          const Duration(seconds: 3),
-          () => Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const DriverPost())));
+      if (driverDoc.data()?['status'] == 'driver') {
+        Timer(
+            const Duration(seconds: 3),
+            () => Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const DriverPost())));
+      } else {
+        Timer(
+            const Duration(seconds: 3),
+            () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const PessePostScreen())));
+      }
     } else {
       Timer(
           const Duration(seconds: 3),

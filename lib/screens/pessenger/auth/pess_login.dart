@@ -4,7 +4,6 @@ import 'package:drive_sharing_app/utils/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:drive_sharing_app/widgets/round_button.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PessengerLogin extends StatefulWidget {
   const PessengerLogin({super.key});
@@ -19,7 +18,6 @@ class _PessengerLoginState extends State<PessengerLogin> {
   final phoneNumberController = TextEditingController();
   final nameController = TextEditingController();
   final auth = FirebaseAuth.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
   void dispose() {
@@ -28,11 +26,12 @@ class _PessengerLoginState extends State<PessengerLogin> {
     nameController.dispose();
   }
 
-  void loginWithPhone() {
+  void loginWithPhone() async {
+    int? resendCode;
     setState(() {
       loading = true;
     });
-    auth.verifyPhoneNumber(
+    await auth.verifyPhoneNumber(
         phoneNumber: phoneNumberController.text,
         timeout: const Duration(seconds: 120),
         verificationCompleted: (_) {
@@ -40,38 +39,35 @@ class _PessengerLoginState extends State<PessengerLogin> {
             loading = false;
           });
         },
-        verificationFailed: (e) {
+        verificationFailed: (FirebaseAuthException e) {
           setState(() {
             loading = false;
           });
           Utils().toastMessage(e.toString());
+          if (e.code == 'invalid-phone-number') {
+            Utils().toastMessage('The provided phone number is invalid');
+          }
         },
-        codeSent: (String verificationId, int? token) {
+        codeSent: (
+          String verificationId,
+          int? token,
+        ) {
+          resendCode = token;
           Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (context) => VerifyMblCodeScreen(
                         verificationId: verificationId,
+                        phonenumber: phoneNumberController,
+                        name: nameController,
                       )));
-          final user = auth.currentUser;
-          final uid = user?.uid;
-          _firestore
-              .collection("app")
-              .doc("user")
-              .collection("pessenger")
-              .doc(uid)
-              .set({
-            'phone': phoneNumberController.text,
-            'name': nameController.text,
-          });
           setState(() {
             loading = false;
           });
         },
+        forceResendingToken: resendCode,
         codeAutoRetrievalTimeout: (String verificationId) {
           verificationId = verificationId;
-          // Utils().toastMessage(verificationId.toString());
-          // Utils().toastMessage("Timeout");
           setState(() {
             loading = false;
           });
@@ -84,7 +80,7 @@ class _PessengerLoginState extends State<PessengerLogin> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: const Color(0xff4BA0FE),
-        title: const Text("Pessenger"),
+        title: const Text("Passenger"),
         leading: GestureDetector(
           onTap: () {
             Navigator.push(
