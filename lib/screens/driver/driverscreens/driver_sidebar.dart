@@ -79,7 +79,7 @@ class _DriverSidebarState extends State<DriverSidebar> {
                           decoration: BoxDecoration(
                               color: Colors.grey,
                               borderRadius: BorderRadius.circular(100)),
-                          child: snapshot.data == " "
+                          child: snapshot.data == ""
                               ? ClipOval(
                                   child: SizedBox.fromSize(
                                     size: const Size.fromRadius(48.0),

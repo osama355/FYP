@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:drive_sharing_app/screens/driver/auth/main_driver_signup.dart';
 import 'package:drive_sharing_app/screens/driver/driverscreens/driver_sidebar.dart';
 import 'package:drive_sharing_app/utils/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -57,6 +56,7 @@ class _DriverPost extends State<DriverPost> {
     return Scaffold(
       drawer: const DriverSidebar(),
       appBar: AppBar(
+        backgroundColor: const Color(0xff4BA0FE),
         centerTitle: false,
         title: const Text("Home"),
       ),

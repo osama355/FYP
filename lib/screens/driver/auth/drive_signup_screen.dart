@@ -71,7 +71,8 @@ class _DriveSignUp extends State<DriveSignUp> {
         'name': nameController.text,
         'cnic': nicController.text,
         'car_number': carNumController.text,
-        'status': 'driver'
+        'status': 'driver',
+        'dp': ""
       });
       emailController.clear();
       passController.clear();
