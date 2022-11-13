@@ -100,17 +100,6 @@ class _VerifyMblCodeScreenState extends State<VerifyMblCodeScreen> {
                     onTap: () {
                       verifyCode();
                     }),
-                // Row(
-                //   children: [
-                //     const Text("Didn't recieve code ? "),
-                //     TextButton(
-                //         onPressed: () {},
-                //         child: const Text(
-                //           "Resend",
-                //           style: TextStyle(color: Color(0xff4BA0FE)),
-                //         ))
-                //   ],
-                // )
               ],
             ),
           ),
