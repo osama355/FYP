@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:drive_sharing_app/screens/driver/driverscreens/driver_sidebar.dart';
+import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/pessenger_sidebar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -25,6 +25,12 @@ class _PessengerProfileScreenState extends State<PessengerProfileScreen> {
 
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   FirebaseAuth auth = FirebaseAuth.instance;
+
+  @override
+  void dispose() {
+    super.dispose();
+    nameController.dispose();
+  }
 
   Future<void> setProfile() async {
     final image = await ImagePicker().pickImage(
@@ -58,10 +64,10 @@ class _PessengerProfileScreenState extends State<PessengerProfileScreen> {
     final users = await firestore
         .collection("app")
         .doc("user")
-        .collection("driver")
+        .collection("pessenger")
         .doc(uid)
         .get();
-    return users.data()?['dp'];
+    return users.data()?['dp'] ?? " ";
   }
 
   Future updateuserData() async {
@@ -80,7 +86,7 @@ class _PessengerProfileScreenState extends State<PessengerProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        drawer: const DriverSidebar(),
+        drawer: const PessengerSidebar(),
         appBar: AppBar(
           backgroundColor: const Color(0xff4BA0FE),
           centerTitle: false,
@@ -119,7 +125,7 @@ class _PessengerProfileScreenState extends State<PessengerProfileScreen> {
                                 decoration: BoxDecoration(
                                     color: const Color(0xff4BA0FE),
                                     borderRadius: BorderRadius.circular(100)),
-                                child: snapshot.data == ""
+                                child: snapshot.data == " "
                                     ? ClipOval(
                                         child: SizedBox.fromSize(
                                           size: const Size.fromRadius(48.0),
@@ -182,7 +188,7 @@ class _PessengerProfileScreenState extends State<PessengerProfileScreen> {
                               border: const OutlineInputBorder(),
                               hintText: snapshot.data?['phone'],
                               hintStyle: const TextStyle(
-                                color: Color.fromARGB(255, 21, 21, 21),
+                                color: Color.fromARGB(255, 26, 24, 24),
                               ),
                               suffixIcon: const Icon(
                                 Icons.phone,

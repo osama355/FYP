@@ -47,7 +47,6 @@ class _VerifyMblCodeScreenState extends State<VerifyMblCodeScreen> {
         'phone': widget.phonenumber.text,
         'name': widget.name.text,
         'status': 'pessenger',
-        'dp': ""
       });
 
       // ignore: use_build_context_synchronously

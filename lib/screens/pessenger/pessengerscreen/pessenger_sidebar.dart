@@ -14,6 +14,7 @@ class PessengerSidebar extends StatefulWidget {
 }
 
 class _PessengerSidebarState extends State<PessengerSidebar> {
+  String imageUrl = " ";
   FirebaseAuth auth = FirebaseAuth.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
@@ -36,7 +37,8 @@ class _PessengerSidebarState extends State<PessengerSidebar> {
         .collection("pessenger")
         .doc(uid)
         .get();
-    return users.data()?['dp'];
+    imageUrl = users.data()?['dp'] ?? " ";
+    return imageUrl;
   }
 
   @override
@@ -79,7 +81,7 @@ class _PessengerSidebarState extends State<PessengerSidebar> {
                           decoration: BoxDecoration(
                               color: Colors.grey,
                               borderRadius: BorderRadius.circular(100)),
-                          child: snapshot.data == ""
+                          child: imageUrl == " "
                               ? ClipOval(
                                   child: SizedBox.fromSize(
                                     size: const Size.fromRadius(48.0),
