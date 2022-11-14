@@ -15,42 +15,6 @@ class DriverPost extends StatefulWidget {
 }
 
 class _DriverPost extends State<DriverPost> {
-  File? image;
-  final picker = ImagePicker();
-  String imageUrl = " ";
-  String username = "";
-  FirebaseFirestore firestore = FirebaseFirestore.instance;
-  FirebaseAuth auth = FirebaseAuth.instance;
-
-  Future<void> getProfile() async {
-    final image = await ImagePicker().pickImage(
-      source: ImageSource.gallery,
-      maxWidth: 512,
-      maxHeight: 512,
-      imageQuality: 75,
-    );
-
-    final user = auth.currentUser;
-    firebase_storage.Reference ref = firebase_storage.FirebaseStorage.instance
-        .ref('/profiledp/${DateTime.now().millisecondsSinceEpoch}');
-    await ref.putFile(File(image!.path));
-
-    ref.getDownloadURL().then((value) {
-      setState(() {
-        imageUrl = value;
-      });
-      firestore
-          .collection("app")
-          .doc("user")
-          .collection("driver")
-          .doc(user?.uid)
-          .update({'dp': imageUrl.toString()});
-      Utils().toastMessage("Profile uploaded successfully");
-    }).onError((error, stackTrace) {
-      Utils().toastMessage(error.toString());
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

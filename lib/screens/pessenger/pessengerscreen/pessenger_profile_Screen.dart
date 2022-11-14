@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:drive_sharing_app/screens/driver/driverscreens/driver_sidebar.dart';
+import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/pessenger_sidebar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -8,21 +8,20 @@ import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import '../../../utils/utils.dart';
 import '../../../widgets/round_button.dart';
 
-class DriverProfileScreen extends StatefulWidget {
-  const DriverProfileScreen({super.key});
+class PessengerProfileScreen extends StatefulWidget {
+  const PessengerProfileScreen({super.key});
 
   @override
-  State<DriverProfileScreen> createState() => _DriverProfileScreenState();
+  State<PessengerProfileScreen> createState() => _PessengerProfileScreenState();
 }
 
-class _DriverProfileScreenState extends State<DriverProfileScreen> {
+class _PessengerProfileScreenState extends State<PessengerProfileScreen> {
   File? image;
   final picker = ImagePicker();
   String imageUrl = " ";
   String username = "";
 
   final nameController = TextEditingController();
-  final phoneController = TextEditingController();
 
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   FirebaseAuth auth = FirebaseAuth.instance;
@@ -30,7 +29,6 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
   @override
   void dispose() {
     super.dispose();
-    phoneController.dispose();
     nameController.dispose();
   }
 
@@ -52,7 +50,7 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
       firestore
           .collection("app")
           .doc("user")
-          .collection("driver")
+          .collection("pessenger")
           .doc(user?.uid)
           .update({'dp': imageUrl.toString()});
       Utils().toastMessage("Profile uploaded successfully");
@@ -66,19 +64,19 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
     final users = await firestore
         .collection("app")
         .doc("user")
-        .collection("driver")
+        .collection("pessenger")
         .doc(uid)
         .get();
-    return users.data()?['dp'];
+    return users.data()?['dp'] ?? " ";
   }
 
   Future updateuserData() async {
     final uid = auth.currentUser?.uid;
-    final user =
-        firestore.collection('app').doc('user').collection('driver').doc(uid);
-    if (phoneController.text.isNotEmpty) {
-      user.update({'phone': phoneController.text});
-    }
+    final user = firestore
+        .collection('app')
+        .doc('user')
+        .collection('pessenger')
+        .doc(uid);
     if (nameController.text.isNotEmpty) {
       user.update({'name': nameController.text});
     }
@@ -88,7 +86,7 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        drawer: const DriverSidebar(),
+        drawer: const PessengerSidebar(),
         appBar: AppBar(
           backgroundColor: const Color(0xff4BA0FE),
           centerTitle: false,
@@ -127,7 +125,7 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
                                 decoration: BoxDecoration(
                                     color: const Color(0xff4BA0FE),
                                     borderRadius: BorderRadius.circular(100)),
-                                child: snapshot.data == ""
+                                child: snapshot.data == " "
                                     ? ClipOval(
                                         child: SizedBox.fromSize(
                                           size: const Size.fromRadius(48.0),
@@ -169,7 +167,7 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
                   stream: firestore
                       .collection("app")
                       .doc("user")
-                      .collection("driver")
+                      .collection("pessenger")
                       .doc(auth.currentUser?.uid)
                       .snapshots(),
                   builder: (context, snapshot) {
@@ -185,33 +183,12 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
                           padding: const EdgeInsets.only(left: 30, right: 30),
                           child: TextFormField(
                             readOnly: true,
-                            keyboardType: TextInputType.emailAddress,
-                            decoration: InputDecoration(
-                              border: const OutlineInputBorder(),
-                              hintText: snapshot.data?['email'],
-                              hintStyle: const TextStyle(
-                                  color: Colors.grey, fontSize: 17.0),
-                              suffixIcon: const Icon(
-                                Icons.email,
-                                size: 20,
-                                color: Color(0xff4BA0FE),
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 30, right: 30),
-                          child: TextFormField(
-                            controller: phoneController,
                             keyboardType: TextInputType.phone,
                             decoration: InputDecoration(
                               border: const OutlineInputBorder(),
                               hintText: snapshot.data?['phone'],
                               hintStyle: const TextStyle(
-                                color: Color.fromARGB(255, 21, 21, 21),
+                                color: Color.fromARGB(255, 26, 24, 24),
                               ),
                               suffixIcon: const Icon(
                                 Icons.phone,
@@ -236,51 +213,6 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
                                   color: Color.fromARGB(255, 21, 21, 21)),
                             ),
                           ),
-                        ),
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 30, right: 30),
-                          child: TextFormField(
-                            keyboardType: TextInputType.number,
-                            readOnly: true,
-                            decoration: InputDecoration(
-                              border: const OutlineInputBorder(),
-                              hintText: snapshot.data?['cnic'],
-                              hintStyle: const TextStyle(
-                                  color: Color.fromARGB(255, 162, 150, 150),
-                                  fontSize: 17.0),
-                              suffixIcon: const Icon(
-                                Icons.perm_identity,
-                                size: 20,
-                                color: Color(0xff4BA0FE),
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 30, right: 30),
-                          child: TextFormField(
-                            readOnly: true,
-                            decoration: InputDecoration(
-                              suffixIcon: const Icon(
-                                Icons.car_rental,
-                                color: Color(0xff4BA0FE),
-                                size: 20,
-                              ),
-                              border: const OutlineInputBorder(),
-                              hintText: snapshot.data?['car_number'],
-                              hintStyle: const TextStyle(
-                                  color: Colors.grey, fontSize: 17.0),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 15,
                         ),
                         const SizedBox(
                           height: 15,
