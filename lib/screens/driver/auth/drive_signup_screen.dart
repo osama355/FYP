@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, unnecessary_null_comparison, prefer_is_empty
 import 'dart:io';
 import 'package:drive_sharing_app/screens/driver/auth/main_driver_signup.dart';
 import 'package:drive_sharing_app/utils/utils.dart';
