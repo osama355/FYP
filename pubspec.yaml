@@ -44,6 +44,7 @@ dependencies:
   flutter_onboard: ^2.0.0
   firebase_database: ^10.0.2
   image_picker: ^0.8.6
+  custom_switch_button: ^0.5.0
 
 dev_dependencies:
   flutter_test:
