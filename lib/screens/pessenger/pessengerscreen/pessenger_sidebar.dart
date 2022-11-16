@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drive_sharing_app/screens/pessenger/auth/pess_login.dart';
 import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/pessenger_home_screen.dart';
-import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/pessenger_profile_Screen.dart';
+import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/pessenger_profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../../utils/utils.dart';
