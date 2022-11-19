@@ -160,7 +160,7 @@ class _PessengerSidebarState extends State<PessengerSidebar> {
                   Icons.notifications,
                   color: Color(0xff4BA0FE),
                 ),
-                title: Text("Notifications"),
+                title: Text("User in Radius"),
               ),
             ),
             GestureDetector(
@@ -170,7 +170,7 @@ class _PessengerSidebarState extends State<PessengerSidebar> {
                   Icons.settings,
                   color: Color(0xff4BA0FE),
                 ),
-                title: Text("Settings"),
+                title: Text("Get Ride"),
               ),
             ),
             GestureDetector(
