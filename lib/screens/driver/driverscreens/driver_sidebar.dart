@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drive_sharing_app/screens/driver/driverscreens/driver_home_screen.dart';
 import 'package:drive_sharing_app/screens/driver/driverscreens/driver_profile_screen.dart';
-import 'package:drive_sharing_app/screens/driver/driverscreens/offer_ride.dart';
+import 'package:drive_sharing_app/screens/driver/driverscreens/googlemap/create_ride.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../../../utils/utils.dart';
@@ -165,8 +165,10 @@ class _DriverSidebarState extends State<DriverSidebar> {
             GestureDetector(
               onTap: () {
                 Navigator.pop(context);
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => const OfferRide()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const CreateRide()));
               },
               child: const ListTile(
                 leading: Icon(
