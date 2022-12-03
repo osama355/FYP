@@ -165,10 +165,10 @@ class _DriverSidebarState extends State<DriverSidebar> {
             GestureDetector(
               onTap: () {
                 Navigator.pop(context);
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const CreateRide()));
+                // Navigator.push(
+                //     context,
+                //     MaterialPageRoute(
+                //         builder: (context) => const CreateRide()));
               },
               child: const ListTile(
                 leading: Icon(
