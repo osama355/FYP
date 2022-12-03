@@ -1,13 +1,12 @@
-import 'dart:async';
-import 'dart:convert';
-import 'package:drive_sharing_app/widgets/round_button.dart';
 import 'package:flutter/material.dart';
-import 'package:geocoding/geocoding.dart';
+import 'dart:async';
+import 'package:drive_sharing_app/screens/driver/driverscreens/driver_sidebar.dart';
+import 'package:drive_sharing_app/utils/utils.dart';
+import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:uuid/uuid.dart';
-import 'package:http/http.dart' as http;
-
-import '../driver_sidebar.dart';
+import 'package:google_place/google_place.dart';
+import 'package:intl/intl.dart' show DateFormat;
 
 class CreateRide extends StatefulWidget {
   const CreateRide({super.key});
@@ -17,105 +16,102 @@ class CreateRide extends StatefulWidget {
 }
 
 class _CreateRideState extends State<CreateRide> {
-  TextEditingController startingPointController = TextEditingController();
-  TextEditingController destinationController = TextEditingController();
-  TextEditingController requirePessController = TextEditingController();
-  final Completer<GoogleMapController> mapController = Completer();
+  final startingPointController = TextEditingController();
+  final destinationController = TextEditingController();
+  final requirePessController = TextEditingController();
+  final dateController = TextEditingController();
+  final timeController = TextEditingController();
 
-  final CameraPosition _kGooglePlex =
-      CameraPosition(target: LatLng(24.839108, 67.186298), zoom: 14);
+  late GooglePlace googlePlace;
+  List<AutocompletePrediction> predictions = [];
+  Timer? _debounce;
 
-  final List<Marker> _markers = [];
-
-  final List<Marker> _list = const [
-    Marker(
-        markerId: MarkerId("1"),
-        position: LatLng(24.839108, 67.186298),
-        infoWindow: InfoWindow(title: "Starting Point")),
-    Marker(
-        markerId: MarkerId("2"),
-        position: LatLng(24.865767427714033, 67.07451124295166),
-        infoWindow: InfoWindow(title: "Ending Point")),
-  ];
-
-  var uuid = Uuid();
-  String _sessionToken = '123456';
-  List<dynamic> _placesList = [];
-
-  @override
   void initState() {
     super.initState();
-    startingPointController.addListener(() {
-      onChangeStarting();
-    });
-    destinationController.addListener(() {
-      onChangeDestination();
-    });
-    _markers.addAll(_list);
+    String apiKey = 'AIzaSyCsAFe-3nLf0PkH2NIxcNheXEGeu__n2ew';
+    googlePlace = GooglePlace(apiKey);
   }
 
-  void onChangeStarting() {
-    if (_sessionToken == null) {
+  void autoCompleteSearch(String value) async {
+    var result = await googlePlace.autocomplete.get(value);
+    if (result != null && result.predictions != null && mounted) {
       setState(() {
-        _sessionToken = uuid.v4();
+        predictions = result.predictions!;
       });
-    }
-    getSuggestion(startingPointController.text);
-  }
-
-  void onChangeDestination() {
-    if (_sessionToken == null) {
-      setState(() {
-        _sessionToken = uuid.v4();
-      });
-    }
-    getSuggestion(destinationController.text);
-  }
-
-  void getSuggestion(String input) async {
-    String kPLACES_API_KEY = 'AIzaSyCsAFe-3nLf0PkH2NIxcNheXEGeu__n2ew';
-    String baseURL =
-        'https://maps.googleapis.com/maps/api/place/autocomplete/json';
-    String request =
-        '$baseURL?input=$input&key=$kPLACES_API_KEY&sessiontoken=$_sessionToken';
-    var response = await http.get(Uri.parse(request));
-    var data = response.body.toString();
-    print(data);
-
-    if (response.statusCode == 200) {
-      setState(() {
-        _placesList = jsonDecode(response.body.toString())['predictions'];
-      });
-    } else {
-      throw Exception('Failed to load data');
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: const DriverSidebar(),
-      appBar: AppBar(
-        title: const Text("Create Ride"),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Column(
+        drawer: const DriverSidebar(),
+        appBar: AppBar(
+          title: const Text("Create Ride"),
+        ),
+        body: Column(
           children: [
-            TextFormField(
-              controller: startingPointController,
-              keyboardType: TextInputType.text,
-              decoration:
-                  const InputDecoration(hintText: 'Enter Starting Point'),
+            GestureDetector(
+              onTap: () async {
+                DateTime? datePicked = await showDatePicker(
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime.now(),
+                    lastDate: DateTime(2100));
+                if (datePicked != null) {
+                  setState(() {
+                    dateController.text =
+                        '${datePicked.day}-${datePicked.month}-${datePicked.year}';
+                  });
+                }
+              },
+              child: TextFormField(
+                controller: dateController,
+                enabled: false,
+                showCursor: false,
+                decoration: const InputDecoration(
+                    contentPadding: EdgeInsets.only(top: 15.0, bottom: 15.0),
+                    prefixIcon: Icon(
+                      Icons.date_range,
+                      color: Color(0xff4BA0FE),
+                      size: 20,
+                    ),
+                    filled: true,
+                    fillColor: Colors.white,
+                    hintText: 'Select Date',
+                    border: OutlineInputBorder()),
+              ),
             ),
             const SizedBox(
               height: 10,
             ),
-            TextFormField(
-              controller: destinationController,
-              keyboardType: TextInputType.text,
-              decoration:
-                  const InputDecoration(hintText: 'Enter Destination Point'),
+            GestureDetector(
+              onTap: () async {
+                TimeOfDay? timePicked = await showTimePicker(
+                    context: context, initialTime: TimeOfDay.now());
+                if (timePicked != null) {
+                  String setTime = "${timePicked.hour}:${timePicked.minute}:00";
+                  setState(() {
+                    timeController.text = DateFormat.jm()
+                        .format(DateFormat("hh:mm:ss").parse(setTime));
+                  });
+                }
+              },
+              child: TextFormField(
+                controller: timeController,
+                enabled: false,
+                showCursor: false,
+                decoration: const InputDecoration(
+                    contentPadding: EdgeInsets.only(top: 15.0, bottom: 15.0),
+                    prefixIcon: Icon(
+                      Icons.timer,
+                      color: Color(0xff4BA0FE),
+                      size: 20,
+                    ),
+                    filled: true,
+                    fillColor: Colors.white,
+                    hintText: 'Select Time',
+                    border: OutlineInputBorder()),
+              ),
             ),
             const SizedBox(
               height: 10,
@@ -123,62 +119,100 @@ class _CreateRideState extends State<CreateRide> {
             TextFormField(
               controller: requirePessController,
               keyboardType: TextInputType.number,
-              decoration:
-                  const InputDecoration(hintText: 'Enter Required Pessengers'),
+              decoration: const InputDecoration(
+                  contentPadding: EdgeInsets.only(top: 15.0, bottom: 15.0),
+                  prefixIcon: Icon(
+                    Icons.event_seat_sharp,
+                    color: Color(0xff4BA0FE),
+                    size: 20,
+                  ),
+                  filled: true,
+                  fillColor: Colors.white,
+                  hintText: 'Required Seats',
+                  border: OutlineInputBorder()),
             ),
             const SizedBox(
               height: 10,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text("Pick Date"),
-                TextButton(
-                    onPressed: () {
-                      showDatePicker(
-                          context: context,
-                          initialDate: DateTime.now(),
-                          firstDate: DateTime(2022),
-                          lastDate: DateTime(2023));
-                    },
-                    child: const Text('Choose Date'))
-              ],
+            TextFormField(
+              controller: startingPointController,
+              autofocus: false,
+              keyboardType: TextInputType.text,
+              decoration: const InputDecoration(
+                  contentPadding: EdgeInsets.only(top: 15.0, bottom: 15.0),
+                  prefixIcon: Icon(
+                    Icons.location_on,
+                    color: Colors.green,
+                    size: 20,
+                  ),
+                  filled: true,
+                  fillColor: Colors.white,
+                  hintText: 'Enter Starting Point',
+                  border: OutlineInputBorder()),
+              onChanged: (value) {
+                if (_debounce?.isActive ?? false) _debounce!.cancel();
+                _debounce = Timer(const Duration(milliseconds: 1000), () {
+                  if (value.isNotEmpty) {
+                    autoCompleteSearch(value);
+                  } else {
+                    //clear the result
+                  }
+                });
+              },
             ),
-            Expanded(
-                child: ListView.builder(
-              itemCount: _placesList.length,
+            const SizedBox(
+              height: 10,
+            ),
+            TextFormField(
+              controller: destinationController,
+              autofocus: false,
+              keyboardType: TextInputType.text,
+              decoration: const InputDecoration(
+                  contentPadding: EdgeInsets.only(top: 15.0, bottom: 15.0),
+                  prefixIcon: Icon(
+                    Icons.location_on,
+                    color: Colors.amber,
+                    size: 20,
+                  ),
+                  filled: true,
+                  fillColor: Colors.white,
+                  hintText: 'Destination',
+                  border: OutlineInputBorder()),
+              onChanged: (value) {
+                if (_debounce?.isActive ?? false) _debounce!.cancel();
+                _debounce = Timer(const Duration(milliseconds: 1000), () {
+                  if (value.isNotEmpty) {
+                    autoCompleteSearch(value);
+                  } else {
+                    //clear the result
+                  }
+                });
+              },
+            ),
+            ListView.builder(
+              shrinkWrap: true,
+              itemCount: predictions.length,
               itemBuilder: (context, index) {
                 return ListTile(
-                  onTap: () async {
-                    List<Location> locations = await locationFromAddress(
-                        _placesList[index]['description']);
-                    print(locations.last.latitude);
-                    print(locations.last.longitude);
-                    setState(() {
-                      if (startingPointController.selection.isValid) {
-                        setState(() {
-                          startingPointController.text =
-                              _placesList[index]['description'];
-                        });
-                      } else {
-                        setState(() {
-                          destinationController.text =
-                              _placesList[index]['description'];
-                        });
-                      }
-                    });
-                  },
-                  // Text(_placesList[index]['description'])
-                  title: Text(requirePessController.selection.isValid
-                      ? _placesList[index]['description'] = " "
-                      : _placesList[index]['description']),
+                  title: Text(predictions[index].description.toString()),
                 );
               },
-            )),
-            RoundButton(title: "Create", onTap: () {})
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            SizedBox(
+              width: 120,
+              height: 40,
+              child: ElevatedButton(
+                onPressed: () {},
+                style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(
+                        const Color(0xff4BA0FE))),
+                child: const Text("Create"),
+              ),
+            )
           ],
-        ),
-      ),
-    );
+        ));
   }
 }
