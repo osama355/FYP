@@ -20,6 +20,8 @@ class _MyRidesState extends State<MyRides> {
   late DetailsResult? m;
   late DetailsResult? e;
 
+  bool isEnable = false;
+
   @override
   Widget build(BuildContext context) {
     CollectionReference rides = FirebaseFirestore.instance
