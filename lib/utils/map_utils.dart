@@ -15,6 +15,6 @@ class MapUtils {
       }
     }
     return LatLngBounds(
-        northeast: LatLng(x1! + 0.05, y1!), southwest: LatLng(x0! - 0.05, y0!));
+        northeast: LatLng(x1! + 0.2, y1!), southwest: LatLng(x0! - 0.2, y0!));
   }
 }

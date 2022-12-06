@@ -1,7 +1,10 @@
-import 'package:drive_sharing_app/screens/driver/driverscreens/googlemap/driver_map_screen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:drive_sharing_app/screens/driver/driverscreens/my_rides.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:drive_sharing_app/screens/driver/driverscreens/driver_sidebar.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_place/google_place.dart';
 // ignore: depend_on_referenced_packages
 import 'package:intl/intl.dart' show DateFormat;
@@ -32,6 +35,9 @@ class _CreateRideState extends State<CreateRide> {
   late GooglePlace googlePlace;
   List<AutocompletePrediction> predictions = [];
   Timer? _debounce;
+
+  FirebaseAuth auth = FirebaseAuth.instance;
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   @override
   void initState() {
@@ -343,10 +349,52 @@ class _CreateRideState extends State<CreateRide> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => DriverMapScreen(
-                                        startPosition: startPosition,
-                                        midPosition: midPosition,
-                                        endPosition: endPosition)));
+                                    builder: (context) => const MyRides()));
+
+                            final user = auth.currentUser;
+                            final uid = user?.uid;
+
+                            firestore
+                                .collection('rides')
+                                .doc('${uid!}${DateTime.now()}')
+                                .set({
+                              'require-pess': requirePessController.text,
+                              'time': timeController.text,
+                              'date': dateController.text,
+                              'source': startingPointController.text,
+                              'via-route': middlePointController.text,
+                              'destination': destinationController.text,
+                              'source-loc': startPosition!.geometry!.location!,
+                              'via-loc': midPosition!.geometry!.location!,
+                              'destination-loc':
+                                  endPosition!.geometry!.location!,
+                            });
+
+                            firestore
+                                .collection('app')
+                                .doc('user')
+                                .collection('driver')
+                                .doc(uid)
+                                .collection('rides')
+                                .doc('$uid${DateTime.now()}')
+                                .set({
+                              'require-pess': requirePessController.text,
+                              'time': timeController.text,
+                              'date': dateController.text,
+                              'source': startingPointController.text,
+                              'via-route': middlePointController.text,
+                              'destination': destinationController.text,
+                              'source-lat':
+                                  startPosition!.geometry!.location!.lat!,
+                              'source-lng':
+                                  startPosition!.geometry!.location!.lng!,
+                              'via-lat': midPosition!.geometry!.location!.lat!,
+                              'via-lng': midPosition!.geometry!.location!.lng!,
+                              'destination-lat':
+                                  endPosition!.geometry!.location!.lat!,
+                              'destination-lng':
+                                  endPosition!.geometry!.location!.lng!,
+                            });
                           }
                         }
                       },

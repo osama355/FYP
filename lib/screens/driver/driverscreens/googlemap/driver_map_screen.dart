@@ -1,5 +1,6 @@
 // ignore_for_file: no_leading_underscores_for_local_identifiers
 import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -7,11 +8,20 @@ import 'package:google_place/google_place.dart';
 import '../../../../utils/map_utils.dart';
 
 class DriverMapScreen extends StatefulWidget {
-  final DetailsResult? startPosition;
-  final DetailsResult? midPosition;
-  final DetailsResult? endPosition;
+  final double? startPositionLat;
+  final double? startPositionLng;
+  final double? midPositionLat;
+  final double? midPositionLng;
+  final double? endPositionLat;
+  final double? endPositionLng;
   const DriverMapScreen(
-      {super.key, this.startPosition, this.midPosition, this.endPosition});
+      {super.key,
+      this.startPositionLat,
+      this.startPositionLng,
+      this.midPositionLat,
+      this.midPositionLng,
+      this.endPositionLat,
+      this.endPositionLng});
 
   @override
   State<DriverMapScreen> createState() => _DriverMapScreenState();
@@ -20,9 +30,6 @@ class DriverMapScreen extends StatefulWidget {
 class _DriverMapScreenState extends State<DriverMapScreen> {
   late CameraPosition initialPosition;
   final Completer<GoogleMapController> _controller = Completer();
-  // Map<PolylineId, Polyline> polylines = {};
-  // List<LatLng> polylineCoordinates = [];
-  // PolylinePoints polylinePoints = PolylinePoints();
 
   final Set<Marker> _markers = {};
   final Set<Polyline> _polyLine = {};
@@ -32,17 +39,13 @@ class _DriverMapScreenState extends State<DriverMapScreen> {
   void initState() {
     super.initState();
     initialPosition = CameraPosition(
-      target: LatLng(widget.startPosition!.geometry!.location!.lat!,
-          widget.startPosition!.geometry!.location!.lng!),
+      target: LatLng(widget.startPositionLat!, widget.startPositionLng!),
       zoom: 11,
     );
     List<LatLng> latlng = [
-      LatLng(widget.startPosition!.geometry!.location!.lat!,
-          widget.startPosition!.geometry!.location!.lng!),
-      LatLng(widget.midPosition!.geometry!.location!.lat!,
-          widget.midPosition!.geometry!.location!.lng!),
-      LatLng(widget.endPosition!.geometry!.location!.lat!,
-          widget.endPosition!.geometry!.location!.lng!),
+      LatLng(widget.startPositionLat!, widget.startPositionLng!),
+      LatLng(widget.midPositionLat!, widget.midPositionLng!),
+      LatLng(widget.endPositionLat!, widget.endPositionLng!),
     ];
 
     for (int i = 0; i < latlng.length; i++) {
@@ -65,16 +68,6 @@ class _DriverMapScreenState extends State<DriverMapScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Set<Marker> _markers = {
-    //   Marker(
-    //       markerId: const MarkerId('start'),
-    //       position: LatLng(widget.startPosition!.geometry!.location!.lat!,
-    //           widget.startPosition!.geometry!.location!.lng!)),
-    //   Marker(
-    //       markerId: const MarkerId('end'),
-    //       position: LatLng(widget.endPosition!.geometry!.location!.lat!,
-    //           widget.endPosition!.geometry!.location!.lng!))
-    // };
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -92,19 +85,17 @@ class _DriverMapScreenState extends State<DriverMapScreen> {
             )),
       ),
       body: GoogleMap(
-        // polylines: Set<Polyline>.of(polylines.values),
         initialCameraPosition: initialPosition,
         markers: _markers,
         polylines: _polyLine,
         onMapCreated: (GoogleMapController controller) {
           _controller.complete(controller);
-          // Future.delayed(const Duration(milliseconds: 2000), () {
-          //   controller.animateCamera(CameraUpdate.newLatLngBounds(
-          //       MapUtils.boundsFromLatLngList(
-          //           _markers.map((loc) => loc.position).toList()),
-          //       1));
-          //   // _getPolyline();
-          // });
+          Future.delayed(const Duration(milliseconds: 2000), () {
+            controller.animateCamera(CameraUpdate.newLatLngBounds(
+                MapUtils.boundsFromLatLngList(
+                    _markers.map((loc) => loc.position).toList()),
+                1));
+          });
         },
       ),
     );
