@@ -1,6 +1,6 @@
-// ignore_for_file: no_leading_underscores_for_local_identifiers
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../../../../utils/map_utils.dart';
 
@@ -27,44 +27,70 @@ class DriverMapScreen extends StatefulWidget {
 class _DriverMapScreenState extends State<DriverMapScreen> {
   late CameraPosition initialPosition;
   final Completer<GoogleMapController> _controller = Completer();
+  Map<PolylineId, Polyline> polylines = {};
+  List<LatLng> polylineCoordinates = [];
+  PolylinePoints polylinePoints = PolylinePoints();
 
-  final Set<Marker> _markers = {};
-  final Set<Polyline> _polyLine = {};
-  List<LatLng> latlng = [];
+  _addPolyLine() {
+    PolylineId id = PolylineId("poly");
+    Polyline polyline = Polyline(
+        polylineId: id,
+        color: Colors.red,
+        points: polylineCoordinates,
+        width: 3);
+    polylines[id] = polyline;
+    setState(() {});
+  }
+
+  _getPolyline() async {
+    PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
+      'AIzaSyCsAFe-3nLf0PkH2NIxcNheXEGeu__n2ew',
+      PointLatLng(widget.startPositionLat!, widget.startPositionLng!),
+      PointLatLng(widget.midPositionLat!, widget.midPositionLng!),
+      travelMode: TravelMode.driving,
+    );
+    if (result.points.isNotEmpty) {
+      result.points.forEach((PointLatLng point) {
+        polylineCoordinates.add(LatLng(point.latitude, point.longitude));
+      });
+    }
+
+    PolylineResult result2 = await polylinePoints.getRouteBetweenCoordinates(
+      'AIzaSyCsAFe-3nLf0PkH2NIxcNheXEGeu__n2ew',
+      PointLatLng(widget.midPositionLat!, widget.midPositionLng!),
+      PointLatLng(widget.endPositionLat!, widget.endPositionLng!),
+      travelMode: TravelMode.driving,
+    );
+    if (result2.points.isNotEmpty) {
+      result2.points.forEach((PointLatLng point) {
+        polylineCoordinates.add(LatLng(point.latitude, point.longitude));
+      });
+    }
+    _addPolyLine();
+  }
 
   @override
   void initState() {
     super.initState();
     initialPosition = CameraPosition(
       target: LatLng(widget.startPositionLat!, widget.startPositionLng!),
-      zoom: 11,
+      zoom: 14.4746,
     );
-    List<LatLng> latlng = [
-      LatLng(widget.startPositionLat!, widget.startPositionLng!),
-      LatLng(widget.midPositionLat!, widget.midPositionLng!),
-      LatLng(widget.endPositionLat!, widget.endPositionLng!),
-    ];
-
-    for (int i = 0; i < latlng.length; i++) {
-      _markers.add(Marker(
-        markerId: MarkerId(i.toString()),
-        position: latlng[i],
-        infoWindow: InfoWindow(title: 'spots', snippet: ''),
-        icon: BitmapDescriptor.defaultMarker,
-      ));
-      setState(() {});
-      _polyLine.add(
-        Polyline(
-            polylineId: PolylineId('1'),
-            points: latlng,
-            width: 3,
-            color: Colors.red),
-      );
-    }
   }
 
   @override
   Widget build(BuildContext context) {
+    Set<Marker> _markers = {
+      Marker(
+          markerId: const MarkerId('start'),
+          position: LatLng(widget.startPositionLat!, widget.startPositionLng!)),
+      Marker(
+          markerId: const MarkerId('mid'),
+          position: LatLng(widget.midPositionLat!, widget.midPositionLng!)),
+      Marker(
+          markerId: const MarkerId('end'),
+          position: LatLng(widget.endPositionLat!, widget.endPositionLng!)),
+    };
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -84,7 +110,7 @@ class _DriverMapScreenState extends State<DriverMapScreen> {
       body: GoogleMap(
         initialCameraPosition: initialPosition,
         markers: _markers,
-        polylines: _polyLine,
+        polylines: Set<Polyline>.of(polylines.values),
         onMapCreated: (GoogleMapController controller) {
           _controller.complete(controller);
           Future.delayed(const Duration(milliseconds: 2000), () {
@@ -92,6 +118,7 @@ class _DriverMapScreenState extends State<DriverMapScreen> {
                 MapUtils.boundsFromLatLngList(
                     _markers.map((loc) => loc.position).toList()),
                 1));
+            _getPolyline();
           });
         },
       ),
