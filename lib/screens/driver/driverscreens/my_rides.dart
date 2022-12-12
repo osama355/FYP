@@ -3,7 +3,6 @@ import 'package:drive_sharing_app/screens/driver/driverscreens/driver_sidebar.da
 import 'package:drive_sharing_app/screens/driver/driverscreens/googlemap/driver_map_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_place/google_place.dart';
 
 class MyRides extends StatefulWidget {
   const MyRides({super.key});
@@ -15,12 +14,6 @@ class MyRides extends StatefulWidget {
 class _MyRidesState extends State<MyRides> {
   FirebaseAuth auth = FirebaseAuth.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
-
-  late DetailsResult? s;
-  late DetailsResult? m;
-  late DetailsResult? e;
-
-  bool isEnable = false;
 
   @override
   Widget build(BuildContext context) {

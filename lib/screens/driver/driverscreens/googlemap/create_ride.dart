@@ -4,7 +4,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:drive_sharing_app/screens/driver/driverscreens/driver_sidebar.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:google_place/google_place.dart';
 // ignore: depend_on_referenced_packages
 import 'package:intl/intl.dart' show DateFormat;
@@ -224,7 +223,7 @@ class _CreateRideState extends State<CreateRide> {
                       size: 20,
                     ),
                     filled: true,
-                    fillColor: Color(0xFFFFFFFF),
+                    fillColor: const Color(0xFFFFFFFF),
                     hintText: 'Via Route',
                     border: const OutlineInputBorder(),
                     suffixIcon: middlePointController.text.isNotEmpty
