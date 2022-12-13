@@ -35,7 +35,7 @@ class _DriverMapScreenState extends State<DriverMapScreen> {
     PolylineId id = PolylineId("poly");
     Polyline polyline = Polyline(
         polylineId: id,
-        color: Colors.red,
+        color: Colors.blue,
         points: polylineCoordinates,
         width: 3);
     polylines[id] = polyline;
@@ -83,12 +83,15 @@ class _DriverMapScreenState extends State<DriverMapScreen> {
     Set<Marker> _markers = {
       Marker(
           markerId: const MarkerId('start'),
+          infoWindow: const InfoWindow(title: "Starting point"),
           position: LatLng(widget.startPositionLat!, widget.startPositionLng!)),
       Marker(
-          markerId: const MarkerId('mid'),
+          markerId: const MarkerId('Via'),
+          infoWindow: const InfoWindow(title: "Via route"),
           position: LatLng(widget.midPositionLat!, widget.midPositionLng!)),
       Marker(
-          markerId: const MarkerId('end'),
+          markerId: const MarkerId('End'),
+          infoWindow: const InfoWindow(title: "Destination"),
           position: LatLng(widget.endPositionLat!, widget.endPositionLng!)),
     };
     return Scaffold(

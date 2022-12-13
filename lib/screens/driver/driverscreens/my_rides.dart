@@ -163,19 +163,17 @@ class _MyRidesState extends State<MyRides> {
                           ElevatedButton(
                               onPressed: () {
                                 double sourceLat =
-                                    snapshot.data?.docs.first.get("source-lat");
+                                    snapshot.data?.docs[index]["source-lat"];
                                 double sourceLng =
-                                    snapshot.data?.docs.first.get("source-lng");
+                                    snapshot.data?.docs[index]["source-lng"];
                                 double viaLat =
-                                    snapshot.data?.docs.first.get("via-lat");
+                                    snapshot.data?.docs[index]["via-lat"];
                                 double viaLng =
-                                    snapshot.data?.docs.first.get("via-lng");
+                                    snapshot.data?.docs[index]["via-lng"];
                                 double destinationLat = snapshot
-                                    .data?.docs.first
-                                    .get("destination-lat");
+                                    .data?.docs[index]["destination-lat"];
                                 double destinationLng = snapshot
-                                    .data?.docs.first
-                                    .get("destination-lng");
+                                    .data?.docs[index]["destination-lng"];
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
