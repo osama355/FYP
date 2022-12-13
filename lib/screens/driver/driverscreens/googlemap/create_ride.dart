@@ -54,6 +54,7 @@ class _CreateRideState extends State<CreateRide> {
     startFocusNode.dispose();
     midFocusNode.dispose();
     endFocusNode.dispose();
+    requirePessController.dispose();
   }
 
   void autoCompleteSearch(String value) async {
