@@ -38,6 +38,13 @@ class _CreateRideState extends State<CreateRide> {
   FirebaseAuth auth = FirebaseAuth.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
+  late int day;
+  late int month;
+  late int year;
+  late int totalDaysInMonth;
+  late int remainingDays;
+  late int remainingHours;
+
   @override
   void initState() {
     super.initState();
@@ -84,11 +91,13 @@ class _CreateRideState extends State<CreateRide> {
                         context: context,
                         initialDate: DateTime.now(),
                         firstDate: DateTime.now(),
-                        lastDate: DateTime(2100));
+                        lastDate: DateTime(2023));
                     if (datePicked != null) {
                       setState(() {
                         dateController.text =
                             '${datePicked.day}-${datePicked.month}-${datePicked.year}';
+                        day = datePicked.day;
+                        remainingDays = day - DateTime.now().day;
                       });
                     }
                   },
@@ -123,6 +132,8 @@ class _CreateRideState extends State<CreateRide> {
                       setState(() {
                         timeController.text = DateFormat.jm()
                             .format(DateFormat("hh:mm:ss").parse(setTime));
+                        int hour = 24;
+                        int min = 60;
                       });
                     }
                   },
@@ -353,30 +364,35 @@ class _CreateRideState extends State<CreateRide> {
 
                             final user = auth.currentUser;
                             final uid = user?.uid;
+                            final dateTime = DateTime.now();
+                            // firestore
+                            //     .collection('rides')
+                            //     .doc(user?.uid)
+                            //     .collection('totalride')
+                            //     .doc('${uid!}${DateTime.now()}')
+                            //     .set({
+                            //   'require-pess': requirePessController.text,
+                            //   'time': timeController.text,
+                            //   'date': dateController.text,
+                            //   'source': startingPointController.text,
+                            //   'via-route': middlePointController.text,
+                            //   'destination': destinationController.text,
+                            //   'source-lat':
+                            //       startPosition!.geometry!.location!.lat!,
+                            //   'source-lng':
+                            //       startPosition!.geometry!.location!.lng!,
+                            //   'via-lat': midPosition!.geometry!.location!.lat!,
+                            //   'via-lng': midPosition!.geometry!.location!.lng!,
+                            //   'destination-lat':
+                            //       endPosition!.geometry!.location!.lat!,
+                            //   'destination-lng':
+                            //       endPosition!.geometry!.location!.lng!,
+                            //   'remaining-days': remainingDays
+                            // });
 
                             firestore
                                 .collection('rides')
-                                .doc('${uid!}${DateTime.now()}')
-                                .set({
-                              'require-pess': requirePessController.text,
-                              'time': timeController.text,
-                              'date': dateController.text,
-                              'source': startingPointController.text,
-                              'via-route': middlePointController.text,
-                              'destination': destinationController.text,
-                              'source-loc': startPosition!.geometry!.location!,
-                              'via-loc': midPosition!.geometry!.location!,
-                              'destination-loc':
-                                  endPosition!.geometry!.location!,
-                            });
-
-                            firestore
-                                .collection('app')
-                                .doc('user')
-                                .collection('driver')
-                                .doc(uid)
-                                .collection('rides')
-                                .doc('$uid${DateTime.now()}')
+                                .doc('$uid$dateTime')
                                 .set({
                               'require-pess': requirePessController.text,
                               'time': timeController.text,
@@ -394,6 +410,34 @@ class _CreateRideState extends State<CreateRide> {
                                   endPosition!.geometry!.location!.lat!,
                               'destination-lng':
                                   endPosition!.geometry!.location!.lng!,
+                              'remaining-days': remainingDays
+                            });
+
+                            firestore
+                                .collection('app')
+                                .doc('user')
+                                .collection('driver')
+                                .doc(uid)
+                                .collection('rides')
+                                .doc('$uid$dateTime')
+                                .set({
+                              'require-pess': requirePessController.text,
+                              'time': timeController.text,
+                              'date': dateController.text,
+                              'source': startingPointController.text,
+                              'via-route': middlePointController.text,
+                              'destination': destinationController.text,
+                              'source-lat':
+                                  startPosition!.geometry!.location!.lat!,
+                              'source-lng':
+                                  startPosition!.geometry!.location!.lng!,
+                              'via-lat': midPosition!.geometry!.location!.lat!,
+                              'via-lng': midPosition!.geometry!.location!.lng!,
+                              'destination-lat':
+                                  endPosition!.geometry!.location!.lat!,
+                              'destination-lng':
+                                  endPosition!.geometry!.location!.lng!,
+                              'remaining-days': remainingDays
                             });
                           }
                         }
