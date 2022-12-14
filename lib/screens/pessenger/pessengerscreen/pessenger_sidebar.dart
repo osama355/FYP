@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drive_sharing_app/screens/pessenger/auth/pess_login.dart';
+import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/get_ride.dart';
 import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/pessenger_home_screen.dart';
 import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/pessenger_profile_screen.dart';
 import 'package:flutter/material.dart';
@@ -160,14 +161,18 @@ class _PessengerSidebarState extends State<PessengerSidebar> {
                   Icons.notifications,
                   color: Color(0xff4BA0FE),
                 ),
-                title: Text("User in Radius"),
+                title: Text("Notifications"),
               ),
             ),
             GestureDetector(
-              onTap: () {},
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => const GetRide()));
+              },
               child: const ListTile(
                 leading: Icon(
-                  Icons.settings,
+                  Icons.drive_eta,
                   color: Color(0xff4BA0FE),
                 ),
                 title: Text("Get Ride"),

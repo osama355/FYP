@@ -43,7 +43,7 @@ class _VerifyMblCodeScreenState extends State<VerifyMblCodeScreen> {
           .doc("user")
           .collection("pessenger")
           .doc(uid)
-          .update({
+          .set({
         'phone': widget.phonenumber.text,
         'name': widget.name.text,
         'status': 'pessenger',
