@@ -32,7 +32,7 @@ class _DriverMapScreenState extends State<DriverMapScreen> {
   PolylinePoints polylinePoints = PolylinePoints();
 
   _addPolyLine() {
-    PolylineId id = PolylineId("poly");
+    PolylineId id = const PolylineId("poly");
     Polyline polyline = Polyline(
         polylineId: id,
         color: Colors.blue,
@@ -50,9 +50,9 @@ class _DriverMapScreenState extends State<DriverMapScreen> {
       travelMode: TravelMode.driving,
     );
     if (result.points.isNotEmpty) {
-      result.points.forEach((PointLatLng point) {
+      for (var point in result.points) {
         polylineCoordinates.add(LatLng(point.latitude, point.longitude));
-      });
+      }
     }
 
     PolylineResult result2 = await polylinePoints.getRouteBetweenCoordinates(
@@ -62,9 +62,9 @@ class _DriverMapScreenState extends State<DriverMapScreen> {
       travelMode: TravelMode.driving,
     );
     if (result2.points.isNotEmpty) {
-      result2.points.forEach((PointLatLng point) {
+      for (var point in result2.points) {
         polylineCoordinates.add(LatLng(point.latitude, point.longitude));
-      });
+      }
     }
     _addPolyLine();
   }
@@ -80,7 +80,7 @@ class _DriverMapScreenState extends State<DriverMapScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Set<Marker> _markers = {
+    Set<Marker> markers = {
       Marker(
           markerId: const MarkerId('start'),
           infoWindow: const InfoWindow(title: "Starting point"),
@@ -112,14 +112,14 @@ class _DriverMapScreenState extends State<DriverMapScreen> {
       ),
       body: GoogleMap(
         initialCameraPosition: initialPosition,
-        markers: _markers,
+        markers: markers,
         polylines: Set<Polyline>.of(polylines.values),
         onMapCreated: (GoogleMapController controller) {
           _controller.complete(controller);
           Future.delayed(const Duration(milliseconds: 2000), () {
             controller.animateCamera(CameraUpdate.newLatLngBounds(
                 MapUtils.boundsFromLatLngList(
-                    _markers.map((loc) => loc.position).toList()),
+                    markers.map((loc) => loc.position).toList()),
                 1));
             _getPolyline();
           });

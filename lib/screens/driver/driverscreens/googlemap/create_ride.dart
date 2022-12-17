@@ -133,8 +133,6 @@ class _CreateRideState extends State<CreateRide> {
                       setState(() {
                         timeController.text = DateFormat.jm()
                             .format(DateFormat("hh:mm:ss").parse(setTime));
-                        int hour = 24;
-                        int min = 60;
                       });
                     }
                   },
@@ -374,8 +372,11 @@ class _CreateRideState extends State<CreateRide> {
                                 .doc('$uid$dateTime')
                                 .set({
                               'driver-id': uid,
+                              'profile_url': userData['dp'],
                               'driver-name': userData['name'],
                               'car-number': userData['car_number'],
+                              'car_name': userData['car_name'],
+                              'car_model': userData['car_model'],
                               'phone': userData['phone'],
                               'email': userData['email'],
                               'require-pess': requirePessController.text,
