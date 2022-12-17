@@ -27,6 +27,8 @@ class _DriveSignUp extends State<DriveSignUp> {
   final passController = TextEditingController();
   final conPassController = TextEditingController();
   final carNumController = TextEditingController();
+  final carModelController = TextEditingController();
+  final carNameController = TextEditingController();
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -43,7 +45,9 @@ class _DriveSignUp extends State<DriveSignUp> {
     phoneController.dispose();
     nameController.dispose();
     nicController.dispose();
+    carNameController.dispose();
     carNumController.dispose();
+    carModelController.dispose();
     passController.dispose();
   }
 
@@ -71,7 +75,9 @@ class _DriveSignUp extends State<DriveSignUp> {
         'name': nameController.text,
         'cnic': nicController.text,
         'car_number': carNumController.text,
+        'car_name': carNameController.text,
         'status': 'driver',
+        'car_model': carModelController.text,
         'dp': ""
       });
       emailController.clear();
@@ -228,6 +234,51 @@ class _DriveSignUp extends State<DriveSignUp> {
                       size: 20,
                       color: Color(0xff4BA0FE),
                     ),
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 30, right: 30),
+                child: TextFormField(
+                  keyboardType: TextInputType.name,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return "please enter car name";
+                    }
+                    if (!RegExp(r'^[a-z A-Z]+$').hasMatch(value)) {
+                      return "Enter correct car name";
+                    }
+                    return null;
+                  },
+                  controller: carNameController,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: "Car Name",
+                    hintStyle: TextStyle(color: Colors.grey, fontSize: 17.0),
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 30, right: 30),
+                child: TextFormField(
+                  keyboardType: TextInputType.number,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return "please enter car model";
+                    }
+                    return null;
+                  },
+                  controller: carModelController,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: "Car Model",
+                    hintStyle: TextStyle(color: Colors.grey, fontSize: 17.0),
                   ),
                 ),
               ),

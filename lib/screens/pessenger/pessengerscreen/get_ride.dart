@@ -23,6 +23,7 @@ class _GetRideState extends State<GetRide> {
     return Scaffold(
       drawer: const PessengerSidebar(),
       appBar: AppBar(
+        backgroundColor: Color(0xff4BA0FE),
         title: const Text("Search Rides"),
       ),
       body: StreamBuilder(
@@ -61,113 +62,132 @@ class _GetRideState extends State<GetRide> {
                   child: Column(
                     children: [
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Row(
-                            children: [
-                              const Text(
-                                "Sharing : ",
-                                style: TextStyle(fontSize: 20),
-                              ),
-                              Text(
-                                snapshot.data!.docs[index]['require-pess'],
-                                style: const TextStyle(fontSize: 20),
-                              )
-                            ],
+                          CircleAvatar(
+                              backgroundColor: snapshot.data!.docs[index]
+                                          ['profile_url'] !=
+                                      ""
+                                  ? Colors.transparent
+                                  : const Color(0xff4BA0FE),
+                              child: SizedBox(
+                                width: 60,
+                                height: 60,
+                                child: ClipOval(
+                                  child: snapshot.data!.docs[index]
+                                              ['profile_url'] !=
+                                          ""
+                                      ? Image.network(snapshot.data!.docs[index]
+                                          ['profile_url'])
+                                      : const Icon(
+                                          Icons.person,
+                                          color: Colors.white,
+                                        ),
+                                ),
+                              )),
+                          const SizedBox(
+                            width: 10,
                           ),
-                          Row(
-                            children: const [
-                              Text("Requests : "),
-                              Text("0"),
-                            ],
+                          Text(
+                            snapshot.data!.docs[index]['driver-name'],
+                            style: const TextStyle(fontSize: 13),
                           )
                         ],
                       ),
                       const SizedBox(
-                        height: 5,
+                        height: 10,
                       ),
                       Row(
                         children: [
-                          const Text(
-                            "Start : ",
-                            style: TextStyle(fontSize: 20),
+                          const Icon(
+                            Icons.circle,
+                            color: Colors.green,
+                            size: 10,
                           ),
-                          Text(
-                            snapshot.data!.docs[index]['source'],
-                            style: const TextStyle(fontSize: 20),
-                          )
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      Row(
-                        children: [
-                          const Text(
-                            "Via : ",
-                            style: TextStyle(fontSize: 20),
-                          ),
-                          Text(
-                            snapshot.data!.docs[index]['via-route'],
-                            style: const TextStyle(fontSize: 20),
-                          )
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      Row(
-                        children: [
-                          const Text(
-                            "Destination : ",
-                            style: TextStyle(fontSize: 20),
-                          ),
-                          Text(
-                            snapshot.data!.docs[index]['destination'],
-                            style: const TextStyle(fontSize: 20),
-                          )
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      Row(
-                        children: [
-                          const Text(
-                            "Date : ",
-                            style: TextStyle(fontSize: 20),
-                          ),
-                          Text(
-                            snapshot.data!.docs[index]['date'],
-                            style: const TextStyle(fontSize: 20),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      Row(
-                        children: [
-                          const Text(
-                            "Time : ",
-                            style: TextStyle(fontSize: 20),
-                          ),
-                          Text(
-                            snapshot.data!.docs[index]['time'],
-                            style: const TextStyle(fontSize: 20),
-                          )
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      Row(
-                        children: [
-                          ElevatedButton(
-                              onPressed: () {}, child: const Text("Request")),
                           const SizedBox(
                             width: 5,
                           ),
+                          Text(
+                            snapshot.data!.docs[index]['source'],
+                            style: const TextStyle(fontSize: 13),
+                          )
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Row(
+                        children: [
+                          const Icon(
+                            Icons.circle,
+                            color: Colors.blue,
+                            size: 10.0,
+                          ),
+                          const SizedBox(
+                            width: 5,
+                          ),
+                          Text(
+                            snapshot.data!.docs[index]['via-route'],
+                            style: const TextStyle(fontSize: 13),
+                          )
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Row(
+                        children: [
+                          const Icon(
+                            Icons.circle,
+                            color: Colors.red,
+                            size: 10.0,
+                          ),
+                          const SizedBox(
+                            width: 5,
+                          ),
+                          Text(
+                            snapshot.data!.docs[index]['destination'],
+                            style: const TextStyle(fontSize: 13),
+                          )
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            "Time : ${snapshot.data!.docs[index]['date']} at ${snapshot.data!.docs[index]['time']}",
+                            style: const TextStyle(fontSize: 13),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            'Car : ${snapshot.data!.docs[index]['car_name']} | ${snapshot.data!.docs[index]['car_model']}',
+                            style: const TextStyle(fontSize: 13),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                              'Available seats : ${snapshot.data!.docs[index]['require-pess']}'),
+                          MaterialButton(
+                            onPressed: () {},
+                            height: 30.0,
+                            minWidth: 60.0,
+                            color: const Color(0xff4BA0FE),
+                            textColor: Colors.white,
+                            child: const Text(
+                              "Request",
+                              style: TextStyle(fontSize: 13),
+                            ),
+                          )
                         ],
                       ),
                     ],

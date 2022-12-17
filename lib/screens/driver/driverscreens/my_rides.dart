@@ -3,6 +3,7 @@ import 'package:drive_sharing_app/screens/driver/driverscreens/driver_sidebar.da
 import 'package:drive_sharing_app/screens/driver/driverscreens/googlemap/driver_map_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+// ignore: depend_on_referenced_packages, unused_import
 import 'package:intl/intl.dart' show DateFormat;
 
 class MyRides extends StatefulWidget {
@@ -75,18 +76,24 @@ class _MyRidesState extends State<MyRides> {
                               children: [
                                 const Text(
                                   "Sharing : ",
-                                  style: TextStyle(fontSize: 20),
+                                  style: TextStyle(fontSize: 13),
                                 ),
                                 Text(
                                   snapshot.data!.docs[index]['require-pess'],
-                                  style: const TextStyle(fontSize: 20),
+                                  style: const TextStyle(fontSize: 13),
                                 )
                               ],
                             ),
                             Row(
                               children: const [
-                                Text("Requests : "),
-                                Text("0"),
+                                Text(
+                                  "Requests : ",
+                                  style: TextStyle(fontSize: 13),
+                                ),
+                                Text(
+                                  "0",
+                                  style: TextStyle(fontSize: 13),
+                                ),
                               ],
                             )
                           ],
@@ -98,11 +105,11 @@ class _MyRidesState extends State<MyRides> {
                           children: [
                             const Text(
                               "Start : ",
-                              style: TextStyle(fontSize: 20),
+                              style: TextStyle(fontSize: 13),
                             ),
                             Text(
                               snapshot.data!.docs[index]['source'],
-                              style: const TextStyle(fontSize: 20),
+                              style: const TextStyle(fontSize: 13),
                             )
                           ],
                         ),
@@ -113,11 +120,11 @@ class _MyRidesState extends State<MyRides> {
                           children: [
                             const Text(
                               "Via : ",
-                              style: TextStyle(fontSize: 20),
+                              style: TextStyle(fontSize: 13),
                             ),
                             Text(
                               snapshot.data!.docs[index]['via-route'],
-                              style: const TextStyle(fontSize: 20),
+                              style: const TextStyle(fontSize: 13),
                             )
                           ],
                         ),
@@ -128,11 +135,11 @@ class _MyRidesState extends State<MyRides> {
                           children: [
                             const Text(
                               "Destination : ",
-                              style: TextStyle(fontSize: 20),
+                              style: TextStyle(fontSize: 13),
                             ),
                             Text(
                               snapshot.data!.docs[index]['destination'],
-                              style: const TextStyle(fontSize: 20),
+                              style: const TextStyle(fontSize: 13),
                             )
                           ],
                         ),
@@ -143,11 +150,11 @@ class _MyRidesState extends State<MyRides> {
                           children: [
                             const Text(
                               "Date : ",
-                              style: TextStyle(fontSize: 20),
+                              style: TextStyle(fontSize: 13),
                             ),
                             Text(
                               snapshot.data!.docs[index]['date'],
-                              style: const TextStyle(fontSize: 20),
+                              style: const TextStyle(fontSize: 13),
                             ),
                           ],
                         ),
@@ -158,11 +165,11 @@ class _MyRidesState extends State<MyRides> {
                           children: [
                             const Text(
                               "Time : ",
-                              style: TextStyle(fontSize: 20),
+                              style: TextStyle(fontSize: 13),
                             ),
                             Text(
                               snapshot.data!.docs[index]['time'],
-                              style: const TextStyle(fontSize: 20),
+                              style: const TextStyle(fontSize: 13),
                             )
                           ],
                         ),
@@ -197,7 +204,10 @@ class _MyRidesState extends State<MyRides> {
                                                 endPositionLng: destinationLng,
                                               )));
                                 },
-                                child: const Text("Start")),
+                                child: const Text(
+                                  "Start",
+                                  style: TextStyle(fontSize: 12),
+                                )),
                             const SizedBox(
                               width: 5,
                             ),
@@ -213,7 +223,8 @@ class _MyRidesState extends State<MyRides> {
                                       .doc(snapshot.data!.docs[index].id)
                                       .delete();
                                 },
-                                child: const Text("Cancle"))
+                                child: const Text("Cancle",
+                                    style: TextStyle(fontSize: 12)))
                           ],
                         ),
                       ],
