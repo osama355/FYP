@@ -175,7 +175,7 @@ class _PessengerSidebarState extends State<PessengerSidebar> {
                   Icons.drive_eta,
                   color: Color(0xff4BA0FE),
                 ),
-                title: Text("Ride Requests"),
+                title: Text("All Rides"),
               ),
             ),
             GestureDetector(
