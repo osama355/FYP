@@ -207,6 +207,9 @@ class _CreateRideState extends State<CreateRide> {
                     _debounce = Timer(const Duration(milliseconds: 1000), () {
                       if (value.isNotEmpty) {
                         autoCompleteSearch(value);
+                        setState(() {
+                          predictions = [];
+                        });
                       } else {
                         setState(() {
                           predictions = [];
@@ -254,6 +257,9 @@ class _CreateRideState extends State<CreateRide> {
                     _debounce = Timer(const Duration(milliseconds: 1000), () {
                       if (value.isNotEmpty) {
                         autoCompleteSearch(value);
+                        setState(() {
+                          predictions = [];
+                        });
                       } else {
                         setState(() {
                           predictions = [];
@@ -301,6 +307,9 @@ class _CreateRideState extends State<CreateRide> {
                     _debounce = Timer(const Duration(milliseconds: 1000), () {
                       if (value.isNotEmpty) {
                         autoCompleteSearch(value);
+                        setState(() {
+                          predictions = [];
+                        });
                       } else {
                         setState(() {
                           predictions = [];
@@ -343,21 +352,18 @@ class _CreateRideState extends State<CreateRide> {
                               startPosition = details.result;
                               startingPointController.text =
                                   details.result!.name!;
-                              predictions = [];
                             });
                           } else if (midFocusNode.hasFocus) {
                             setState(() {
                               midPosition = details.result;
                               middlePointController.text =
                                   details.result!.name!;
-                              predictions = [];
                             });
                           } else {
                             setState(() {
                               endPosition = details.result;
                               destinationController.text =
                                   details.result!.name!;
-                              predictions = [];
                             });
                           }
                           if (startingPointController.text.isNotEmpty &&

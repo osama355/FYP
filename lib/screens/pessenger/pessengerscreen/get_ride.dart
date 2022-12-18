@@ -23,8 +23,8 @@ class _GetRideState extends State<GetRide> {
     return Scaffold(
       drawer: const PessengerSidebar(),
       appBar: AppBar(
-        backgroundColor: Color(0xff4BA0FE),
-        title: const Text("Search Rides"),
+        backgroundColor: const Color(0xff4BA0FE),
+        title: const Text("All Rides"),
       ),
       body: StreamBuilder(
         stream: rides.snapshots(),

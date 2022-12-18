@@ -1,5 +1,5 @@
-import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/get_ride.dart';
 import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/pessenger_sidebar.dart';
+import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/search_ride.dart';
 import 'package:flutter/material.dart';
 
 class PessePostScreen extends StatefulWidget {
@@ -89,14 +89,14 @@ class _PessePostScreenState extends State<PessePostScreen> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const GetRide(),
+                        builder: (context) => const SearchRide(),
                         fullscreenDialog: true));
               },
               autofocus: false,
               showCursor: false,
               keyboardType: TextInputType.none,
               decoration: InputDecoration(
-                  hintText: 'Where To?',
+                  hintText: 'Search for ride',
                   hintStyle: const TextStyle(
                       fontWeight: FontWeight.w500,
                       fontSize: 20,
