@@ -3,6 +3,7 @@ import 'package:drive_sharing_app/screens/pessenger/auth/pess_login.dart';
 import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/get_ride.dart';
 import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/pessenger_home_screen.dart';
 import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/pessenger_profile_screen.dart';
+import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/pessenger_requests.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../../utils/utils.dart';
@@ -155,13 +156,19 @@ class _PessengerSidebarState extends State<PessengerSidebar> {
               ),
             ),
             GestureDetector(
-              onTap: () {},
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const PassengerRequests()));
+              },
               child: const ListTile(
                 leading: Icon(
                   Icons.notifications,
                   color: Color(0xff4BA0FE),
                 ),
-                title: Text("Notifications"),
+                title: Text("Requests"),
               ),
             ),
             GestureDetector(
