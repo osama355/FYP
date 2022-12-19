@@ -232,7 +232,9 @@ class _MyRidesState extends State<MyRides> {
                   ),
                 );
               }
-              return const Center(child: Text(""));
+              return const SizedBox(
+                height: 0,
+              );
             },
           );
         },

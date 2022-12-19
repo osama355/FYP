@@ -76,7 +76,7 @@ class _SearchRideState extends State<SearchRide> {
                             context,
                             MaterialPageRoute(
                                 builder: (context) => FilterRides(
-                                    startSearchText: searchEndController.text,
+                                    startSearchText: searchStartController.text,
                                     endSearchText: searchEndController.text,
                                     dateText: dateController.text,
                                     timeText: timeController.text)));

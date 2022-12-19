@@ -23,6 +23,7 @@ class _CreateRideState extends State<CreateRide> {
   final requirePessController = TextEditingController();
   final dateController = TextEditingController();
   final timeController = TextEditingController();
+  final priceController = TextEditingController();
 
   DetailsResult? startPosition;
   DetailsResult? midPosition;
@@ -38,13 +39,6 @@ class _CreateRideState extends State<CreateRide> {
 
   FirebaseAuth auth = FirebaseAuth.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
-
-  late int day;
-  late int month;
-  late int year;
-  late int totalDaysInMonth;
-  late int remainingDays;
-  late int remainingHours;
 
   @override
   void initState() {
@@ -63,6 +57,7 @@ class _CreateRideState extends State<CreateRide> {
     midFocusNode.dispose();
     endFocusNode.dispose();
     requirePessController.dispose();
+    priceController.dispose();
   }
 
   void autoCompleteSearch(String value) async {
@@ -97,8 +92,6 @@ class _CreateRideState extends State<CreateRide> {
                       setState(() {
                         dateController.text =
                             '${datePicked.day}-${datePicked.month}-${datePicked.year}';
-                        day = datePicked.day;
-                        remainingDays = day - DateTime.now().day;
                       });
                     }
                   },
@@ -352,18 +345,21 @@ class _CreateRideState extends State<CreateRide> {
                               startPosition = details.result;
                               startingPointController.text =
                                   details.result!.name!;
+                              predictions = [];
                             });
                           } else if (midFocusNode.hasFocus) {
                             setState(() {
                               midPosition = details.result;
                               middlePointController.text =
                                   details.result!.name!;
+                              predictions = [];
                             });
                           } else {
                             setState(() {
                               endPosition = details.result;
                               destinationController.text =
                                   details.result!.name!;
+                              predictions = [];
                             });
                           }
                           if (startingPointController.text.isNotEmpty &&
@@ -401,7 +397,6 @@ class _CreateRideState extends State<CreateRide> {
                                   endPosition!.geometry!.location!.lat!,
                               'destination-lng':
                                   endPosition!.geometry!.location!.lng!,
-                              'remaining-days': remainingDays,
                               'ride-creation-date':
                                   '${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}',
                             }).then(((value) {
