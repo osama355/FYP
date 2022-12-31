@@ -81,6 +81,92 @@ class _CreateRideState extends State<CreateRide> {
             padding: const EdgeInsets.all(20.0),
             child: Column(
               children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    GestureDetector(
+                      onTap: () async {
+                        final user = auth.currentUser;
+                        final uid = user?.uid;
+
+                        final userData = await firestore
+                            .collection('app')
+                            .doc('user')
+                            .collection('driver')
+                            .doc(user?.uid)
+                            .get();
+
+                        if (startingPointController.text.isNotEmpty &&
+                            middlePointController.text.isNotEmpty &&
+                            destinationController.text.isNotEmpty &&
+                            requirePessController.text.isNotEmpty &&
+                            dateController.text.isNotEmpty &&
+                            timeController.text.isNotEmpty) {
+                          final dateTime = DateTime.now();
+                          await firestore
+                              .collection('rides')
+                              .doc('$uid$dateTime')
+                              .set({
+                            'driver-id': uid,
+                            'profile_url': userData['dp'],
+                            'driver-name': userData['name'],
+                            'car-number': userData['car_number'],
+                            'car_name': userData['car_name'],
+                            'car_model': userData['car_model'],
+                            'phone': userData['phone'],
+                            'email': userData['email'],
+                            'require-pess': requirePessController.text,
+                            'time': timeController.text,
+                            'date': dateController.text,
+                            'source': startingPointController.text,
+                            'via-route': middlePointController.text,
+                            'destination': destinationController.text,
+                            'source-lat':
+                                startPosition!.geometry!.location!.lat!,
+                            'source-lng':
+                                startPosition!.geometry!.location!.lng!,
+                            'via-lat': midPosition!.geometry!.location!.lat!,
+                            'via-lng': midPosition!.geometry!.location!.lng!,
+                            'destination-lat':
+                                endPosition!.geometry!.location!.lat!,
+                            'destination-lng':
+                                endPosition!.geometry!.location!.lng!,
+                            'ride-creation-date':
+                                '${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}',
+                          }).then(((value) {
+                            Utils().toastMessage("Ride created successfully");
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const MyRides()));
+                          }));
+                        }
+                      },
+                      child: SizedBox(
+                        height: 30,
+                        child: Row(
+                          children: const [
+                            Text(
+                              "Create",
+                              style: TextStyle(
+                                  fontSize: 20.0, color: Color(0xff4BA0FE)),
+                            ),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Icon(
+                              Icons.add,
+                              color: Color(0xff4BA0FE),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 10.0,
+                ),
                 GestureDetector(
                   onTap: () async {
                     DateTime? datePicked = await showDatePicker(
@@ -325,17 +411,8 @@ class _CreateRideState extends State<CreateRide> {
                       ),
                       title: Text(predictions[index].description.toString()),
                       onTap: () async {
-                        final user = auth.currentUser;
-                        final uid = user?.uid;
                         final placeId = predictions[index].placeId!;
                         final details = await googlePlace.details.get(placeId);
-
-                        final userData = await firestore
-                            .collection('app')
-                            .doc('user')
-                            .collection('driver')
-                            .doc(user?.uid)
-                            .get();
 
                         if (details != null &&
                             details.result != null &&
@@ -361,51 +438,6 @@ class _CreateRideState extends State<CreateRide> {
                                   details.result!.name!;
                               predictions = [];
                             });
-                          }
-                          if (startingPointController.text.isNotEmpty &&
-                              middlePointController.text.isNotEmpty &&
-                              destinationController.text.isNotEmpty &&
-                              requirePessController.text.isNotEmpty &&
-                              dateController.text.isNotEmpty &&
-                              timeController.text.isNotEmpty) {
-                            final dateTime = DateTime.now();
-                            await firestore
-                                .collection('rides')
-                                .doc('$uid$dateTime')
-                                .set({
-                              'driver-id': uid,
-                              'profile_url': userData['dp'],
-                              'driver-name': userData['name'],
-                              'car-number': userData['car_number'],
-                              'car_name': userData['car_name'],
-                              'car_model': userData['car_model'],
-                              'phone': userData['phone'],
-                              'email': userData['email'],
-                              'require-pess': requirePessController.text,
-                              'time': timeController.text,
-                              'date': dateController.text,
-                              'source': startingPointController.text,
-                              'via-route': middlePointController.text,
-                              'destination': destinationController.text,
-                              'source-lat':
-                                  startPosition!.geometry!.location!.lat!,
-                              'source-lng':
-                                  startPosition!.geometry!.location!.lng!,
-                              'via-lat': midPosition!.geometry!.location!.lat!,
-                              'via-lng': midPosition!.geometry!.location!.lng!,
-                              'destination-lat':
-                                  endPosition!.geometry!.location!.lat!,
-                              'destination-lng':
-                                  endPosition!.geometry!.location!.lng!,
-                              'ride-creation-date':
-                                  '${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}',
-                            }).then(((value) {
-                              Utils().toastMessage("Ride created successfully");
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => const MyRides()));
-                            }));
                           }
                         }
                       },
