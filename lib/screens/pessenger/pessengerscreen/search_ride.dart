@@ -72,6 +72,14 @@ class _SearchRideState extends State<SearchRide> {
                   children: [
                     GestureDetector(
                       onTap: () {
+                        double startLng =
+                            searchStartPosition!.geometry!.location!.lng!;
+                        double startLat =
+                            searchStartPosition!.geometry!.location!.lat!;
+                        double destLat =
+                            searchEndPosition!.geometry!.location!.lat!;
+                        double destLng =
+                            searchEndPosition!.geometry!.location!.lng!;
                         Navigator.push(
                             context,
                             MaterialPageRoute(

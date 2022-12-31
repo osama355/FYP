@@ -103,6 +103,14 @@ class _MyRidesState extends State<MyRides> {
                         ),
                         Row(
                           children: [
+                            const Icon(
+                              Icons.circle,
+                              size: 10.0,
+                              color: Colors.green,
+                            ),
+                            const SizedBox(
+                              width: 3,
+                            ),
                             const Text(
                               "Start : ",
                               style: TextStyle(fontSize: 13),
@@ -118,6 +126,14 @@ class _MyRidesState extends State<MyRides> {
                         ),
                         Row(
                           children: [
+                            const Icon(
+                              Icons.circle,
+                              size: 10.0,
+                              color: Colors.blue,
+                            ),
+                            const SizedBox(
+                              width: 3,
+                            ),
                             const Text(
                               "Via : ",
                               style: TextStyle(fontSize: 13),
@@ -133,6 +149,14 @@ class _MyRidesState extends State<MyRides> {
                         ),
                         Row(
                           children: [
+                            const Icon(
+                              Icons.circle,
+                              size: 10.0,
+                              color: Colors.red,
+                            ),
+                            const SizedBox(
+                              width: 3,
+                            ),
                             const Text(
                               "Destination : ",
                               style: TextStyle(fontSize: 13),

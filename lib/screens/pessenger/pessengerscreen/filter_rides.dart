@@ -6,16 +6,25 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class FilterRides extends StatefulWidget {
-  final String startSearchText;
-  final String endSearchText;
-  final String dateText;
-  final String timeText;
-  const FilterRides(
-      {super.key,
-      required this.startSearchText,
-      required this.endSearchText,
-      required this.dateText,
-      required this.timeText});
+  final String? startSearchText;
+  final String? endSearchText;
+  final String? dateText;
+  final String? timeText;
+  final double? startLng;
+  final double? startLat;
+  final double? destLat;
+  final double? destLng;
+  const FilterRides({
+    super.key,
+    this.startSearchText,
+    this.endSearchText,
+    this.dateText,
+    this.timeText,
+    this.startLat,
+    this.startLng,
+    this.destLat,
+    this.destLng,
+  });
 
   @override
   State<FilterRides> createState() => _FilterRidesState();
@@ -33,7 +42,7 @@ class _FilterRidesState extends State<FilterRides> {
     return Scaffold(
       drawer: const PessengerSidebar(),
       appBar: AppBar(
-        title: const Text("FIlter Rides"),
+        title: const Text("Filter Rides"),
       ),
       body: StreamBuilder(
         stream: rides.snapshots(),
@@ -204,37 +213,50 @@ class _FilterRidesState extends State<FilterRides> {
                                     .collection('requests')
                                     .doc('${user?.uid}$time')
                                     .set({
-                                  'pessenger_id': user?.uid,
+                                  'pass_id': user?.uid,
                                   'ride_id': snapshot.data!.docs[index].id,
                                   'driver_id': snapshot.data!.docs[index]
                                       ['driver-id'],
                                   'driver_name': snapshot.data!.docs[index]
                                       ['driver-name'],
-                                  'profile_url': snapshot.data!.docs[index]
-                                      ['profile_url'],
-                                  'drvier_source': snapshot.data!.docs[index]
+                                  'driver_profile_url':
+                                      snapshot.data!.docs[index]['profile_url'],
+                                  'driver_phone': snapshot.data!.docs[index]
+                                      ['phone'],
+                                  'driver_source': snapshot.data!.docs[index]
                                       ['source'],
                                   'driver_via': snapshot.data!.docs[index]
                                       ['via-route'],
-                                  'driver_Destination':
+                                  'driver_destination':
                                       snapshot.data!.docs[index]['destination'],
-                                  'driver_date': snapshot.data!.docs[index]
-                                      ['date'],
-                                  'driver_time': snapshot.data!.docs[index]
-                                      ['time'],
+                                  'date': snapshot.data!.docs[index]['date'],
+                                  'time': snapshot.data!.docs[index]['time'],
+                                  'driver_source_lat':
+                                      snapshot.data!.docs[index]['source-lat'],
+                                  'driver_source_lng':
+                                      snapshot.data!.docs[index]['source-lng'],
+                                  'driver_via_lat': snapshot.data!.docs[index]
+                                      ['via-lat'],
+                                  'driver_via_lng': snapshot.data!.docs[index]
+                                      ['via-lng'],
+                                  'driver_destination_lat': snapshot
+                                      .data!.docs[index]['destination-lat'],
+                                  'driver_destination_lng': snapshot
+                                      .data!.docs[index]['destination-lng'],
                                   'car_name': snapshot.data!.docs[index]
                                       ['car_name'],
                                   'car_model': snapshot.data!.docs[index]
                                       ['car_model'],
-                                  'pessenger_name': userData.data()?['name'],
-                                  'pessenger_phone_no':
-                                      userData.data()?['phone'],
-                                  'pessenger_pickup_loc':
-                                      widget.startSearchText,
-                                  'pessenger_destination': widget.endSearchText,
-                                  'pessenger_date': widget.dateText,
-                                  'pessenger_time': widget.timeText,
-                                  'request_Status': 'pending'
+                                  'car_number': snapshot.data!.docs[index]
+                                      ['car-number'],
+                                  'pass_name': userData.data()?['name'],
+                                  'pass_phone': userData.data()?['phone'],
+                                  'pass_pickup': widget.startSearchText,
+                                  'pass_dest': widget.endSearchText,
+                                  'pass_pickup_lat': widget.startLat,
+                                  'pass_pickup_lng': widget.startLng,
+                                  'pass_dest_lat': widget.startLat,
+                                  'pass_dest_lng': widget.destLng,
                                 }).then((value) {
                                   Utils().toastMessage(
                                       "Request Sent successfully");
