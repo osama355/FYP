@@ -1,12 +1,17 @@
+// ignore_for_file: non_constant_identifier_names, avoid_print
 import 'dart:async';
+import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/pessenger_requests.dart';
 import 'package:drive_sharing_app/utils/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_place/google_place.dart';
+import 'package:http/http.dart' as http;
 
 class RequestDetails extends StatefulWidget {
   final String? driver_id;
+  final String? driver_token;
   final String? ride_id;
   final String? profile_url;
   final String? driver_name;
@@ -29,6 +34,7 @@ class RequestDetails extends StatefulWidget {
   const RequestDetails({
     super.key,
     this.driver_id,
+    this.driver_token,
     this.ride_id,
     this.profile_url,
     this.driver_name,
@@ -95,10 +101,54 @@ class _RequestDetailsState extends State<RequestDetails> {
     }
   }
 
+  sendNotification(String title, String token) async {
+    final data = {
+      'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+      'id': 1,
+      'status': 'done',
+      'message': title
+    };
+    try {
+      http.Response response =
+          await http.post(Uri.parse('https://fcm.googleapis.com/fcm/send'),
+              headers: <String, String>{
+                'Content-Type': 'application/json',
+                'Authorization':
+                    'key=AAAADnkker0:APA91bEJO2ufASuDfJNV6yaKiiAES-O0X-jkQW2UL1ciN8hVCgXkCKSsKAQ4jO_7UNUzwrwVAC0iX3Ihu4xvLwsJifoYkVzo1QbYMyJyBXNj4_5f-S39WR9AI2QsYGzBc_jz5myyY5re'
+              },
+              body: jsonEncode(<String, dynamic>{
+                'notification': <String, dynamic>{
+                  'title': title,
+                  'body': 'You have request by someone'
+                },
+                'priority': 'high',
+                'data': data,
+                'to': token
+              }));
+
+      if (response.statusCode == 200) {
+        print("Notification has been send");
+      } else {
+        print("Something wrong");
+        print('Token >>>>> $token');
+      }
+      // ignore: empty_catches
+    } catch (e) {}
+  }
+
   void createRequest() async {
     final uid = auth.currentUser!.uid;
+    final passData = await firestore
+        .collection('app')
+        .doc('user')
+        .collection('pessenger')
+        .doc(uid)
+        .get();
+
+    String token = widget.driver_token!;
     await firestore.collection('requests').doc('$uid${DateTime.now()}').set({
       'driver_id': widget.driver_id,
+      'pass_token': passData.data()?['token'],
       'pass_id': uid,
       'ride_id': widget.ride_id,
       'driver_name': widget.driver_name,
@@ -108,7 +158,8 @@ class _RequestDetailsState extends State<RequestDetails> {
       'car_number': widget.car_number,
       'driver_phone': widget.phone,
       'pass_phone': auth.currentUser!.phoneNumber,
-      'pass_name': auth.currentUser!.displayName,
+      'pass_profile_url': passData.data()?['dp'],
+      'pass_name': passData.data()?['name'],
       'driver_source': widget.source,
       'driver_via': widget.via,
       'driver_destination': widget.destination,
@@ -126,12 +177,15 @@ class _RequestDetailsState extends State<RequestDetails> {
       'pass_pickup_lng': searchStartPosition!.geometry!.location!.lng,
       'pass_dest_lat': searchEndPosition!.geometry!.location!.lat,
       'pass_dest_lng': searchEndPosition!.geometry!.location!.lng,
+      'request_Status': 'Pending'
     }).then((value) {
       Utils().toastMessage("Request has been sent");
-      Navigator.pop(context);
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => const PassengerRequests()));
     }).catchError((error) {
       Utils().toastMessage(error);
     });
+    sendNotification("Request", token);
   }
 
   @override

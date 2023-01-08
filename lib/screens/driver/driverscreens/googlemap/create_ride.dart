@@ -110,6 +110,7 @@ class _CreateRideState extends State<CreateRide> {
                             'driver-id': uid,
                             'profile_url': userData['dp'],
                             'driver-name': userData['name'],
+                            'driver_token': userData['token'],
                             'car-number': userData['car_number'],
                             'car_name': userData['car_name'],
                             'car_model': userData['car_model'],
@@ -173,7 +174,7 @@ class _CreateRideState extends State<CreateRide> {
                         context: context,
                         initialDate: DateTime.now(),
                         firstDate: DateTime.now(),
-                        lastDate: DateTime(2023));
+                        lastDate: DateTime(2024));
                     if (datePicked != null) {
                       setState(() {
                         dateController.text =

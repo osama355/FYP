@@ -8,6 +8,7 @@ import '../../../utils/map_utils.dart';
 
 class SeeCompleteRideInfo extends StatefulWidget {
   final String? profile_url;
+  final String? driver_token;
   final String? ride_id;
   final String? driver_id;
   final String? driver_name;
@@ -33,6 +34,7 @@ class SeeCompleteRideInfo extends StatefulWidget {
     this.profile_url,
     this.ride_id,
     this.driver_name,
+    this.driver_token,
     this.driver_id,
     this.car_name,
     this.phone,
@@ -339,7 +341,7 @@ class _SeeCompleteRideInfoState extends State<SeeCompleteRideInfo> {
                 const SizedBox(
                   height: 30,
                 ),
-                Container(
+                SizedBox(
                   height: 230,
                   child: GoogleMap(
                     initialCameraPosition: initialPosition,
@@ -368,6 +370,7 @@ class _SeeCompleteRideInfoState extends State<SeeCompleteRideInfo> {
               child: ElevatedButton(
                 onPressed: () {
                   String driver_id = widget.driver_id!;
+                  String driver_token = widget.driver_token!;
                   String ride_id = widget.ride_id!;
                   String profile_url = widget.profile_url!;
                   String driver_name = widget.driver_name!;
@@ -390,6 +393,7 @@ class _SeeCompleteRideInfoState extends State<SeeCompleteRideInfo> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => RequestDetails(
+                                driver_token: driver_token,
                                 driver_id: driver_id,
                                 ride_id: ride_id,
                                 profile_url: profile_url,

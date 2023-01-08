@@ -1,6 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drive_sharing_app/screens/driver/driverscreens/driver_sidebar.dart';
 import 'package:drive_sharing_app/screens/driver/driverscreens/googlemap/create_ride.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import '../../../firebase_services/local_push_notification.dart';
 
 class DriverPost extends StatefulWidget {
   const DriverPost({super.key});
@@ -10,6 +14,26 @@ class DriverPost extends StatefulWidget {
 }
 
 class _DriverPost extends State<DriverPost> {
+  storeNotificationToken() async {
+    String? token = await FirebaseMessaging.instance.getToken();
+    FirebaseFirestore.instance
+        .collection('app')
+        .doc('user')
+        .collection('driver')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .set({'token': token}, SetOptions(merge: true));
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    FirebaseMessaging.instance.getInitialMessage();
+    FirebaseMessaging.onMessage.listen((event) {
+      LocalNotificationService.display(event);
+    });
+    storeNotificationToken();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,6 +53,7 @@ class _DriverPost extends State<DriverPost> {
         child: Column(
           children: [
             Container(
+              width: MediaQuery.of(context).size.width * 0.9,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20.0),
                   color: const Color(0xff4BA0FE)),
@@ -47,7 +72,7 @@ class _DriverPost extends State<DriverPost> {
                     ),
                     Text(
                       "Welcome to Ride Node",
-                      style: TextStyle(fontSize: 25, color: Colors.white),
+                      style: TextStyle(fontSize: 20.0, color: Colors.white),
                     )
                   ],
                 ),
@@ -58,6 +83,7 @@ class _DriverPost extends State<DriverPost> {
             ),
             Container(
               height: 120,
+              width: MediaQuery.of(context).size.width * 0.9,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20.0),
                   color: const Color(0xff4BA0FE)),
@@ -75,7 +101,7 @@ class _DriverPost extends State<DriverPost> {
                     ),
                     Text(
                       "Share and travel",
-                      style: TextStyle(fontSize: 25, color: Colors.white),
+                      style: TextStyle(fontSize: 20.0, color: Colors.white),
                     )
                   ],
                 ),
