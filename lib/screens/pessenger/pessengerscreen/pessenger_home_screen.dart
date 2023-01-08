@@ -1,5 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:drive_sharing_app/firebase_services/local_push_notification.dart';
 import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/pessenger_sidebar.dart';
 import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/search_ride.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
 class PessePostScreen extends StatefulWidget {
@@ -10,6 +14,26 @@ class PessePostScreen extends StatefulWidget {
 }
 
 class _PessePostScreenState extends State<PessePostScreen> {
+  storeNotificationToken() async {
+    String? token = await FirebaseMessaging.instance.getToken();
+    FirebaseFirestore.instance
+        .collection('app')
+        .doc('user')
+        .collection('pessenger')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .set({'token': token}, SetOptions(merge: true));
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    FirebaseMessaging.instance.getInitialMessage();
+    FirebaseMessaging.onMessage.listen((event) {
+      LocalNotificationService.display(event);
+    });
+    storeNotificationToken();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,6 +53,7 @@ class _PessePostScreenState extends State<PessePostScreen> {
         child: Column(
           children: [
             Container(
+              width: MediaQuery.of(context).size.width * 0.9,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20.0),
                   color: const Color(0xff4BA0FE)),
@@ -58,6 +83,7 @@ class _PessePostScreenState extends State<PessePostScreen> {
             ),
             Container(
               height: 120,
+              width: MediaQuery.of(context).size.width * 0.9,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20.0),
                   color: const Color(0xff4BA0FE)),

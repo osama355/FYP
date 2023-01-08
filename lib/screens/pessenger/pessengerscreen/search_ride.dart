@@ -84,6 +84,10 @@ class _SearchRideState extends State<SearchRide> {
                             context,
                             MaterialPageRoute(
                                 builder: (context) => FilterRides(
+                                    startLat: startLat,
+                                    startLng: startLng,
+                                    destLat: destLat,
+                                    destLng: destLng,
                                     startSearchText: searchStartController.text,
                                     endSearchText: searchEndController.text,
                                     dateText: dateController.text,
@@ -120,7 +124,7 @@ class _SearchRideState extends State<SearchRide> {
                         context: context,
                         initialDate: DateTime.now(),
                         firstDate: DateTime.now(),
-                        lastDate: DateTime(2023));
+                        lastDate: DateTime(2025));
                     if (datePicked != null) {
                       setState(() {
                         dateController.text =

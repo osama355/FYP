@@ -1,5 +1,4 @@
 // ignore_for_file: non_constant_identifier_names
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/pessenger_sidebar.dart';
 import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/see_complete_ride_info.dart';
@@ -187,6 +186,8 @@ class _GetRideState extends State<GetRide> {
                               String ride_id = snapshot.data!.docs[index].id;
                               String profile_url =
                                   snapshot.data!.docs[index]['profile_url'];
+                              String driver_token =
+                                  snapshot.data!.docs[index]['driver_token'];
                               String driver_name =
                                   snapshot.data!.docs[index]['driver-name'];
                               String driver_id =
@@ -226,6 +227,7 @@ class _GetRideState extends State<GetRide> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => SeeCompleteRideInfo(
+                                          driver_token: driver_token,
                                           driver_id: driver_id,
                                           ride_id: ride_id,
                                           seats: seats,
