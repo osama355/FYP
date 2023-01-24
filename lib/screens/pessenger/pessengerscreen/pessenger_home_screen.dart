@@ -72,7 +72,7 @@ class _PessePostScreenState extends State<PessePostScreen> {
                     ),
                     Text(
                       "Welcome to Ride Node",
-                      style: TextStyle(fontSize: 25, color: Colors.white),
+                      style: TextStyle(fontSize: 20, color: Colors.white),
                     )
                   ],
                 ),
@@ -101,7 +101,7 @@ class _PessePostScreenState extends State<PessePostScreen> {
                     ),
                     Text(
                       "Share and travel",
-                      style: TextStyle(fontSize: 25, color: Colors.white),
+                      style: TextStyle(fontSize: 20, color: Colors.white),
                     )
                   ],
                 ),

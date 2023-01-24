@@ -1,7 +1,4 @@
-// ignore_for_file: avoid_print
-
 import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drive_sharing_app/screens/driver/driverscreens/driver_sidebar.dart';
 import 'package:drive_sharing_app/utils/utils.dart';
@@ -53,13 +50,13 @@ class _DriverRequestsState extends State<DriverRequests> {
               }));
 
       if (response.statusCode == 200) {
-        print("Notification has been send");
+        Utils().toastMessage("Notification has been send");
       } else {
-        print("Something wrong");
-        print('Token >>>>> $token');
+        Utils().toastMessage("Somethin went wrong");
       }
-      // ignore: empty_catches
-    } catch (e) {}
+    } catch (e) {
+      Utils().toastMessage(e.toString());
+    }
   }
 
   sendNotification2(String title, String token) async {
@@ -88,10 +85,9 @@ class _DriverRequestsState extends State<DriverRequests> {
               }));
 
       if (response.statusCode == 200) {
-        print("Notification has been send");
+        Utils().toastMessage("Notification has been send");
       } else {
-        print("Something wrong");
-        print('Token >>>>> $token');
+        Utils().toastMessage("Something went wrong");
       }
       // ignore: empty_catches
     } catch (e) {}
@@ -278,18 +274,32 @@ class _DriverRequestsState extends State<DriverRequests> {
                                 width: 5,
                               ),
                               ElevatedButton(
-                                  onPressed: () {
-                                    String token = snapshot.data!.docs[index]
-                                        ['pass_token'];
-                                    sendNotification2('Request', token);
-                                    firestore
-                                        .collection('requests')
-                                        .doc(snapshot.data!.docs[index].id)
-                                        .delete()
-                                        .then((value) {
-                                      Utils().toastMessage("You Reject Ride");
-                                    });
-                                  },
+                                  onPressed: snapshot.data!.docs[index]
+                                              ['request_Status'] ==
+                                          'Pending'
+                                      ? () {
+                                          String token = snapshot
+                                              .data!.docs[index]['pass_token'];
+
+                                          sendNotification2('Request', token);
+                                          firestore
+                                              .collection('requests')
+                                              .doc(
+                                                  snapshot.data!.docs[index].id)
+                                              .update({
+                                            'request_Status': "Rejected"
+                                          });
+                                          // firestore
+                                          //     .collection('requests')
+                                          //     .doc(
+                                          //         snapshot.data!.docs[index].id)
+                                          //     .delete()
+                                          //     .then((value) {
+                                          //   Utils().toastMessage(
+                                          //       "You Reject Ride");
+                                          // });
+                                        }
+                                      : null,
                                   child: const Text("Reject",
                                       style: TextStyle(fontSize: 12)))
                             ],

@@ -83,7 +83,7 @@ class _PessengerSidebarState extends State<PessengerSidebar> {
                           decoration: BoxDecoration(
                               color: Colors.grey,
                               borderRadius: BorderRadius.circular(100)),
-                          child: imageUrl == " "
+                          child: imageUrl == ""
                               ? ClipOval(
                                   child: SizedBox.fromSize(
                                     size: const Size.fromRadius(48.0),

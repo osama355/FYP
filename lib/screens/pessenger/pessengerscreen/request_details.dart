@@ -127,13 +127,13 @@ class _RequestDetailsState extends State<RequestDetails> {
               }));
 
       if (response.statusCode == 200) {
-        print("Notification has been send");
+        Utils().toastMessage("Notification has been send");
       } else {
-        print("Something wrong");
-        print('Token >>>>> $token');
+        Utils().toastMessage("Something wrong");
       }
-      // ignore: empty_catches
-    } catch (e) {}
+    } catch (e) {
+      Utils().toastMessage("Please restart the app");
+    }
   }
 
   void createRequest() async {

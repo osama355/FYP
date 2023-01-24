@@ -1,4 +1,3 @@
-// ignore_for_file: non_constant_identifier_names
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/pessenger_sidebar.dart';
 import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/see_complete_ride_info.dart';
@@ -183,20 +182,20 @@ class _GetRideState extends State<GetRide> {
                               'Available seats : ${snapshot.data!.docs[index]['require-pess']}'),
                           MaterialButton(
                             onPressed: () {
-                              String ride_id = snapshot.data!.docs[index].id;
-                              String profile_url =
+                              String rideId = snapshot.data!.docs[index].id;
+                              String profileUrl =
                                   snapshot.data!.docs[index]['profile_url'];
-                              String driver_token =
+                              String driverToken =
                                   snapshot.data!.docs[index]['driver_token'];
-                              String driver_name =
+                              String driverName =
                                   snapshot.data!.docs[index]['driver-name'];
-                              String driver_id =
+                              String driverId =
                                   snapshot.data!.docs[index]['driver-id'];
-                              String car_name =
+                              String carName =
                                   snapshot.data!.docs[index]['car_name'];
-                              String car_model =
+                              String carModel =
                                   snapshot.data!.docs[index]['car_model'];
-                              String car_number =
+                              String carNumber =
                                   snapshot.data!.docs[index]['car-number'];
                               String source =
                                   snapshot.data!.docs[index]['source'];
@@ -210,44 +209,44 @@ class _GetRideState extends State<GetRide> {
                                   snapshot.data!.docs[index]['phone'];
                               String seats =
                                   snapshot.data!.docs[index]['require-pess'];
-                              double source_lat =
+                              double sourceLat =
                                   snapshot.data!.docs[index]['source-lat'];
-                              double source_lng =
+                              double sourceLng =
                                   snapshot.data!.docs[index]['source-lng'];
-                              double via_lat =
+                              double viaLat =
                                   snapshot.data!.docs[index]['via-lat'];
-                              double via_lng =
+                              double viaLng =
                                   snapshot.data!.docs[index]['via-lng'];
-                              double destination_lat =
+                              double destinationLat =
                                   snapshot.data!.docs[index]['destination-lat'];
-                              double destination_lng =
+                              double destinationLng =
                                   snapshot.data!.docs[index]['destination-lng'];
 
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => SeeCompleteRideInfo(
-                                          driver_token: driver_token,
-                                          driver_id: driver_id,
-                                          ride_id: ride_id,
+                                          driver_token: driverToken,
+                                          driver_id: driverId,
+                                          ride_id: rideId,
                                           seats: seats,
                                           phone: phone,
-                                          profile_url: profile_url,
-                                          driver_name: driver_name,
-                                          car_name: car_name,
-                                          car_model: car_model,
-                                          car_number: car_number,
+                                          profile_url: profileUrl,
+                                          driver_name: driverName,
+                                          car_name: carName,
+                                          car_model: carModel,
+                                          car_number: carNumber,
                                           source: source,
                                           via: via,
                                           destination: destination,
                                           date: date,
                                           time: time,
-                                          source_lat: source_lat,
-                                          source_lng: source_lng,
-                                          via_lat: via_lat,
-                                          via_lng: via_lng,
-                                          destination_lat: destination_lat,
-                                          destination_lng: destination_lng)));
+                                          source_lat: sourceLat,
+                                          source_lng: sourceLng,
+                                          via_lat: viaLat,
+                                          via_lng: viaLng,
+                                          destination_lat: destinationLat,
+                                          destination_lng: destinationLng)));
                             },
                             height: 30.0,
                             minWidth: 60.0,
