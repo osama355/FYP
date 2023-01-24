@@ -26,7 +26,7 @@ class SplashServices {
                 MaterialPageRoute(builder: (context) => const DriverPost())));
       } else {
         Timer(
-            const Duration(seconds: 3),
+            const Duration(seconds: 1),
             () => Navigator.push(
                 context,
                 MaterialPageRoute(

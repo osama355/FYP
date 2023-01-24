@@ -47,8 +47,8 @@ class _VerifyMblCodeScreenState extends State<VerifyMblCodeScreen> {
         'phone': widget.phonenumber.text,
         'name': widget.name.text,
         'status': 'pessenger',
+        'dp': ''
       }, SetOptions(merge: true));
-
       // ignore: use_build_context_synchronously
       Navigator.push(context,
           MaterialPageRoute(builder: (context) => const PessePostScreen()));

@@ -125,7 +125,7 @@ class _PessengerProfileScreenState extends State<PessengerProfileScreen> {
                                 decoration: BoxDecoration(
                                     color: const Color(0xff4BA0FE),
                                     borderRadius: BorderRadius.circular(100)),
-                                child: snapshot.data == " "
+                                child: snapshot.data == ""
                                     ? ClipOval(
                                         child: SizedBox.fromSize(
                                           size: const Size.fromRadius(48.0),

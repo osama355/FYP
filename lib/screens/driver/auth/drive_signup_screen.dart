@@ -1,4 +1,3 @@
-// ignore_for_file: prefer_const_constructors
 import 'dart:io';
 import 'package:drive_sharing_app/screens/driver/auth/main_driver_signup.dart';
 import 'package:drive_sharing_app/utils/utils.dart';
@@ -89,7 +88,7 @@ class _DriveSignUp extends State<DriveSignUp> {
       carNumController.clear();
       Utils().toastMessage("Successfully Registered");
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => SignUp()));
+          context, MaterialPageRoute(builder: (context) => const SignUp()));
     }).onError((error, stackTrace) {
       Utils().toastMessage(error.toString());
       setState(() {
@@ -419,10 +418,7 @@ class CardFormatter extends TextInputFormatter {
   CardFormatter({
     required this.sample,
     required this.separator,
-  }) {
-    assert(sample != null);
-    assert(separator != null);
-  }
+  });
 
   @override
   TextEditingValue formatEditUpdate(
