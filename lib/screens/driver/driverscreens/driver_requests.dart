@@ -17,14 +17,14 @@ class _DriverRequestsState extends State<DriverRequests> {
   FirebaseAuth auth = FirebaseAuth.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   List requests = [];
-  bool isPressed = true;
+  late bool isAccept;
 
   @override
   void initState() {
     super.initState();
   }
 
-  sendNotification1(String title, String token) async {
+  sendNotification1(String title, String token, String driverName) async {
     final data = {
       'click_action': 'FLUTTER_NOTIFICATION_CLICK',
       'id': 1,
@@ -42,7 +42,9 @@ class _DriverRequestsState extends State<DriverRequests> {
               body: jsonEncode(<String, dynamic>{
                 'notification': <String, dynamic>{
                   'title': title,
-                  'body': 'Request has been accepted'
+                  'body': isAccept
+                      ? "Request has been accepted $driverName"
+                      : "Request has been rejected $driverName"
                 },
                 'priority': 'high',
                 'data': data,
@@ -57,40 +59,6 @@ class _DriverRequestsState extends State<DriverRequests> {
     } catch (e) {
       Utils().toastMessage(e.toString());
     }
-  }
-
-  sendNotification2(String title, String token) async {
-    final data = {
-      'click_action': 'FLUTTER_NOTIFICATION_CLICK',
-      'id': 1,
-      'status': 'done',
-      'message': title
-    };
-    try {
-      http.Response response =
-          await http.post(Uri.parse('https://fcm.googleapis.com/fcm/send'),
-              headers: <String, String>{
-                'Content-Type': 'application/json',
-                'Authorization':
-                    'key=AAAADnkker0:APA91bEJO2ufASuDfJNV6yaKiiAES-O0X-jkQW2UL1ciN8hVCgXkCKSsKAQ4jO_7UNUzwrwVAC0iX3Ihu4xvLwsJifoYkVzo1QbYMyJyBXNj4_5f-S39WR9AI2QsYGzBc_jz5myyY5re'
-              },
-              body: jsonEncode(<String, dynamic>{
-                'notification': <String, dynamic>{
-                  'title': title,
-                  'body': 'Request has been rejected'
-                },
-                'priority': 'high',
-                'data': data,
-                'to': token
-              }));
-
-      if (response.statusCode == 200) {
-        Utils().toastMessage("Notification has been send");
-      } else {
-        Utils().toastMessage("Something went wrong");
-      }
-      // ignore: empty_catches
-    } catch (e) {}
   }
 
   @override
@@ -254,9 +222,14 @@ class _DriverRequestsState extends State<DriverRequests> {
                                               ['request_Status'] ==
                                           'Pending'
                                       ? () {
+                                          isAccept = true;
                                           String token = snapshot
                                               .data!.docs[index]['pass_token'];
-                                          sendNotification1('Request', token);
+                                          String driverName = snapshot
+                                              .data!.docs[index]['driver_name'];
+
+                                          sendNotification1(
+                                              'Request', token, driverName);
                                           firestore
                                               .collection('requests')
                                               .doc(
@@ -278,10 +251,14 @@ class _DriverRequestsState extends State<DriverRequests> {
                                               ['request_Status'] ==
                                           'Pending'
                                       ? () {
+                                          isAccept = false;
                                           String token = snapshot
                                               .data!.docs[index]['pass_token'];
+                                          String driverName = snapshot
+                                              .data!.docs[index]['driver_name'];
 
-                                          sendNotification2('Request', token);
+                                          sendNotification1(
+                                              'Request', token, driverName);
                                           firestore
                                               .collection('requests')
                                               .doc(
@@ -289,15 +266,6 @@ class _DriverRequestsState extends State<DriverRequests> {
                                               .update({
                                             'request_Status': "Rejected"
                                           });
-                                          // firestore
-                                          //     .collection('requests')
-                                          //     .doc(
-                                          //         snapshot.data!.docs[index].id)
-                                          //     .delete()
-                                          //     .then((value) {
-                                          //   Utils().toastMessage(
-                                          //       "You Reject Ride");
-                                          // });
                                         }
                                       : null,
                                   child: const Text("Reject",
