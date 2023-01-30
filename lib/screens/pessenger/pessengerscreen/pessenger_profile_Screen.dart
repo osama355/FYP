@@ -67,7 +67,9 @@ class _PessengerProfileScreenState extends State<PessengerProfileScreen> {
         .collection("pessenger")
         .doc(uid)
         .get();
-    return users.data()?['dp'] ?? " ";
+    return users.data()?['dp'];
+
+    // return users.data()?['dp'] ?? " ";
   }
 
   Future updateuserData() async {
