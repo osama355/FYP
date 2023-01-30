@@ -37,9 +37,13 @@ class _DriveLoginScreenState extends State<DriveLoginScreen> {
             email: emailController.text.toString(),
             password: passController.text.toString())
         .then((value) {
-      Utils().toastMessage(value.user!.email.toString());
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => const DriverPost()));
+      if (_auth.currentUser!.emailVerified) {
+        Utils().toastMessage(value.user!.email.toString());
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => const DriverPost()));
+      } else {
+        _auth.currentUser!.sendEmailVerification();
+      }
       setState(() {
         loading = false;
       });

@@ -62,12 +62,13 @@ class _DriveSignUp extends State<DriveSignUp> {
       setState(() {
         loading = false;
       });
+
       final user = _auth.currentUser;
       _firestore
           .collection("app")
           .doc("user")
           .collection("driver")
-          .doc(user?.uid)
+          .doc(user!.uid)
           .set({
         'email': emailController.text,
         'phone': phoneController.text,

@@ -101,7 +101,7 @@ class _RequestDetailsState extends State<RequestDetails> {
     }
   }
 
-  sendNotification(String title, String token) async {
+  sendNotification(String title, String token, String passName) async {
     final data = {
       'click_action': 'FLUTTER_NOTIFICATION_CLICK',
       'id': 1,
@@ -119,7 +119,7 @@ class _RequestDetailsState extends State<RequestDetails> {
               body: jsonEncode(<String, dynamic>{
                 'notification': <String, dynamic>{
                   'title': title,
-                  'body': 'You have request by someone'
+                  'body': 'You have request by $passName'
                 },
                 'priority': 'high',
                 'data': data,
@@ -146,6 +146,7 @@ class _RequestDetailsState extends State<RequestDetails> {
         .get();
 
     String token = widget.driver_token!;
+    String passName = passData.data()?['name'];
     await firestore.collection('requests').doc('$uid${DateTime.now()}').set({
       'driver_id': widget.driver_id,
       'pass_token': passData.data()?['token'],
@@ -185,7 +186,7 @@ class _RequestDetailsState extends State<RequestDetails> {
     }).catchError((error) {
       Utils().toastMessage(error);
     });
-    sendNotification("Request", token);
+    sendNotification("Request", token, passName);
   }
 
   @override
