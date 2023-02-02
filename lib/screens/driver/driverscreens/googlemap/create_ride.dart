@@ -24,6 +24,8 @@ class _CreateRideState extends State<CreateRide> {
   final dateController = TextEditingController();
   final timeController = TextEditingController();
   final priceController = TextEditingController();
+  late int totalSeats;
+  late int reservedSeats;
 
   DetailsResult? startPosition;
   DetailsResult? midPosition;
@@ -89,6 +91,8 @@ class _CreateRideState extends State<CreateRide> {
                         final user = auth.currentUser;
                         final uid = user?.uid;
 
+                        totalSeats = int.parse(requirePessController.text);
+
                         final userData = await firestore
                             .collection('app')
                             .doc('user')
@@ -103,6 +107,7 @@ class _CreateRideState extends State<CreateRide> {
                             dateController.text.isNotEmpty &&
                             timeController.text.isNotEmpty) {
                           final dateTime = DateTime.now();
+
                           await firestore
                               .collection('rides')
                               .doc('$uid$dateTime')
@@ -116,7 +121,8 @@ class _CreateRideState extends State<CreateRide> {
                             'car_model': userData['car_model'],
                             'phone': userData['phone'],
                             'email': userData['email'],
-                            'require-pess': requirePessController.text,
+                            'require-pess': totalSeats,
+                            'reservedSeats': 0,
                             'time': timeController.text,
                             'date': dateController.text,
                             'source': startingPointController.text,

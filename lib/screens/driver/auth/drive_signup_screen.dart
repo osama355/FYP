@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:drive_sharing_app/screens/driver/auth/main_driver_signup.dart';
 import 'package:drive_sharing_app/utils/utils.dart';
 import 'package:drive_sharing_app/widgets/round_button.dart';
@@ -31,11 +30,6 @@ class _DriveSignUp extends State<DriveSignUp> {
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
-  File? nicFront;
-  File? nicBack;
-  File? licFront;
-  File? licBack;
 
   @override
   void dispose() {

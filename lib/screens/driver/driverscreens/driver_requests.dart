@@ -18,6 +18,7 @@ class _DriverRequestsState extends State<DriverRequests> {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   List requests = [];
   late bool isAccept;
+  late int reservedSeats;
 
   @override
   void initState() {
@@ -207,7 +208,7 @@ class _DriverRequestsState extends State<DriverRequests> {
                                 style: TextStyle(fontSize: 13),
                               ),
                               Text(
-                                '${snapshot.data!.docs[index]['date']}${snapshot.data!.docs[index]['time']}',
+                                '${snapshot.data!.docs[index]['date']}  ${snapshot.data!.docs[index]['time']}',
                                 style: const TextStyle(fontSize: 13),
                               ),
                             ],
@@ -221,12 +222,20 @@ class _DriverRequestsState extends State<DriverRequests> {
                                   onPressed: snapshot.data!.docs[index]
                                               ['request_Status'] ==
                                           'Pending'
-                                      ? () {
+                                      ? () async {
                                           isAccept = true;
                                           String token = snapshot
                                               .data!.docs[index]['pass_token'];
                                           String driverName = snapshot
                                               .data!.docs[index]['driver_name'];
+                                          final remainSeats = await firestore
+                                              .collection('rides')
+                                              .doc(snapshot.data!.docs[index]
+                                                  ['ride_id'])
+                                              .get();
+
+                                          reservedSeats = remainSeats
+                                              .data()?['reservedSeats'];
 
                                           sendNotification1(
                                               'Request', token, driverName);
@@ -236,6 +245,13 @@ class _DriverRequestsState extends State<DriverRequests> {
                                                   snapshot.data!.docs[index].id)
                                               .update({
                                             'request_Status': "Accepted"
+                                          });
+                                          firestore
+                                              .collection('rides')
+                                              .doc(snapshot.data!.docs[index]
+                                                  ['ride_id'])
+                                              .update({
+                                            'reservedSeats': reservedSeats + 1
                                           });
                                         }
                                       : null,

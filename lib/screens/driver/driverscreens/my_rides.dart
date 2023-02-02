@@ -72,30 +72,14 @@ class _MyRidesState extends State<MyRides> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Row(
-                              children: [
-                                const Text(
-                                  "Sharing : ",
-                                  style: TextStyle(fontSize: 13),
-                                ),
-                                Text(
-                                  snapshot.data!.docs[index]['require-pess'],
-                                  style: const TextStyle(fontSize: 13),
-                                )
-                              ],
+                            Text(
+                              "Total Seats : ${snapshot.data!.docs[index]['require-pess']}",
+                              style: const TextStyle(fontSize: 13),
                             ),
-                            Row(
-                              children: const [
-                                Text(
-                                  "Requests : ",
-                                  style: TextStyle(fontSize: 13),
-                                ),
-                                Text(
-                                  "0",
-                                  style: TextStyle(fontSize: 13),
-                                ),
-                              ],
-                            )
+                            Text(
+                              "Reserved Seats : ${snapshot.data!.docs[index]['reservedSeats']}",
+                              style: const TextStyle(fontSize: 13),
+                            ),
                           ],
                         ),
                         const SizedBox(

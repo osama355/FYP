@@ -179,7 +179,9 @@ class _GetRideState extends State<GetRide> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                              'Available seats : ${snapshot.data!.docs[index]['require-pess']}'),
+                              'Total seats : ${snapshot.data!.docs[index]['require-pess']}'),
+                          Text(
+                              'Reserved seats : ${snapshot.data!.docs[index]['reservedSeats']}'),
                           MaterialButton(
                             onPressed: () {
                               String rideId = snapshot.data!.docs[index].id;
@@ -207,8 +209,9 @@ class _GetRideState extends State<GetRide> {
                               String time = snapshot.data!.docs[index]['time'];
                               String phone =
                                   snapshot.data!.docs[index]['phone'];
-                              String seats =
-                                  snapshot.data!.docs[index]['require-pess'];
+                              String seats = snapshot
+                                  .data!.docs[index]['require-pess']
+                                  .toString();
                               double sourceLat =
                                   snapshot.data!.docs[index]['source-lat'];
                               double sourceLng =
