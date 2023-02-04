@@ -1,4 +1,3 @@
-// ignore_for_file: non_constant_identifier_names
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/pessenger_sidebar.dart';
 import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/see_complete_ride_info.dart';
@@ -6,22 +5,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class FilterRides extends StatefulWidget {
-  final String? startSearchText;
   final String? endSearchText;
   final String? dateText;
-  final String? timeText;
-  final double? startLng;
-  final double? startLat;
   final double? destLat;
   final double? destLng;
   const FilterRides({
     super.key,
-    this.startSearchText,
     this.endSearchText,
     this.dateText,
-    this.timeText,
-    this.startLat,
-    this.startLng,
     this.destLat,
     this.destLng,
   });
@@ -35,260 +26,274 @@ class _FilterRidesState extends State<FilterRides> {
   FirebaseAuth auth = FirebaseAuth.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  var filterRides = [];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: const PessengerSidebar(),
-      appBar: AppBar(
-        title: const Text("Filter Rides"),
-      ),
-      body: StreamBuilder(
-        stream: rides.snapshots(),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return const Text("Something went wrong");
-          }
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Text("Loading");
-          }
-          if (snapshot.data!.docs.isEmpty) {
-            return const Center(
-              child: Text('No ride Available'),
-            );
-          }
-          return ListView.builder(
-            itemCount: snapshot.data?.docs.length,
-            itemBuilder: (context, index) {
-              if (snapshot.data!.docs[index]['destination'] ==
-                      widget.endSearchText &&
-                  snapshot.data!.docs[index]['date'] == widget.dateText) {
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    padding: const EdgeInsets.all(15.0),
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(5.0),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.5),
-                            spreadRadius: 5,
-                            blurRadius: 7,
-                            offset: const Offset(0, 3),
-                          )
-                        ]),
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            CircleAvatar(
-                                backgroundColor: snapshot.data!.docs[index]
-                                            ['profile_url'] !=
-                                        ""
-                                    ? Colors.transparent
-                                    : const Color(0xff4BA0FE),
-                                child: SizedBox(
-                                  width: 60,
-                                  height: 60,
-                                  child: ClipOval(
-                                    child: snapshot.data!.docs[index]
-                                                ['profile_url'] !=
-                                            ""
-                                        ? Image.network(snapshot
-                                            .data!.docs[index]['profile_url'])
-                                        : const Icon(
-                                            Icons.person,
-                                            color: Colors.white,
-                                          ),
-                                  ),
-                                )),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            Text(
-                              snapshot.data!.docs[index]['driver-name'],
-                              style: const TextStyle(fontSize: 13),
-                            )
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Row(
-                          children: [
-                            const Icon(
-                              Icons.circle,
-                              color: Colors.green,
-                              size: 10,
-                            ),
-                            const SizedBox(
-                              width: 5,
-                            ),
-                            Text(
-                              snapshot.data!.docs[index]['source'],
-                              style: const TextStyle(fontSize: 13),
-                            )
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 5,
-                        ),
-                        Row(
-                          children: [
-                            const Icon(
-                              Icons.circle,
-                              color: Colors.blue,
-                              size: 10.0,
-                            ),
-                            const SizedBox(
-                              width: 5,
-                            ),
-                            Text(
-                              snapshot.data!.docs[index]['via-route'],
-                              style: const TextStyle(fontSize: 13),
-                            )
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 5,
-                        ),
-                        Row(
-                          children: [
-                            const Icon(
-                              Icons.circle,
-                              color: Colors.red,
-                              size: 10.0,
-                            ),
-                            const SizedBox(
-                              width: 5,
-                            ),
-                            Text(
-                              snapshot.data!.docs[index]['destination'],
-                              style: const TextStyle(fontSize: 13),
-                            )
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Row(
-                          children: [
-                            Text(
-                              "Time : ${snapshot.data!.docs[index]['date']} at ${snapshot.data!.docs[index]['time']}",
-                              style: const TextStyle(fontSize: 13),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 5,
-                        ),
-                        Row(
-                          children: [
-                            Text(
-                              'Car : ${snapshot.data!.docs[index]['car_name']} | ${snapshot.data!.docs[index]['car_model']}',
-                              style: const TextStyle(fontSize: 13),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                                'Available seats : ${snapshot.data!.docs[index]['require-pess']}'),
-                            MaterialButton(
-                              onPressed: () async {
-                                String ride_id = snapshot.data!.docs[index].id;
-                                String profile_url =
-                                    snapshot.data!.docs[index]['profile_url'];
-                                String driver_name =
-                                    snapshot.data!.docs[index]['driver-name'];
-                                String driver_id =
-                                    snapshot.data!.docs[index]['driver-id'];
-                                String car_name =
-                                    snapshot.data!.docs[index]['car_name'];
-                                String car_model =
-                                    snapshot.data!.docs[index]['car_model'];
-                                String car_number =
-                                    snapshot.data!.docs[index]['car-number'];
-                                String source =
-                                    snapshot.data!.docs[index]['source'];
-                                String via =
-                                    snapshot.data!.docs[index]['via-route'];
-                                String destination =
-                                    snapshot.data!.docs[index]['destination'];
-                                String date =
-                                    snapshot.data!.docs[index]['date'];
-                                String time =
-                                    snapshot.data!.docs[index]['time'];
-                                String phone =
-                                    snapshot.data!.docs[index]['phone'];
-                                String seats =
-                                    snapshot.data!.docs[index]['require-pess'];
-                                double source_lat =
-                                    snapshot.data!.docs[index]['source-lat'];
-                                double source_lng =
-                                    snapshot.data!.docs[index]['source-lng'];
-                                double via_lat =
-                                    snapshot.data!.docs[index]['via-lat'];
-                                double via_lng =
-                                    snapshot.data!.docs[index]['via-lng'];
-                                double destination_lat = snapshot
-                                    .data!.docs[index]['destination-lat'];
-                                double destination_lng = snapshot
-                                    .data!.docs[index]['destination-lng'];
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            SeeCompleteRideInfo(
-                                                driver_id: driver_id,
-                                                ride_id: ride_id,
-                                                seats: seats,
-                                                phone: phone,
-                                                profile_url: profile_url,
-                                                driver_name: driver_name,
-                                                car_name: car_name,
-                                                car_model: car_model,
-                                                car_number: car_number,
-                                                source: source,
-                                                via: via,
-                                                destination: destination,
-                                                date: date,
-                                                time: time,
-                                                source_lat: source_lat,
-                                                source_lng: source_lng,
-                                                via_lat: via_lat,
-                                                via_lng: via_lng,
-                                                destination_lat:
-                                                    destination_lat,
-                                                destination_lng:
-                                                    destination_lng)));
-                              },
-                              height: 30.0,
-                              minWidth: 60.0,
-                              color: const Color(0xff4BA0FE),
-                              textColor: Colors.white,
-                              child: const Text(
-                                "Request",
-                                style: TextStyle(fontSize: 13),
-                              ),
-                            )
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              }
-              return const SizedBox(
-                height: 0,
+        drawer: const PessengerSidebar(),
+        appBar: AppBar(
+          title: const Text("Filter Rides"),
+        ),
+        body: StreamBuilder(
+          stream: rides.snapshots(),
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return const Text("Something went wrong");
+            }
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Text("Loading");
+            }
+            if (snapshot.data!.docs.isEmpty) {
+              return const Center(
+                child: Text('No ride Available'),
               );
-            },
-          );
-        },
-      ),
-    );
+            }
+            return ListView.builder(
+              itemCount: snapshot.data?.docs.length,
+              itemBuilder: (context, index) {
+                if (snapshot.data!.docs[index]['destination'] ==
+                        widget.endSearchText &&
+                    snapshot.data!.docs[index]['date'] == widget.dateText) {
+                  int availableSeats = snapshot.data!.docs[index]
+                          ['require-pess'] -
+                      snapshot.data!.docs[index]['reservedSeats'];
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      padding: const EdgeInsets.all(15.0),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(5.0),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 5,
+                              blurRadius: 7,
+                              offset: const Offset(0, 3),
+                            )
+                          ]),
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              CircleAvatar(
+                                  backgroundColor: snapshot.data!.docs[index]
+                                              ['profile_url'] !=
+                                          ""
+                                      ? Colors.transparent
+                                      : const Color(0xff4BA0FE),
+                                  child: SizedBox(
+                                    width: 60,
+                                    height: 60,
+                                    child: ClipOval(
+                                      child: snapshot.data!.docs[index]
+                                                  ['profile_url'] !=
+                                              ""
+                                          ? Image.network(snapshot
+                                              .data!.docs[index]['profile_url'])
+                                          : const Icon(
+                                              Icons.person,
+                                              color: Colors.white,
+                                            ),
+                                    ),
+                                  )),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              Text(
+                                snapshot.data!.docs[index]['driver-name'],
+                                style: const TextStyle(fontSize: 13),
+                              )
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Row(
+                            children: [
+                              const Icon(
+                                Icons.circle,
+                                color: Colors.green,
+                                size: 10,
+                              ),
+                              const SizedBox(
+                                width: 5,
+                              ),
+                              Text(
+                                snapshot.data!.docs[index]['source'],
+                                style: const TextStyle(fontSize: 13),
+                              )
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          Row(
+                            children: [
+                              const Icon(
+                                Icons.circle,
+                                color: Colors.blue,
+                                size: 10.0,
+                              ),
+                              const SizedBox(
+                                width: 5,
+                              ),
+                              Text(
+                                snapshot.data!.docs[index]['via-route'],
+                                style: const TextStyle(fontSize: 13),
+                              )
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          Row(
+                            children: [
+                              const Icon(
+                                Icons.circle,
+                                color: Colors.red,
+                                size: 10.0,
+                              ),
+                              const SizedBox(
+                                width: 5,
+                              ),
+                              Text(
+                                snapshot.data!.docs[index]['destination'],
+                                style: const TextStyle(fontSize: 13),
+                              )
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Row(
+                            children: [
+                              Text(
+                                "Time : ${snapshot.data!.docs[index]['date']} at ${snapshot.data!.docs[index]['time']}",
+                                style: const TextStyle(fontSize: 13),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          Row(
+                            children: [
+                              Text(
+                                'Car : ${snapshot.data!.docs[index]['car_name']} | ${snapshot.data!.docs[index]['car_model']}',
+                                style: const TextStyle(fontSize: 13),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                  'Tottal seats : ${snapshot.data!.docs[index]['require-pess']}'),
+                              Text('Available : $availableSeats'),
+                              MaterialButton(
+                                onPressed: availableSeats == 0
+                                    ? () {}
+                                    : () async {
+                                        String rideId =
+                                            snapshot.data!.docs[index].id;
+                                        String profileUrl = snapshot
+                                            .data!.docs[index]['profile_url'];
+                                        String driverToken = snapshot
+                                            .data!.docs[index]['driver_token'];
+                                        String driverName = snapshot
+                                            .data!.docs[index]['driver-name'];
+                                        String driverId = snapshot
+                                            .data!.docs[index]['driver-id'];
+                                        String carName = snapshot
+                                            .data!.docs[index]['car_name'];
+                                        String carModel = snapshot
+                                            .data!.docs[index]['car_model'];
+                                        String carNumber = snapshot
+                                            .data!.docs[index]['car-number'];
+                                        String source = snapshot
+                                            .data!.docs[index]['source'];
+                                        String via = snapshot.data!.docs[index]
+                                            ['via-route'];
+                                        String destination = snapshot
+                                            .data!.docs[index]['destination'];
+                                        String date =
+                                            snapshot.data!.docs[index]['date'];
+                                        String time =
+                                            snapshot.data!.docs[index]['time'];
+                                        String phone =
+                                            snapshot.data!.docs[index]['phone'];
+                                        String seats = snapshot
+                                            .data!.docs[index]['require-pess']
+                                            .toString();
+                                        double sourceLat = snapshot
+                                            .data!.docs[index]['source-lat'];
+                                        double sourceLng = snapshot
+                                            .data!.docs[index]['source-lng'];
+                                        double viaLat = snapshot
+                                            .data!.docs[index]['via-lat'];
+                                        double viaLng = snapshot
+                                            .data!.docs[index]['via-lng'];
+                                        double destinationLat = snapshot.data!
+                                            .docs[index]['destination-lat'];
+                                        double destinationLng = snapshot.data!
+                                            .docs[index]['destination-lng'];
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    SeeCompleteRideInfo(
+                                                        driver_token:
+                                                            driverToken,
+                                                        driver_id: driverId,
+                                                        ride_id: rideId,
+                                                        seats: seats,
+                                                        phone: phone,
+                                                        profile_url: profileUrl,
+                                                        driver_name: driverName,
+                                                        car_name: carName,
+                                                        car_model: carModel,
+                                                        car_number: carNumber,
+                                                        source: source,
+                                                        via: via,
+                                                        destination:
+                                                            destination,
+                                                        date: date,
+                                                        time: time,
+                                                        source_lat: sourceLat,
+                                                        source_lng: sourceLng,
+                                                        via_lat: viaLat,
+                                                        via_lng: viaLng,
+                                                        destination_lat:
+                                                            destinationLat,
+                                                        destination_lng:
+                                                            destinationLng)));
+                                      },
+                                height: 30.0,
+                                minWidth: 60.0,
+                                color: availableSeats == 0
+                                    ? Colors.red
+                                    : const Color(0xff4BA0FE),
+                                textColor: Colors.white,
+                                child: Text(
+                                  availableSeats == 0
+                                      ? "No Seat Available"
+                                      : "Request",
+                                  style: const TextStyle(fontSize: 13),
+                                ),
+                              )
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }
+                return const SizedBox(
+                  height: 0,
+                );
+              },
+            );
+          },
+        ));
   }
 }
