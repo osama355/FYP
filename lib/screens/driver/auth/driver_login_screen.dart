@@ -42,6 +42,8 @@ class _DriveLoginScreenState extends State<DriveLoginScreen> {
         Navigator.push(context,
             MaterialPageRoute(builder: (context) => const DriverPost()));
       } else {
+        Utils().toastMessage(
+            "Please verify your email by clicking on link sending to you email");
         _auth.currentUser!.sendEmailVerification();
       }
       setState(() {

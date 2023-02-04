@@ -47,6 +47,9 @@ class _GetRideState extends State<GetRide> {
           return ListView.builder(
             itemCount: snapshot.data?.docs.length,
             itemBuilder: (context, index) {
+              int availableSeats = snapshot.data!.docs[index]['require-pess'] -
+                  snapshot.data!.docs[index]['reservedSeats'];
+
               return Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Container(
@@ -93,7 +96,7 @@ class _GetRideState extends State<GetRide> {
                           Text(
                             snapshot.data!.docs[index]['driver-name'],
                             style: const TextStyle(fontSize: 13),
-                          )
+                          ),
                         ],
                       ),
                       const SizedBox(
@@ -180,84 +183,95 @@ class _GetRideState extends State<GetRide> {
                         children: [
                           Text(
                               'Total seats : ${snapshot.data!.docs[index]['require-pess']}'),
-                          Text(
-                              'Reserved seats : ${snapshot.data!.docs[index]['reservedSeats']}'),
+                          Text('Available : $availableSeats'),
                           MaterialButton(
-                            onPressed: () {
-                              String rideId = snapshot.data!.docs[index].id;
-                              String profileUrl =
-                                  snapshot.data!.docs[index]['profile_url'];
-                              String driverToken =
-                                  snapshot.data!.docs[index]['driver_token'];
-                              String driverName =
-                                  snapshot.data!.docs[index]['driver-name'];
-                              String driverId =
-                                  snapshot.data!.docs[index]['driver-id'];
-                              String carName =
-                                  snapshot.data!.docs[index]['car_name'];
-                              String carModel =
-                                  snapshot.data!.docs[index]['car_model'];
-                              String carNumber =
-                                  snapshot.data!.docs[index]['car-number'];
-                              String source =
-                                  snapshot.data!.docs[index]['source'];
-                              String via =
-                                  snapshot.data!.docs[index]['via-route'];
-                              String destination =
-                                  snapshot.data!.docs[index]['destination'];
-                              String date = snapshot.data!.docs[index]['date'];
-                              String time = snapshot.data!.docs[index]['time'];
-                              String phone =
-                                  snapshot.data!.docs[index]['phone'];
-                              String seats = snapshot
-                                  .data!.docs[index]['require-pess']
-                                  .toString();
-                              double sourceLat =
-                                  snapshot.data!.docs[index]['source-lat'];
-                              double sourceLng =
-                                  snapshot.data!.docs[index]['source-lng'];
-                              double viaLat =
-                                  snapshot.data!.docs[index]['via-lat'];
-                              double viaLng =
-                                  snapshot.data!.docs[index]['via-lng'];
-                              double destinationLat =
-                                  snapshot.data!.docs[index]['destination-lat'];
-                              double destinationLng =
-                                  snapshot.data!.docs[index]['destination-lng'];
+                            onPressed: availableSeats == 0
+                                ? () {}
+                                : () {
+                                    String rideId =
+                                        snapshot.data!.docs[index].id;
+                                    String profileUrl = snapshot
+                                        .data!.docs[index]['profile_url'];
+                                    String driverToken = snapshot
+                                        .data!.docs[index]['driver_token'];
+                                    String driverName = snapshot
+                                        .data!.docs[index]['driver-name'];
+                                    String driverId =
+                                        snapshot.data!.docs[index]['driver-id'];
+                                    String carName =
+                                        snapshot.data!.docs[index]['car_name'];
+                                    String carModel =
+                                        snapshot.data!.docs[index]['car_model'];
+                                    String carNumber = snapshot
+                                        .data!.docs[index]['car-number'];
+                                    String source =
+                                        snapshot.data!.docs[index]['source'];
+                                    String via =
+                                        snapshot.data!.docs[index]['via-route'];
+                                    String destination = snapshot
+                                        .data!.docs[index]['destination'];
+                                    String date =
+                                        snapshot.data!.docs[index]['date'];
+                                    String time =
+                                        snapshot.data!.docs[index]['time'];
+                                    String phone =
+                                        snapshot.data!.docs[index]['phone'];
+                                    String seats = snapshot
+                                        .data!.docs[index]['require-pess']
+                                        .toString();
+                                    double sourceLat = snapshot
+                                        .data!.docs[index]['source-lat'];
+                                    double sourceLng = snapshot
+                                        .data!.docs[index]['source-lng'];
+                                    double viaLat =
+                                        snapshot.data!.docs[index]['via-lat'];
+                                    double viaLng =
+                                        snapshot.data!.docs[index]['via-lng'];
+                                    double destinationLat = snapshot
+                                        .data!.docs[index]['destination-lat'];
+                                    double destinationLng = snapshot
+                                        .data!.docs[index]['destination-lng'];
 
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => SeeCompleteRideInfo(
-                                          driver_token: driverToken,
-                                          driver_id: driverId,
-                                          ride_id: rideId,
-                                          seats: seats,
-                                          phone: phone,
-                                          profile_url: profileUrl,
-                                          driver_name: driverName,
-                                          car_name: carName,
-                                          car_model: carModel,
-                                          car_number: carNumber,
-                                          source: source,
-                                          via: via,
-                                          destination: destination,
-                                          date: date,
-                                          time: time,
-                                          source_lat: sourceLat,
-                                          source_lng: sourceLng,
-                                          via_lat: viaLat,
-                                          via_lng: viaLng,
-                                          destination_lat: destinationLat,
-                                          destination_lng: destinationLng)));
-                            },
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                SeeCompleteRideInfo(
+                                                    driver_token: driverToken,
+                                                    driver_id: driverId,
+                                                    ride_id: rideId,
+                                                    seats: seats,
+                                                    phone: phone,
+                                                    profile_url: profileUrl,
+                                                    driver_name: driverName,
+                                                    car_name: carName,
+                                                    car_model: carModel,
+                                                    car_number: carNumber,
+                                                    source: source,
+                                                    via: via,
+                                                    destination: destination,
+                                                    date: date,
+                                                    time: time,
+                                                    source_lat: sourceLat,
+                                                    source_lng: sourceLng,
+                                                    via_lat: viaLat,
+                                                    via_lng: viaLng,
+                                                    destination_lat:
+                                                        destinationLat,
+                                                    destination_lng:
+                                                        destinationLng)));
+                                  },
                             height: 30.0,
                             minWidth: 60.0,
-                            color: const Color(0xff4BA0FE),
+                            color: availableSeats == 0
+                                ? Colors.red
+                                : const Color(0xff4BA0FE),
                             textColor: Colors.white,
-                            child: const Text(
-                              "Request",
-                              style: TextStyle(fontSize: 13),
+                            child: Text(
+                              availableSeats == 0
+                                  ? 'No Seat Available'
+                                  : "Request",
+                              style: const TextStyle(fontSize: 13),
                             ),
                           )
                         ],

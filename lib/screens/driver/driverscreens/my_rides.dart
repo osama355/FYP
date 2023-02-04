@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drive_sharing_app/screens/driver/driverscreens/driver_sidebar.dart';
 import 'package:drive_sharing_app/screens/driver/driverscreens/googlemap/driver_map_screen.dart';
+import 'package:drive_sharing_app/screens/driver/driverscreens/travel_partners.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 // ignore: depend_on_referenced_packages, unused_import
@@ -16,6 +17,8 @@ class MyRides extends StatefulWidget {
 class _MyRidesState extends State<MyRides> {
   FirebaseAuth auth = FirebaseAuth.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
+  final CollectionReference ridesCollection =
+      FirebaseFirestore.instance.collection('rides');
 
   @override
   void initState() {
@@ -25,9 +28,6 @@ class _MyRidesState extends State<MyRides> {
   @override
   Widget build(BuildContext context) {
     final user = auth.currentUser;
-    final CollectionReference ridesCollection =
-        FirebaseFirestore.instance.collection('rides');
-
     return Scaffold(
       drawer: const DriverSidebar(),
       appBar: AppBar(
@@ -188,34 +188,44 @@ class _MyRidesState extends State<MyRides> {
                           children: [
                             ElevatedButton(
                                 onPressed: () {
-                                  double sourceLat =
-                                      snapshot.data?.docs[index]["source-lat"];
-                                  double sourceLng =
-                                      snapshot.data?.docs[index]["source-lng"];
-                                  double viaLat =
-                                      snapshot.data?.docs[index]["via-lat"];
-                                  double viaLng =
-                                      snapshot.data?.docs[index]["via-lng"];
-                                  double destinationLat = snapshot
-                                      .data?.docs[index]["destination-lat"];
-                                  double destinationLng = snapshot
-                                      .data?.docs[index]["destination-lng"];
+                                  String rideId = snapshot.data!.docs[index].id;
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => DriverMapScreen(
-                                                startPositionLat: sourceLat,
-                                                startPositionLng: sourceLng,
-                                                midPositionLat: viaLat,
-                                                midPositionLng: viaLng,
-                                                endPositionLat: destinationLat,
-                                                endPositionLng: destinationLng,
-                                              )));
+                                          builder: (context) =>
+                                              TravelPartners(rideId: rideId)));
                                 },
-                                child: const Text(
-                                  "Start",
-                                  style: TextStyle(fontSize: 12),
-                                )),
+                                child: const Text("Travel Partners")),
+                            // ElevatedButton(
+                            //     onPressed: () {
+                            //       double sourceLat =
+                            //           snapshot.data?.docs[index]["source-lat"];
+                            //       double sourceLng =
+                            //           snapshot.data?.docs[index]["source-lng"];
+                            //       double viaLat =
+                            //           snapshot.data?.docs[index]["via-lat"];
+                            //       double viaLng =
+                            //           snapshot.data?.docs[index]["via-lng"];
+                            //       double destinationLat = snapshot
+                            //           .data?.docs[index]["destination-lat"];
+                            //       double destinationLng = snapshot
+                            //           .data?.docs[index]["destination-lng"];
+                            //       Navigator.push(
+                            //           context,
+                            //           MaterialPageRoute(
+                            //               builder: (context) => DriverMapScreen(
+                            //                     startPositionLat: sourceLat,
+                            //                     startPositionLng: sourceLng,
+                            //                     midPositionLat: viaLat,
+                            //                     midPositionLng: viaLng,
+                            //                     endPositionLat: destinationLat,
+                            //                     endPositionLng: destinationLng,
+                            //                   )));
+                            //     },
+                            //     child: const Text(
+                            //       "Start",
+                            //       style: TextStyle(fontSize: 12),
+                            //     )),
                             const SizedBox(
                               width: 5,
                             ),
@@ -231,7 +241,7 @@ class _MyRidesState extends State<MyRides> {
                                       .doc(snapshot.data!.docs[index].id)
                                       .delete();
                                 },
-                                child: const Text("Cancle",
+                                child: const Text("Delete",
                                     style: TextStyle(fontSize: 12)))
                           ],
                         ),
