@@ -189,11 +189,30 @@ class _MyRidesState extends State<MyRides> {
                             ElevatedButton(
                                 onPressed: () {
                                   String rideId = snapshot.data!.docs[index].id;
+                                  double sourceLat =
+                                      snapshot.data?.docs[index]["source-lat"];
+                                  double sourceLng =
+                                      snapshot.data?.docs[index]["source-lng"];
+                                  double viaLat =
+                                      snapshot.data?.docs[index]["via-lat"];
+                                  double viaLng =
+                                      snapshot.data?.docs[index]["via-lng"];
+                                  double destinationLat = snapshot
+                                      .data?.docs[index]["destination-lat"];
+                                  double destinationLng = snapshot
+                                      .data?.docs[index]["destination-lng"];
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) =>
-                                              TravelPartners(rideId: rideId)));
+                                          builder: (context) => TravelPartners(
+                                                rideId: rideId,
+                                                startPositionLat: sourceLat,
+                                                startPositionLng: sourceLng,
+                                                midPositionLat: viaLat,
+                                                midPositionLng: viaLng,
+                                                endPositionLat: destinationLat,
+                                                endPositionLng: destinationLng,
+                                              )));
                                 },
                                 child: const Text("Travel Partners")),
                             // ElevatedButton(
