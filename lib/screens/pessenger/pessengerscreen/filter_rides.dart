@@ -119,7 +119,7 @@ class _FilterRidesState extends State<FilterRides> {
                                 width: 5,
                               ),
                               Text(
-                                snapshot.data!.docs[index]['source'],
+                                'Start : ${snapshot.data!.docs[index]['source']}',
                                 style: const TextStyle(fontSize: 13),
                               )
                             ],
@@ -138,7 +138,7 @@ class _FilterRidesState extends State<FilterRides> {
                                 width: 5,
                               ),
                               Text(
-                                snapshot.data!.docs[index]['via-route'],
+                                'Via : ${snapshot.data!.docs[index]['via-route']}',
                                 style: const TextStyle(fontSize: 13),
                               )
                             ],
@@ -157,7 +157,7 @@ class _FilterRidesState extends State<FilterRides> {
                                 width: 5,
                               ),
                               Text(
-                                snapshot.data!.docs[index]['destination'],
+                                'Destination : ${snapshot.data!.docs[index]['destination']}',
                                 style: const TextStyle(fontSize: 13),
                               )
                             ],
