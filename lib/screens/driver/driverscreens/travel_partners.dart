@@ -46,6 +46,7 @@ class _TravelPartnersState extends State<TravelPartners> {
     return Scaffold(
         appBar: AppBar(
           title: const Text("Partners"),
+          backgroundColor: const Color(0xff4BA0FE),
         ),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -57,17 +58,14 @@ class _TravelPartnersState extends State<TravelPartners> {
                   if (snapshot.hasError) {
                     return const Text("Something went wrong");
                   }
-                  if (!snapshot.hasData) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(
                       child: CircularProgressIndicator(),
                     );
                   }
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Text("Loading...");
-                  }
                   if (snapshot.data!.docs.isEmpty) {
                     return const Center(
-                      child: Text("No ride created yet"),
+                      child: Text("No Request Yet"),
                     );
                   }
                   return ListView.builder(

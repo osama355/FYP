@@ -21,12 +21,12 @@ class SplashServices {
     if (user != null) {
       if (driverDoc.data()?['status'] == 'driver') {
         Timer(
-            const Duration(seconds: 3),
+            const Duration(seconds: 2),
             () => Navigator.push(context,
                 MaterialPageRoute(builder: (context) => const DriverPost())));
       } else {
         Timer(
-            const Duration(seconds: 1),
+            const Duration(seconds: 2),
             () => Navigator.push(
                 context,
                 MaterialPageRoute(

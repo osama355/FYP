@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/pessenger_sidebar.dart';
 import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/see_complete_ride_info.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -29,9 +28,16 @@ class _FilterRidesState extends State<FilterRides> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        drawer: const PessengerSidebar(),
         appBar: AppBar(
           title: const Text("Filter Rides"),
+          backgroundColor: const Color(0xff4BA0FE),
+          automaticallyImplyLeading: false,
+          leading: GestureDetector(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: const Icon(Icons.arrow_back),
+          ),
         ),
         body: StreamBuilder(
           stream: rides.snapshots(),
@@ -225,6 +231,8 @@ class _FilterRidesState extends State<FilterRides> {
                                         String seats = snapshot
                                             .data!.docs[index]['require-pess']
                                             .toString();
+                                        String price =
+                                            snapshot.data!.docs[index]['price'];
                                         double sourceLat = snapshot
                                             .data!.docs[index]['source-lat'];
                                         double sourceLng = snapshot
@@ -242,6 +250,7 @@ class _FilterRidesState extends State<FilterRides> {
                                             MaterialPageRoute(
                                                 builder: (context) =>
                                                     SeeCompleteRideInfo(
+                                                        price: price,
                                                         driver_token:
                                                             driverToken,
                                                         driver_id: driverId,

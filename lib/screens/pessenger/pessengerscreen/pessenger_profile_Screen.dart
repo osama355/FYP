@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/pessenger_sidebar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -88,10 +87,9 @@ class _PessengerProfileScreenState extends State<PessengerProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        drawer: const PessengerSidebar(),
         appBar: AppBar(
+          automaticallyImplyLeading: true,
           backgroundColor: const Color(0xff4BA0FE),
-          centerTitle: false,
           title: const Text("Profile"),
         ),
         body: SingleChildScrollView(

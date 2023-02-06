@@ -91,8 +91,14 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
         drawer: const DriverSidebar(),
         appBar: AppBar(
           backgroundColor: const Color(0xff4BA0FE),
-          centerTitle: false,
+          automaticallyImplyLeading: false,
           title: const Text("Profile"),
+          leading: GestureDetector(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: const Icon(Icons.arrow_back),
+          ),
         ),
         body: SingleChildScrollView(
           child: Center(

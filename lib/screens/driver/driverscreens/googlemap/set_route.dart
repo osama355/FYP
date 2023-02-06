@@ -1,18 +1,18 @@
 import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drive_sharing_app/utils/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_place/google_place.dart';
-
 import '../my_rides.dart';
 
 class SetRoute extends StatefulWidget {
+  // props from ceate_ride
   final String date;
   final String time;
   final String seats;
   final String price;
+
   const SetRoute(
       {super.key,
       required this.date,
@@ -78,6 +78,7 @@ class _SetRouteState extends State<SetRoute> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Set Route"),
+        backgroundColor: const Color(0xff4BA0FE),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -90,7 +91,7 @@ class _SetRouteState extends State<SetRoute> {
                   GestureDetector(
                     onTap: () async {
                       final user = auth.currentUser;
-                      final uid = auth.currentUser?.uid;
+                      final uid = user?.uid;
                       totalSeats = int.parse(widget.seats);
                       final userData = await firestore
                           .collection('app')

@@ -7,7 +7,9 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../../../utils/map_utils.dart';
 
 class SeeCompleteRideInfo extends StatefulWidget {
+  //props from get_ride
   final String? profile_url;
+  final String? price;
   final String? driver_token;
   final String? ride_id;
   final String? driver_id;
@@ -39,6 +41,7 @@ class SeeCompleteRideInfo extends StatefulWidget {
     this.car_name,
     this.phone,
     this.seats,
+    this.price,
     this.car_model,
     this.car_number,
     this.source,
@@ -321,7 +324,7 @@ class _SeeCompleteRideInfoState extends State<SeeCompleteRideInfo> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text('Estimated fare : 200/seat'),
+                Text('Estimated fare : ${widget.price}/seat'),
                 Text("Total Seats : ${widget.seats}")
               ],
             ),

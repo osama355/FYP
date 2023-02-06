@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/pessenger_sidebar.dart';
 import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/see_complete_ride_info.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -24,9 +23,9 @@ class _GetRideState extends State<GetRide> {
   Widget build(BuildContext context) {
     CollectionReference rides = FirebaseFirestore.instance.collection('rides');
     return Scaffold(
-      drawer: const PessengerSidebar(),
       appBar: AppBar(
         backgroundColor: const Color(0xff4BA0FE),
+        automaticallyImplyLeading: true,
         title: const Text("All Rides"),
       ),
       body: StreamBuilder(
@@ -36,7 +35,7 @@ class _GetRideState extends State<GetRide> {
             return const Text("Something went wrong");
           }
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Text("Loading");
+            return const Center(child: Text("Loading"));
           }
           if (snapshot.data!.docs.isEmpty) {
             return const Center(
@@ -113,7 +112,7 @@ class _GetRideState extends State<GetRide> {
                             width: 5,
                           ),
                           Text(
-                            'Start ${snapshot.data!.docs[index]['source']}',
+                            'Start : ${snapshot.data!.docs[index]['source']}',
                             style: const TextStyle(fontSize: 13),
                           )
                         ],
@@ -219,6 +218,8 @@ class _GetRideState extends State<GetRide> {
                                     String seats = snapshot
                                         .data!.docs[index]['require-pess']
                                         .toString();
+                                    String price =
+                                        snapshot.data!.docs[index]['price'];
                                     double sourceLat = snapshot
                                         .data!.docs[index]['source-lat'];
                                     double sourceLng = snapshot
@@ -242,6 +243,7 @@ class _GetRideState extends State<GetRide> {
                                                     ride_id: rideId,
                                                     seats: seats,
                                                     phone: phone,
+                                                    price: price,
                                                     profile_url: profileUrl,
                                                     driver_name: driverName,
                                                     car_name: carName,

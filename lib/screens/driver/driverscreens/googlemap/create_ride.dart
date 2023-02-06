@@ -2,7 +2,6 @@
 import 'package:drive_sharing_app/screens/driver/driverscreens/googlemap/set_route.dart';
 import 'package:drive_sharing_app/utils/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:drive_sharing_app/screens/driver/driverscreens/driver_sidebar.dart';
 import 'package:intl/intl.dart' show DateFormat;
 
 class CreateRide extends StatefulWidget {
@@ -28,9 +27,16 @@ class _CreateRideState extends State<CreateRide> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        drawer: const DriverSidebar(),
         appBar: AppBar(
+          backgroundColor: const Color(0xff4BA0FE),
+          automaticallyImplyLeading: false,
           title: const Text("Create Ride"),
+          leading: GestureDetector(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: const Icon(Icons.arrow_back),
+          ),
         ),
         body: SingleChildScrollView(
           child: Padding(
@@ -180,7 +186,7 @@ class _CreateRideState extends State<CreateRide> {
                   decoration: const InputDecoration(
                       contentPadding: EdgeInsets.only(top: 15.0, bottom: 15.0),
                       prefixIcon: Icon(
-                        Icons.money,
+                        Icons.attach_money,
                         color: Color(0xff4BA0FE),
                         size: 20,
                       ),

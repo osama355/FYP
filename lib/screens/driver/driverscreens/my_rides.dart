@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:drive_sharing_app/screens/driver/driverscreens/driver_sidebar.dart';
-import 'package:drive_sharing_app/screens/driver/driverscreens/googlemap/driver_map_screen.dart';
+import 'package:drive_sharing_app/screens/driver/driverscreens/driver_home_screen.dart';
 import 'package:drive_sharing_app/screens/driver/driverscreens/travel_partners.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -29,8 +28,9 @@ class _MyRidesState extends State<MyRides> {
   Widget build(BuildContext context) {
     final user = auth.currentUser;
     return Scaffold(
-      drawer: const DriverSidebar(),
       appBar: AppBar(
+        automaticallyImplyLeading: true,
+        backgroundColor: const Color(0xff4BA0FE),
         title: const Text("My Rides"),
       ),
       body: StreamBuilder(
@@ -40,7 +40,7 @@ class _MyRidesState extends State<MyRides> {
             return const Text("Something went wrong");
           }
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Text("Loading...");
+            return const Center(child: Text("Loading..."));
           }
           if (snapshot.data!.docs.isEmpty) {
             return const Center(
@@ -214,7 +214,7 @@ class _MyRidesState extends State<MyRides> {
                                                 endPositionLng: destinationLng,
                                               )));
                                 },
-                                child: const Text("Travel Partners")),
+                                child: const Text("Start")),
                             const SizedBox(
                               width: 5,
                             ),

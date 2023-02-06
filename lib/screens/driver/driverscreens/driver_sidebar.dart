@@ -70,7 +70,7 @@ class _DriverSidebarState extends State<DriverSidebar> {
                               child: const Icon(
                                 Icons.person,
                                 size: 50,
-                                color: Colors.white,
+                                color: Colors.grey,
                               ),
                             ),
                           );
