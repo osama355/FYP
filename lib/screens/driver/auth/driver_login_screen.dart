@@ -38,6 +38,9 @@ class _DriveLoginScreenState extends State<DriveLoginScreen> {
             password: passController.text.toString())
         .then((value) {
       if (_auth.currentUser!.emailVerified) {
+        setState(() {
+          loading = false;
+        });
         Utils().toastMessage(value.user!.email.toString());
         Navigator.push(context,
             MaterialPageRoute(builder: (context) => const DriverPost()));
@@ -45,10 +48,10 @@ class _DriveLoginScreenState extends State<DriveLoginScreen> {
         Utils().toastMessage(
             "Please verify your email by clicking on link sending to you email");
         _auth.currentUser!.sendEmailVerification();
+        setState(() {
+          loading = false;
+        });
       }
-      setState(() {
-        loading = false;
-      });
     }).onError((error, stackTrace) {
       debugPrint(error.toString());
       Utils().toastMessage(error.toString());

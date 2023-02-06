@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:drive_sharing_app/screens/driver/driverscreens/driver_sidebar.dart';
 import 'package:drive_sharing_app/utils/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -69,9 +68,9 @@ class _DriverRequestsState extends State<DriverRequests> {
         FirebaseFirestore.instance.collection('requests');
 
     return Scaffold(
-        drawer: const DriverSidebar(),
         appBar: AppBar(
           title: const Text("My Request"),
+          backgroundColor: const Color(0xff4BA0FE),
         ),
         body: StreamBuilder(
           stream: requestCollection.snapshots(),
@@ -80,7 +79,7 @@ class _DriverRequestsState extends State<DriverRequests> {
               return const Text("Something went wrong");
             }
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Text("Loading...");
+              return const Center(child: Text("Loading..."));
             }
             if (snapshot.data!.docs.isEmpty) {
               return const Center(
@@ -234,9 +233,6 @@ class _DriverRequestsState extends State<DriverRequests> {
                                                   ['ride_id'])
                                               .get();
 
-                                          reservedSeats = remainSeats
-                                              .data()?['reservedSeats'];
-
                                           sendNotification1(
                                               'Request', token, driverName);
                                           firestore
@@ -251,7 +247,9 @@ class _DriverRequestsState extends State<DriverRequests> {
                                               .doc(snapshot.data!.docs[index]
                                                   ['ride_id'])
                                               .update({
-                                            'reservedSeats': reservedSeats + 1
+                                            'reservedSeats': remainSeats
+                                                    .data()?['reservedSeats'] +
+                                                1
                                           });
                                         }
                                       : null,

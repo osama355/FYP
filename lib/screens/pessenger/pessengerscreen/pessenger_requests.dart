@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/pessenger_sidebar.dart';
+import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/pessenger_home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -21,9 +21,10 @@ class _PassengerRequestsState extends State<PassengerRequests> {
         FirebaseFirestore.instance.collection('requests');
 
     return Scaffold(
-      drawer: const PessengerSidebar(),
       appBar: AppBar(
         title: const Text('Requests'),
+        automaticallyImplyLeading: true,
+        backgroundColor: const Color(0xff4BA0FE),
       ),
       body: StreamBuilder(
         stream: requestCollection.snapshots(),
@@ -32,7 +33,7 @@ class _PassengerRequestsState extends State<PassengerRequests> {
             return const Text("Something went wrong");
           }
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Text("Loading...");
+            return const Center(child: Text("Loading..."));
           }
           if (snapshot.data!.docs.isEmpty) {
             return const Center(

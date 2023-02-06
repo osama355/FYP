@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:drive_sharing_app/screens/driver/driverscreens/my_rides.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -35,9 +36,9 @@ class _DriverMapScreenState extends State<DriverMapScreen> {
     PolylineId id = const PolylineId("poly");
     Polyline polyline = Polyline(
         polylineId: id,
-        color: Colors.blue,
+        color: Colors.green,
         points: polylineCoordinates,
-        width: 3);
+        width: 5);
     polylines[id] = polyline;
     setState(() {});
   }
@@ -96,17 +97,17 @@ class _DriverMapScreenState extends State<DriverMapScreen> {
     };
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
+        backgroundColor: const Color(0xff4BA0FE),
+        title: const Text("Ride Node"),
         leading: IconButton(
             onPressed: () {
-              Navigator.pop(context);
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const MyRides()));
             },
             icon: const CircleAvatar(
               backgroundColor: Colors.white,
               child: Icon(
                 Icons.arrow_back,
-                color: Colors.black,
               ),
             )),
       ),

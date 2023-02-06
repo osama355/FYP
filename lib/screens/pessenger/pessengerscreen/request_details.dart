@@ -10,6 +10,7 @@ import 'package:google_place/google_place.dart';
 import 'package:http/http.dart' as http;
 
 class RequestDetails extends StatefulWidget {
+  //props from see_complete_ride_info
   final String? driver_id;
   final String? driver_token;
   final String? ride_id;

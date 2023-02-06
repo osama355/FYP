@@ -65,6 +65,7 @@ class _VerifyMblCodeScreenState extends State<VerifyMblCodeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Verify"),
+        backgroundColor: const Color(0xff4BA0FE),
       ),
       body: SingleChildScrollView(
         child: Center(

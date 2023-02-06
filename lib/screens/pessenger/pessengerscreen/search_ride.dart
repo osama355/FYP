@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/filter_rides.dart';
-import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/pessenger_sidebar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_place/google_place.dart';
 
@@ -50,10 +49,16 @@ class _SearchRideState extends State<SearchRide> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        drawer: const PessengerSidebar(),
         appBar: AppBar(
           backgroundColor: const Color(0xff4BA0FE),
+          automaticallyImplyLeading: false,
           title: const Text('Search Ride'),
+          leading: GestureDetector(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: const Icon(Icons.arrow_back),
+          ),
         ),
         body: SingleChildScrollView(
           child: Form(
