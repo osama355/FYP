@@ -215,36 +215,6 @@ class _MyRidesState extends State<MyRides> {
                                               )));
                                 },
                                 child: const Text("Travel Partners")),
-                            // ElevatedButton(
-                            //     onPressed: () {
-                            //       double sourceLat =
-                            //           snapshot.data?.docs[index]["source-lat"];
-                            //       double sourceLng =
-                            //           snapshot.data?.docs[index]["source-lng"];
-                            //       double viaLat =
-                            //           snapshot.data?.docs[index]["via-lat"];
-                            //       double viaLng =
-                            //           snapshot.data?.docs[index]["via-lng"];
-                            //       double destinationLat = snapshot
-                            //           .data?.docs[index]["destination-lat"];
-                            //       double destinationLng = snapshot
-                            //           .data?.docs[index]["destination-lng"];
-                            //       Navigator.push(
-                            //           context,
-                            //           MaterialPageRoute(
-                            //               builder: (context) => DriverMapScreen(
-                            //                     startPositionLat: sourceLat,
-                            //                     startPositionLng: sourceLng,
-                            //                     midPositionLat: viaLat,
-                            //                     midPositionLng: viaLng,
-                            //                     endPositionLat: destinationLat,
-                            //                     endPositionLng: destinationLng,
-                            //                   )));
-                            //     },
-                            //     child: const Text(
-                            //       "Start",
-                            //       style: TextStyle(fontSize: 12),
-                            //     )),
                             const SizedBox(
                               width: 5,
                             ),

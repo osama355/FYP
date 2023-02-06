@@ -133,241 +133,227 @@ class _SeeCompleteRideInfoState extends State<SeeCompleteRideInfo> {
         backgroundColor: const Color(0xff4BA0FE),
         title: const Text("Ride Detail"),
       ),
-      body: Stack(
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 15),
+              child: Row(
+                children: [
+                  ClipOval(
+                    child: widget.profile_url != ""
+                        ? Image.network(
+                            widget.profile_url!,
+                            width: 60,
+                            height: 60,
+                            fit: BoxFit.cover,
+                          )
+                        : Container(
+                            width: 60,
+                            height: 60,
+                            decoration:
+                                const BoxDecoration(color: Color(0xff4BA0FE)),
+                            child: const Icon(
+                              Icons.person,
+                              size: 40,
+                              color: Colors.white,
+                            ),
+                          ),
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        widget.driver_name!,
+                        style: const TextStyle(
+                            fontSize: 15.0, fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        widget.car_name!,
+                        style: const TextStyle(fontSize: 12.0),
+                      ),
+                      Text(
+                        '${widget.car_model} | ${widget.car_number}',
+                        style: const TextStyle(fontSize: 12.0),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 20),
+            child: Row(
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 15, top: 20),
-                  child: Row(
-                    children: [
-                      ClipOval(
-                        child: widget.profile_url != ""
-                            ? Image.network(
-                                widget.profile_url!,
-                                width: 60,
-                                height: 60,
-                                fit: BoxFit.cover,
-                              )
-                            : Container(
-                                width: 60,
-                                height: 60,
-                                decoration: const BoxDecoration(
-                                    color: Color(0xff4BA0FE)),
-                                child: const Icon(
-                                  Icons.person,
-                                  size: 40,
-                                  color: Colors.white,
-                                ),
-                              ),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            widget.driver_name!,
-                            style: const TextStyle(
-                                fontSize: 15.0, fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            widget.car_name!,
-                            style: const TextStyle(fontSize: 12.0),
-                          ),
-                          Text(
-                            '${widget.car_model} | ${widget.car_number}',
-                            style: const TextStyle(fontSize: 12.0),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+                const Icon(
+                  Icons.circle,
+                  color: Colors.green,
+                  size: 10.0,
                 ),
                 const SizedBox(
-                  height: 20,
+                  width: 5,
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 20),
-                  child: Row(
-                    children: [
-                      const Icon(
-                        Icons.circle,
-                        color: Colors.green,
-                        size: 10.0,
-                      ),
-                      const SizedBox(
-                        width: 5,
-                      ),
-                      Text('Source : ${widget.source}'),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 20),
-                  child: Row(
-                    children: [
-                      const Icon(
-                        Icons.circle,
-                        color: Colors.blue,
-                        size: 10.0,
-                      ),
-                      const SizedBox(
-                        width: 5,
-                      ),
-                      Text('Via : ${widget.via}'),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 20),
-                  child: Row(
-                    children: [
-                      const Icon(
-                        Icons.circle,
-                        color: Colors.red,
-                        size: 10.0,
-                      ),
-                      const SizedBox(
-                        width: 5,
-                      ),
-                      Text('Destination : ${widget.destination}'),
-                    ],
-                  ),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 20),
-                  child: Row(
-                    children: [
-                      const Icon(
-                        Icons.phone,
-                        size: 20,
-                        color: Color(0xff4BA0FE),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text('Phone'),
-                          Text('${widget.phone}'),
-                        ],
-                      )
-                    ],
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 20),
-                  child: Row(
-                    children: [
-                      const Icon(
-                        Icons.date_range,
-                        size: 20,
-                        color: Color(0xff4BA0FE),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text('Date'),
-                          Text('${widget.date}'),
-                        ],
-                      )
-                    ],
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 20),
-                  child: Row(
-                    children: [
-                      const Icon(
-                        Icons.access_time,
-                        size: 20,
-                        color: Color(0xff4BA0FE),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text('Time'),
-                          Text('${widget.time}'),
-                        ],
-                      )
-                    ],
-                  ),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
-                          Text('Estimated fare'),
-                          Text('200/seat'),
-                        ],
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text('Avaiable'),
-                          Text('${widget.seats} seats')
-                        ],
-                      )
-                    ],
-                  ),
-                ),
-                const SizedBox(
-                  height: 30,
-                ),
-                SizedBox(
-                  height: 230,
-                  child: GoogleMap(
-                    initialCameraPosition: initialPosition,
-                    markers: markers,
-                    polylines: Set<Polyline>.of(polylines.values),
-                    onMapCreated: (GoogleMapController controller) {
-                      _controller.complete(controller);
-                      Future.delayed(const Duration(milliseconds: 2000), () {
-                        controller.animateCamera(CameraUpdate.newLatLngBounds(
-                            MapUtils.boundsFromLatLngList(
-                                markers.map((loc) => loc.position).toList()),
-                            1));
-                        _getPolyline();
-                      });
-                    },
-                  ),
-                ),
+                Text('Source : ${widget.source}'),
               ],
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Expanded(
-                child: Align(
-              alignment: Alignment.bottomCenter,
-              child: ElevatedButton(
+            padding: const EdgeInsets.only(left: 20),
+            child: Row(
+              children: [
+                const Icon(
+                  Icons.circle,
+                  color: Colors.blue,
+                  size: 10.0,
+                ),
+                const SizedBox(
+                  width: 5,
+                ),
+                Text('Via : ${widget.via}'),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 20),
+            child: Row(
+              children: [
+                const Icon(
+                  Icons.circle,
+                  color: Colors.red,
+                  size: 10.0,
+                ),
+                const SizedBox(
+                  width: 5,
+                ),
+                Text('Destination : ${widget.destination}'),
+              ],
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 20),
+            child: Row(
+              children: [
+                const Icon(
+                  Icons.phone,
+                  size: 20,
+                  color: Color(0xff4BA0FE),
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('Phone'),
+                    Text('${widget.phone}'),
+                  ],
+                )
+              ],
+            ),
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 20),
+            child: Row(
+              children: [
+                const Icon(
+                  Icons.date_range,
+                  size: 20,
+                  color: Color(0xff4BA0FE),
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('Date'),
+                    Text('${widget.date}'),
+                  ],
+                )
+              ],
+            ),
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 20),
+            child: Row(
+              children: [
+                const Icon(
+                  Icons.access_time,
+                  size: 20,
+                  color: Color(0xff4BA0FE),
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('Time'),
+                    Text('${widget.time}'),
+                  ],
+                )
+              ],
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 20, right: 20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text('Estimated fare : 200/seat'),
+                Text("Total Seats : ${widget.seats}")
+              ],
+            ),
+          ),
+          const SizedBox(
+            height: 30,
+          ),
+          SizedBox(
+            height: 250,
+            child: GoogleMap(
+              initialCameraPosition: initialPosition,
+              markers: markers,
+              polylines: Set<Polyline>.of(polylines.values),
+              onMapCreated: (GoogleMapController controller) {
+                _controller.complete(controller);
+                Future.delayed(const Duration(milliseconds: 2000), () {
+                  controller.animateCamera(CameraUpdate.newLatLngBounds(
+                      MapUtils.boundsFromLatLngList(
+                          markers.map((loc) => loc.position).toList()),
+                      1));
+                  _getPolyline();
+                });
+              },
+            ),
+          ),
+          Container(
+            height: 60,
+            width: double.infinity,
+            decoration: const BoxDecoration(
+              color: Color(0xff4BA0FE),
+            ),
+            child: OutlinedButton(
                 onPressed: () {
                   String driver_id = widget.driver_id!;
                   String driver_token = widget.driver_token!;
@@ -389,6 +375,7 @@ class _SeeCompleteRideInfoState extends State<SeeCompleteRideInfo> {
                   double via_lng = widget.via_lng!;
                   double destination_lat = widget.destination_lat!;
                   double destination_lng = widget.destination_lng!;
+
                   Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -415,12 +402,10 @@ class _SeeCompleteRideInfoState extends State<SeeCompleteRideInfo> {
                                 destination_lng: destination_lng,
                               )));
                 },
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xff4BA0FE),
-                    minimumSize: const Size.fromHeight(50)),
-                child: const Text('Request'),
-              ),
-            )),
+                child: const Text(
+                  "Request",
+                  style: TextStyle(color: Colors.white, fontSize: 20),
+                )),
           )
         ],
       ),
