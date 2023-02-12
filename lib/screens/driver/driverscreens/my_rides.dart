@@ -29,10 +29,16 @@ class _MyRidesState extends State<MyRides> {
     final user = auth.currentUser;
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: true,
-        backgroundColor: const Color(0xff4BA0FE),
-        title: const Text("My Rides"),
-      ),
+          automaticallyImplyLeading: false,
+          backgroundColor: const Color(0xff4BA0FE),
+          title: const Text("My Rides"),
+          leading: GestureDetector(
+            onTap: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const DriverPost()));
+            },
+            child: Icon(Icons.arrow_back),
+          )),
       body: StreamBuilder(
         stream: ridesCollection.snapshots(),
         builder: (context, snapshot) {
