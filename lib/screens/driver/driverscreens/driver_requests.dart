@@ -281,9 +281,30 @@ class _DriverRequestsState extends State<DriverRequests> {
                                             'request_Status': "Rejected"
                                           });
                                         }
-                                      : null,
-                                  child: const Text("Reject",
-                                      style: TextStyle(fontSize: 12)))
+                                      : snapshot.data!.docs[index]
+                                                  ['request_Status'] ==
+                                              "Rejected"
+                                          ? () {
+                                              firestore.runTransaction(
+                                                  (Transaction
+                                                      transaction) async {
+                                                transaction.delete(snapshot
+                                                    .data!
+                                                    .docs[index]
+                                                    .reference);
+                                              });
+                                            }
+                                          : null,
+                                  child: Text(
+                                      snapshot.data!.docs[index]
+                                                      ['request_Status'] ==
+                                                  'Pending' ||
+                                              snapshot.data!.docs[index]
+                                                      ['request_Status'] ==
+                                                  "Accepted"
+                                          ? "Reject"
+                                          : "Delete",
+                                      style: const TextStyle(fontSize: 12)))
                             ],
                           ),
                         ],

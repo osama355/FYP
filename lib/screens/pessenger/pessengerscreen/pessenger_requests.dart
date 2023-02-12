@@ -23,8 +23,17 @@ class _PassengerRequestsState extends State<PassengerRequests> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Requests'),
-        automaticallyImplyLeading: true,
+        automaticallyImplyLeading: false,
         backgroundColor: const Color(0xff4BA0FE),
+        leading: GestureDetector(
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const PessePostScreen()));
+          },
+          child: const Icon(Icons.arrow_back),
+        ),
       ),
       body: StreamBuilder(
         stream: requestCollection.snapshots(),
@@ -204,9 +213,12 @@ class _PassengerRequestsState extends State<PassengerRequests> {
                               minWidth: 60.0,
                               color: const Color(0xff4BA0FE),
                               textColor: Colors.white,
-                              child: const Text(
-                                'Cancle',
-                                style: TextStyle(fontSize: 13),
+                              child: Text(
+                                snapshot.data!.docs[index]['request_Status'] ==
+                                        "Rejected"
+                                    ? "Delete Request"
+                                    : "Cancle Request",
+                                style: const TextStyle(fontSize: 13),
                               ),
                             )
                           ],
