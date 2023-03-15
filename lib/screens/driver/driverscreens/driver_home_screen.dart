@@ -1,5 +1,4 @@
 // ignore_for_file: avoid_print
-
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drive_sharing_app/screens/driver/driverscreens/driver_sidebar.dart';
@@ -43,7 +42,7 @@ class _DriverPost extends State<DriverPost> {
       print("${value.latitude} ${value.longitude}");
 
       _markers.add(Marker(
-          markerId: MarkerId('1'),
+          markerId: const MarkerId('1'),
           position: LatLng(value.latitude, value.longitude),
           infoWindow: const InfoWindow(title: "My current location")));
       CameraPosition cameraPosition = CameraPosition(

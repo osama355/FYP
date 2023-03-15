@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/see_complete_ride_info.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+// ignore: depend_on_referenced_packages
+import 'package:intl/intl.dart' show DateFormat;
 
 class GetRide extends StatefulWidget {
   const GetRide({super.key});
@@ -13,7 +15,6 @@ class GetRide extends StatefulWidget {
 class _GetRideState extends State<GetRide> {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   FirebaseAuth auth = FirebaseAuth.instance;
-
   @override
   void initState() {
     super.initState();
@@ -29,7 +30,7 @@ class _GetRideState extends State<GetRide> {
         title: const Text("All Rides"),
       ),
       body: StreamBuilder(
-        stream: rides.snapshots(),
+        stream: rides.orderBy('date').orderBy('time').snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return const Text("Something went wrong");
@@ -43,12 +44,40 @@ class _GetRideState extends State<GetRide> {
             );
           }
 
-          return ListView.builder(
-            itemCount: snapshot.data?.docs.length,
-            itemBuilder: (context, index) {
-              int availableSeats = snapshot.data!.docs[index]['require-pess'] -
-                  snapshot.data!.docs[index]['reservedSeats'];
+          final now = DateTime.now();
+          final sortedDocs = snapshot.data!.docs.where((doc) {
+            final rideDate = DateFormat('dd-MM-yyyy').parse(doc['date']);
+            final rideDateTime =
+                DateTime(rideDate.year, rideDate.month, rideDate.day);
+            return rideDateTime.isAfter(now.subtract(const Duration(days: 1)));
+          }).toList();
 
+          sortedDocs.sort((a, b) {
+            final aDate = DateFormat('dd-MM-yyyy').parse(a['date']);
+            final bDate = DateFormat('dd-MM-yyyy').parse(b['date']);
+            final aTime = DateFormat.jm().parse(a['time']).hour;
+            final bTime = DateFormat.jm().parse(b['time']).hour;
+            if (aDate.isBefore(bDate)) {
+              return -1;
+            } else if (aDate.isAfter(bDate)) {
+              return 1;
+            } else {
+              return aTime.compareTo(bTime);
+            }
+          });
+
+          if (sortedDocs.isEmpty) {
+            return const Center(child: Text("No ride yet"));
+          }
+
+          return ListView.builder(
+            // itemCount: snapshot.data?.docs.length,
+            itemCount: sortedDocs.length,
+            itemBuilder: (context, index) {
+              int availableSeats = sortedDocs[index]['require-pess'] -
+                  sortedDocs[index]['reservedSeats'];
+              final time = DateFormat('HH:mm')
+                  .format(DateFormat.jm().parse(sortedDocs[index]['time']));
               return Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Container(
@@ -69,20 +98,17 @@ class _GetRideState extends State<GetRide> {
                       Row(
                         children: [
                           CircleAvatar(
-                              backgroundColor: snapshot.data!.docs[index]
-                                          ['profile_url'] !=
-                                      ""
-                                  ? Colors.transparent
-                                  : const Color(0xff4BA0FE),
+                              backgroundColor:
+                                  sortedDocs[index]['profile_url'] != ""
+                                      ? Colors.transparent
+                                      : const Color(0xff4BA0FE),
                               child: SizedBox(
                                 width: 60,
                                 height: 60,
                                 child: ClipOval(
-                                  child: snapshot.data!.docs[index]
-                                              ['profile_url'] !=
-                                          ""
-                                      ? Image.network(snapshot.data!.docs[index]
-                                          ['profile_url'])
+                                  child: sortedDocs[index]['profile_url'] != ""
+                                      ? Image.network(
+                                          sortedDocs[index]['profile_url'])
                                       : const Icon(
                                           Icons.person,
                                           color: Colors.white,
@@ -93,7 +119,7 @@ class _GetRideState extends State<GetRide> {
                             width: 10,
                           ),
                           Text(
-                            snapshot.data!.docs[index]['driver-name'],
+                            sortedDocs[index]['driver-name'],
                             style: const TextStyle(fontSize: 13),
                           ),
                         ],
@@ -112,7 +138,7 @@ class _GetRideState extends State<GetRide> {
                             width: 5,
                           ),
                           Text(
-                            'Start : ${snapshot.data!.docs[index]['source']}',
+                            'Start : ${sortedDocs[index]['source']}',
                             style: const TextStyle(fontSize: 13),
                           )
                         ],
@@ -131,7 +157,7 @@ class _GetRideState extends State<GetRide> {
                             width: 5,
                           ),
                           Text(
-                            'Via : ${snapshot.data!.docs[index]['via-route']}',
+                            'Via : ${sortedDocs[index]['via-route']}',
                             style: const TextStyle(fontSize: 13),
                           )
                         ],
@@ -150,7 +176,7 @@ class _GetRideState extends State<GetRide> {
                             width: 5,
                           ),
                           Text(
-                            'Destination : ${snapshot.data!.docs[index]['destination']}',
+                            'Destination : ${sortedDocs[index]['destination']}',
                             style: const TextStyle(fontSize: 13),
                           )
                         ],
@@ -161,7 +187,7 @@ class _GetRideState extends State<GetRide> {
                       Row(
                         children: [
                           Text(
-                            "Time : ${snapshot.data!.docs[index]['date']} at ${snapshot.data!.docs[index]['time']}",
+                            "Time : ${sortedDocs[index]['date']} at $time",
                             style: const TextStyle(fontSize: 13),
                           ),
                         ],
@@ -172,7 +198,7 @@ class _GetRideState extends State<GetRide> {
                       Row(
                         children: [
                           Text(
-                            'Car : ${snapshot.data!.docs[index]['car_name']} | ${snapshot.data!.docs[index]['car_model']}',
+                            'Car : ${sortedDocs[index]['car_name']} | ${snapshot.data!.docs[index]['car_model']}',
                             style: const TextStyle(fontSize: 13),
                           ),
                         ],
@@ -181,58 +207,50 @@ class _GetRideState extends State<GetRide> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                              'Total seats : ${snapshot.data!.docs[index]['require-pess']}'),
+                              'Total seats : ${sortedDocs[index]['require-pess']}'),
                           Text('Available : $availableSeats'),
                           MaterialButton(
                             onPressed: availableSeats == 0
                                 ? () {}
                                 : () {
-                                    String rideId =
-                                        snapshot.data!.docs[index].id;
-                                    String profileUrl = snapshot
-                                        .data!.docs[index]['profile_url'];
-                                    String driverToken = snapshot
-                                        .data!.docs[index]['driver_token'];
-                                    String driverName = snapshot
-                                        .data!.docs[index]['driver-name'];
+                                    String rideId = sortedDocs[index].id;
+                                    String profileUrl =
+                                        sortedDocs[index]['profile_url'];
+                                    String driverToken =
+                                        sortedDocs[index]['driver_token'];
+                                    String driverName =
+                                        sortedDocs[index]['driver-name'];
                                     String driverId =
-                                        snapshot.data!.docs[index]['driver-id'];
+                                        sortedDocs[index]['driver-id'];
                                     String carName =
-                                        snapshot.data!.docs[index]['car_name'];
+                                        sortedDocs[index]['car_name'];
                                     String carModel =
-                                        snapshot.data!.docs[index]['car_model'];
-                                    String carNumber = snapshot
-                                        .data!.docs[index]['car-number'];
-                                    String source =
-                                        snapshot.data!.docs[index]['source'];
-                                    String via =
-                                        snapshot.data!.docs[index]['via-route'];
-                                    String destination = snapshot
-                                        .data!.docs[index]['destination'];
-                                    String date =
-                                        snapshot.data!.docs[index]['date'];
-                                    String time =
-                                        snapshot.data!.docs[index]['time'];
-                                    String phone =
-                                        snapshot.data!.docs[index]['phone'];
-                                    String seats = snapshot
-                                        .data!.docs[index]['require-pess']
+                                        sortedDocs[index]['car_model'];
+                                    String carNumber =
+                                        sortedDocs[index]['car-number'];
+                                    String source = sortedDocs[index]['source'];
+                                    String via = sortedDocs[index]['via-route'];
+                                    String destination =
+                                        sortedDocs[index]['destination'];
+                                    String date = sortedDocs[index]['date'];
+                                    String time = sortedDocs[index]['time'];
+                                    String phone = sortedDocs[index]['phone'];
+                                    String seats = sortedDocs[index]
+                                            ['require-pess']
                                         .toString();
-                                    String price =
-                                        snapshot.data!.docs[index]['price'];
-                                    double sourceLat = snapshot
-                                        .data!.docs[index]['source-lat'];
-                                    double sourceLng = snapshot
-                                        .data!.docs[index]['source-lng'];
+                                    String price = sortedDocs[index]['price'];
+                                    double sourceLat =
+                                        sortedDocs[index]['source-lat'];
+                                    double sourceLng =
+                                        sortedDocs[index]['source-lng'];
                                     double viaLat =
-                                        snapshot.data!.docs[index]['via-lat'];
+                                        sortedDocs[index]['via-lat'];
                                     double viaLng =
-                                        snapshot.data!.docs[index]['via-lng'];
-                                    double destinationLat = snapshot
-                                        .data!.docs[index]['destination-lat'];
-                                    double destinationLng = snapshot
-                                        .data!.docs[index]['destination-lng'];
-
+                                        sortedDocs[index]['via-lng'];
+                                    double destinationLat =
+                                        sortedDocs[index]['destination-lat'];
+                                    double destinationLng =
+                                        sortedDocs[index]['destination-lng'];
                                     Navigator.push(
                                         context,
                                         MaterialPageRoute(
