@@ -48,7 +48,7 @@ class _PessePostScreenState extends State<PessePostScreen> {
   initStatefCurrentLocation() async {
     getCurrentLocation().then((value) async {
       _markers.add(Marker(
-          markerId: MarkerId('1'),
+          markerId: const MarkerId('1'),
           position: LatLng(value.latitude, value.longitude),
           infoWindow: const InfoWindow(title: "My current location")));
       CameraPosition cameraPosition = CameraPosition(
