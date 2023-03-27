@@ -86,10 +86,19 @@ class _DriverRequestsState extends State<DriverRequests> {
                 child: Text("No Request yet"),
               );
             }
+
+            final pendingRides = snapshot.data!.docs.where((doc) {
+              return doc.get('request_Status') == 'Pending';
+            }).toList();
+
+            if (pendingRides.isEmpty) {
+              return const Center(child: Text("No Request yet"));
+            }
+
             return ListView.builder(
-              itemCount: snapshot.data!.docs.length,
+              itemCount: pendingRides.length,
               itemBuilder: (context, index) {
-                if (snapshot.data!.docs[index]['driver_id'] == user?.uid) {
+                if (pendingRides[index]['driver_id'] == user?.uid) {
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Container(
@@ -110,12 +119,11 @@ class _DriverRequestsState extends State<DriverRequests> {
                           Row(
                             children: [
                               ClipOval(
-                                child: snapshot.data!.docs[index]
+                                child: pendingRides[index]
                                             ['pass_profile_url'] !=
                                         ""
                                     ? Image.network(
-                                        snapshot.data!.docs[index]
-                                            ['pass_profile_url'],
+                                        pendingRides[index]['pass_profile_url'],
                                         width: 50,
                                         height: 50,
                                         fit: BoxFit.cover)
@@ -135,7 +143,7 @@ class _DriverRequestsState extends State<DriverRequests> {
                                 width: 10,
                               ),
                               Text(
-                                snapshot.data!.docs[index]['pass_name'],
+                                pendingRides[index]['pass_name'],
                                 style: const TextStyle(fontSize: 15),
                               ),
                             ],
@@ -154,7 +162,7 @@ class _DriverRequestsState extends State<DriverRequests> {
                                 width: 5,
                               ),
                               Text(
-                                snapshot.data!.docs[index]['pass_phone'],
+                                pendingRides[index]['pass_phone'],
                                 style: const TextStyle(fontSize: 13),
                               )
                             ],
@@ -173,7 +181,7 @@ class _DriverRequestsState extends State<DriverRequests> {
                                 width: 5,
                               ),
                               Text(
-                                'Pickup : ${snapshot.data!.docs[index]['pass_pickup']}',
+                                'Pickup : ${pendingRides[index]['pass_pickup']}',
                                 style: const TextStyle(fontSize: 13),
                               )
                             ],
@@ -192,7 +200,7 @@ class _DriverRequestsState extends State<DriverRequests> {
                                 width: 5,
                               ),
                               Text(
-                                'Drop : ${snapshot.data!.docs[index]['pass_dest']}',
+                                'Drop : ${pendingRides[index]['pass_dest']}',
                                 style: const TextStyle(fontSize: 13),
                               )
                             ],
@@ -207,7 +215,7 @@ class _DriverRequestsState extends State<DriverRequests> {
                                 style: TextStyle(fontSize: 13),
                               ),
                               Text(
-                                '${snapshot.data!.docs[index]['date']}  ${snapshot.data!.docs[index]['time']}',
+                                '${pendingRides[index]['date']}  ${snapshot.data!.docs[index]['time']}',
                                 style: const TextStyle(fontSize: 13),
                               ),
                             ],
@@ -218,18 +226,19 @@ class _DriverRequestsState extends State<DriverRequests> {
                           Row(
                             children: [
                               ElevatedButton(
-                                  onPressed: snapshot.data!.docs[index]
+                                  onPressed: pendingRides[index]
                                               ['request_Status'] ==
                                           'Pending'
                                       ? () async {
                                           isAccept = true;
-                                          String token = snapshot
-                                              .data!.docs[index]['pass_token'];
-                                          String driverName = snapshot
-                                              .data!.docs[index]['driver_name'];
+                                          String token =
+                                              pendingRides[index]['pass_token'];
+                                          String driverName =
+                                              pendingRides[index]
+                                                  ['driver_name'];
                                           final remainSeats = await firestore
                                               .collection('rides')
-                                              .doc(snapshot.data!.docs[index]
+                                              .doc(pendingRides[index]
                                                   ['ride_id'])
                                               .get();
 
@@ -237,14 +246,13 @@ class _DriverRequestsState extends State<DriverRequests> {
                                               'Request', token, driverName);
                                           firestore
                                               .collection('requests')
-                                              .doc(
-                                                  snapshot.data!.docs[index].id)
+                                              .doc(pendingRides[index].id)
                                               .update({
                                             'request_Status': "Accepted"
                                           });
                                           firestore
                                               .collection('rides')
-                                              .doc(snapshot.data!.docs[index]
+                                              .doc(pendingRides[index]
                                                   ['ride_id'])
                                               .update({
                                             'reservedSeats': remainSeats
@@ -261,37 +269,35 @@ class _DriverRequestsState extends State<DriverRequests> {
                                 width: 5,
                               ),
                               ElevatedButton(
-                                  onPressed: snapshot.data!.docs[index]
+                                  onPressed: pendingRides[index]
                                               ['request_Status'] ==
                                           'Pending'
                                       ? () {
                                           isAccept = false;
-                                          String token = snapshot
-                                              .data!.docs[index]['pass_token'];
-                                          String driverName = snapshot
-                                              .data!.docs[index]['driver_name'];
+                                          String token =
+                                              pendingRides[index]['pass_token'];
+                                          String driverName =
+                                              pendingRides[index]
+                                                  ['driver_name'];
 
                                           sendNotification1(
                                               'Request', token, driverName);
                                           firestore
                                               .collection('requests')
-                                              .doc(
-                                                  snapshot.data!.docs[index].id)
+                                              .doc(pendingRides[index].id)
                                               .update({
                                             'request_Status': "Rejected"
                                           });
                                         }
-                                      : snapshot.data!.docs[index]
-                                                  ['request_Status'] ==
+                                      : pendingRides[index]['request_Status'] ==
                                               "Rejected"
                                           ? () {
                                               firestore.runTransaction(
                                                   (Transaction
                                                       transaction) async {
-                                                transaction.delete(snapshot
-                                                    .data!
-                                                    .docs[index]
-                                                    .reference);
+                                                transaction.delete(
+                                                    pendingRides[index]
+                                                        .reference);
                                               });
                                             }
                                           : null,

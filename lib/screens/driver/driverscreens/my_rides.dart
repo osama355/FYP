@@ -79,7 +79,7 @@ class _MyRidesState extends State<MyRides> {
           //   }
           // });
 
-          final now = DateTime.now();
+          // final now = DateTime.now();
           // final sortedDocs = snapshot.data!.docs.where((doc) {
           //   final rideDate = DateFormat('dd-MM-yyyy').parse(doc['date']);
           //   final rideTime = DateFormat.jm().parse(doc['time']);
@@ -88,6 +88,7 @@ class _MyRidesState extends State<MyRides> {
           //   return rideDateTime.isAfter(now) || rideDate.isAfter(now);
           // }).toList();
 
+          final now = DateTime.now();
           final sortedDocs = snapshot.data!.docs.where((doc) {
             final rideDate = DateFormat('dd-MM-yyyy').parse(doc['date']);
             final rideDateTime =
