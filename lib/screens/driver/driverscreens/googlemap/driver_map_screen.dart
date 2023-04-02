@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drive_sharing_app/screens/driver/driverscreens/my_rides.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
@@ -12,8 +13,10 @@ class DriverMapScreen extends StatefulWidget {
   final double? midPositionLng;
   final double? endPositionLat;
   final double? endPositionLng;
+  final String? rideId;
   const DriverMapScreen(
       {super.key,
+      this.rideId,
       this.startPositionLat,
       this.startPositionLng,
       this.midPositionLat,
@@ -31,6 +34,8 @@ class _DriverMapScreenState extends State<DriverMapScreen> {
   Map<PolylineId, Polyline> polylines = {};
   List<LatLng> polylineCoordinates = [];
   PolylinePoints polylinePoints = PolylinePoints();
+
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   _addPolyLine() {
     PolylineId id = const PolylineId("poly");
@@ -70,6 +75,13 @@ class _DriverMapScreenState extends State<DriverMapScreen> {
     _addPolyLine();
   }
 
+  updateRideStatus() async {
+    await firestore
+        .collection('rides')
+        .doc(widget.rideId)
+        .update({'status': 'completed'});
+  }
+
   @override
   void initState() {
     super.initState();
@@ -100,32 +112,103 @@ class _DriverMapScreenState extends State<DriverMapScreen> {
         backgroundColor: const Color(0xff4BA0FE),
         title: const Text("Ride Node"),
         leading: IconButton(
-            onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const MyRides()));
-            },
-            icon: const CircleAvatar(
-              backgroundColor: Colors.white,
-              child: Icon(
-                Icons.arrow_back,
-              ),
-            )),
+          onPressed: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const MyRides()));
+          },
+          icon: const CircleAvatar(
+            backgroundColor: Colors.white,
+            child: Icon(Icons.arrow_back),
+          ),
+        ),
       ),
-      body: GoogleMap(
-        initialCameraPosition: initialPosition,
-        markers: markers,
-        polylines: Set<Polyline>.of(polylines.values),
-        onMapCreated: (GoogleMapController controller) {
-          _controller.complete(controller);
-          Future.delayed(const Duration(milliseconds: 2000), () {
-            controller.animateCamera(CameraUpdate.newLatLngBounds(
-                MapUtils.boundsFromLatLngList(
-                    markers.map((loc) => loc.position).toList()),
-                1));
-            _getPolyline();
-          });
-        },
+      body: Column(
+        children: [
+          Expanded(
+            child: GoogleMap(
+              initialCameraPosition: initialPosition,
+              markers: markers,
+              polylines: Set<Polyline>.of(polylines.values),
+              onMapCreated: (GoogleMapController controller) {
+                _controller.complete(controller);
+                Future.delayed(const Duration(milliseconds: 2000), () {
+                  controller.animateCamera(CameraUpdate.newLatLngBounds(
+                      MapUtils.boundsFromLatLngList(
+                          markers.map((loc) => loc.position).toList()),
+                      1));
+                  _getPolyline();
+                });
+              },
+            ),
+          ),
+          Container(
+            width: double.infinity,
+            height: 50,
+            color: Colors.white,
+            child: ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor:
+                    MaterialStateProperty.all<Color>(const Color(0xff4BA0FE)),
+              ),
+              onPressed: () {
+                updateRideStatus();
+              },
+              child: const Text('Complete Ride',
+                  style: TextStyle(color: Colors.white, fontSize: 20)),
+            ),
+          ),
+        ],
       ),
     );
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Scaffold(
+//       appBar: AppBar(
+//         backgroundColor: const Color(0xff4BA0FE),
+//         title: const Text("Ride Node"),
+//         leading: IconButton(
+//             onPressed: () {
+//               Navigator.push(context,
+//                   MaterialPageRoute(builder: (context) => const MyRides()));
+//             },
+//             icon: const CircleAvatar(
+//               backgroundColor: Colors.white,
+//               child: Icon(
+//                 Icons.arrow_back,
+//               ),
+//             )),
+//       ),
+//       body: GoogleMap(
+//         initialCameraPosition: initialPosition,
+//         markers: markers,
+//         polylines: Set<Polyline>.of(polylines.values),
+//         onMapCreated: (GoogleMapController controller) {
+//           _controller.complete(controller);
+//           Future.delayed(const Duration(milliseconds: 2000), () {
+//             controller.animateCamera(CameraUpdate.newLatLngBounds(
+//                 MapUtils.boundsFromLatLngList(
+//                     markers.map((loc) => loc.position).toList()),
+//                 1));
+//             _getPolyline();
+//           });
+//         },
+//       ),
+//     );
