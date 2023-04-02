@@ -1,46 +1,32 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:drive_sharing_app/screens/driver/driverscreens/driver_home_screen.dart';
-import 'package:drive_sharing_app/screens/driver/driverscreens/travel_partners.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 // ignore: depend_on_referenced_packages, unused_import
 import 'package:intl/intl.dart' show DateFormat;
 
-class MyRides extends StatefulWidget {
-  const MyRides({super.key});
+class DriverHistory extends StatefulWidget {
+  const DriverHistory({super.key});
 
   @override
-  State<MyRides> createState() => _MyRidesState();
+  State<DriverHistory> createState() => _DriverHistoryState();
 }
 
-class _MyRidesState extends State<MyRides> {
+class _DriverHistoryState extends State<DriverHistory> {
   FirebaseAuth auth = FirebaseAuth.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
-  final CollectionReference ridesCollection =
-      FirebaseFirestore.instance.collection('rides');
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
     final user = auth.currentUser;
+    final CollectionReference historyCollection =
+        FirebaseFirestore.instance.collection('rides');
     return Scaffold(
       appBar: AppBar(
-          automaticallyImplyLeading: false,
-          backgroundColor: const Color(0xff4BA0FE),
-          title: const Text("My Rides"),
-          leading: GestureDetector(
-            onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const DriverPost()));
-            },
-            child: const Icon(Icons.arrow_back),
-          )),
+        backgroundColor: const Color(0xff4BA0FE),
+        title: const Text("History"),
+      ),
       body: StreamBuilder(
-        stream: ridesCollection
+        stream: historyCollection
             .orderBy('date')
             .orderBy(
               'time',
@@ -66,9 +52,9 @@ class _MyRidesState extends State<MyRides> {
                 DateTime(rideDate.year, rideDate.month, rideDate.day);
             final rideStatus = doc['status'];
             return rideDateTime
-                    .isAfter(now.subtract(const Duration(days: 1))) &&
-                rideStatus != 'cancel' &&
-                rideStatus != 'completed';
+                        .isAfter(now.subtract(const Duration(days: 1))) &&
+                    rideStatus == 'cancel' ||
+                rideStatus == 'completed';
           }).toList();
 
           sortedDocs.sort((a, b) {
@@ -86,7 +72,7 @@ class _MyRidesState extends State<MyRides> {
           });
 
           if (sortedDocs.isEmpty) {
-            return const Center(child: Text("No ride yet"));
+            return const Center(child: Text("No history yet"));
           }
 
           return ListView.builder(
@@ -230,50 +216,35 @@ class _MyRidesState extends State<MyRides> {
                         ),
                         Row(
                           children: [
-                            ElevatedButton(
-                                onPressed: () {
-                                  String rideId = sortedDocs[index].id;
-                                  double sourceLat =
-                                      sortedDocs[index]["source-lat"];
-                                  double sourceLng =
-                                      sortedDocs[index]["source-lng"];
-                                  double viaLat = sortedDocs[index]["via-lat"];
-                                  double viaLng = sortedDocs[index]["via-lng"];
-                                  double destinationLat =
-                                      sortedDocs[index]["destination-lat"];
-                                  double destinationLng =
-                                      sortedDocs[index]["destination-lng"];
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => TravelPartners(
-                                                rideId: rideId,
-                                                startPositionLat: sourceLat,
-                                                startPositionLng: sourceLng,
-                                                midPositionLat: viaLat,
-                                                midPositionLng: viaLng,
-                                                endPositionLat: destinationLat,
-                                                endPositionLng: destinationLng,
-                                              )));
-                                },
-                                child: const Text("Start")),
+                            SizedBox(
+                              width: 120,
+                              child: ElevatedButton.icon(
+                                  onPressed: () async {
+                                    await firestore
+                                        .collection('rides')
+                                        .doc(sortedDocs[index].id)
+                                        .update({'status': 'stop'});
+                                  },
+                                  icon: const Icon(Icons.create),
+                                  label: const Text("Recreate")),
+                            ),
                             const SizedBox(
                               width: 5,
                             ),
-                            ElevatedButton(
-                                onPressed: () async {
-                                  // firestore.runTransaction(
-                                  //     (Transaction transaction) async {
-                                  //   transaction.delete(
-                                  //       snapshot.data!.docs[index].reference);
-                                  // });
-                                  await firestore
-                                      .collection('rides')
-                                      .doc(sortedDocs[index].id)
-                                      .update({'status': 'cancel'});
-                                },
-                                child: const Text("Cancel",
-                                    style: TextStyle(fontSize: 12)))
+                            SizedBox(
+                              width: 120,
+                              child: ElevatedButton.icon(
+                                  onPressed: () {
+                                    firestore.runTransaction(
+                                        (Transaction transaction) async {
+                                      transaction.delete(
+                                          snapshot.data!.docs[index].reference);
+                                    });
+                                  },
+                                  icon: const Icon(Icons.cancel),
+                                  label: const Text("Remove",
+                                      style: TextStyle(fontSize: 12))),
+                            )
                           ],
                         ),
                       ],

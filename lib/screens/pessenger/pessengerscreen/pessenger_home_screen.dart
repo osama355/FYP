@@ -29,7 +29,7 @@ class _PessePostScreenState extends State<PessePostScreen> {
 
   storeNotificationToken() async {
     String? token = await FirebaseMessaging.instance.getToken();
-    FirebaseFirestore.instance
+    await FirebaseFirestore.instance
         .collection('app')
         .doc('user')
         .collection('pessenger')

@@ -226,12 +226,17 @@ class _TravelPartnersState extends State<TravelPartners> {
               ),
               height: 60,
               width: double.infinity,
-              child: OutlinedButton(
+              child: ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor:
+                      MaterialStateProperty.all<Color>(const Color(0xff4BA0FE)),
+                ),
                 onPressed: () {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) => DriverMapScreen(
+                                rideId: widget.rideId,
                                 startPositionLat: widget.startPositionLat,
                                 startPositionLng: widget.startPositionLng,
                                 midPositionLat: widget.midPositionLat,

@@ -49,7 +49,10 @@ class _GetRideState extends State<GetRide> {
             final rideDate = DateFormat('dd-MM-yyyy').parse(doc['date']);
             final rideDateTime =
                 DateTime(rideDate.year, rideDate.month, rideDate.day);
-            return rideDateTime.isAfter(now.subtract(const Duration(days: 1)));
+            final rideStatus = doc['status'];
+            return rideDateTime
+                    .isAfter(now.subtract(const Duration(days: 1))) &&
+                rideStatus == 'stop';
           }).toList();
 
           sortedDocs.sort((a, b) {

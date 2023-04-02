@@ -42,11 +42,11 @@ class _PessengerProfileScreenState extends State<PessengerProfileScreen> {
     firebase_storage.Reference ref = firebase_storage.FirebaseStorage.instance
         .ref('/profiledp/${DateTime.now().millisecondsSinceEpoch}');
     await ref.putFile(File(image!.path));
-    ref.getDownloadURL().then((value) {
+    ref.getDownloadURL().then((value) async {
       setState(() {
         imageUrl = value;
       });
-      firestore
+      await firestore
           .collection("app")
           .doc("user")
           .collection("pessenger")
