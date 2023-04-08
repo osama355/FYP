@@ -128,6 +128,7 @@ class _SetRouteState extends State<SetRoute> {
                           'destination': destinationController.text,
                           'source-lat': startPosition!.geometry!.location!.lat!,
                           'source-lng': startPosition!.geometry!.location!.lng!,
+                          'status': 'stop',
                           'via-lat': midPosition!.geometry!.location!.lat!,
                           'via-lng': midPosition!.geometry!.location!.lng!,
                           'destination-lat':

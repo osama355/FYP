@@ -61,11 +61,15 @@ class _FilterRidesState extends State<FilterRides> {
               final rideDate = DateFormat('dd-MM-yyyy').parse(doc['date']);
               final rideDateTime =
                   DateTime(rideDate.year, rideDate.month, rideDate.day);
+              final rideSource = doc['source'];
+              final rideVia = doc['via-route'];
               final rideDestination = doc['destination'];
               final rideDay = doc['date'];
               final rideStatus = doc['status'];
               if (rideDay == widget.dateText && rideStatus == 'stop') {
-                if (rideDestination == widget.endSearchText) {
+                if (rideSource == widget.endSearchText ||
+                    rideVia == widget.endSearchText ||
+                    rideDestination == widget.endSearchText) {
                   return rideDateTime
                       .isAfter(now.subtract(const Duration(days: 1)));
                 }
