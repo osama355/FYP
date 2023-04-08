@@ -262,11 +262,6 @@ class _MyRidesState extends State<MyRides> {
                             ),
                             ElevatedButton(
                                 onPressed: () async {
-                                  // firestore.runTransaction(
-                                  //     (Transaction transaction) async {
-                                  //   transaction.delete(
-                                  //       snapshot.data!.docs[index].reference);
-                                  // });
                                   await firestore
                                       .collection('rides')
                                       .doc(sortedDocs[index].id)

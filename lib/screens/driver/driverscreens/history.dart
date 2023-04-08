@@ -14,6 +14,10 @@ class DriverHistory extends StatefulWidget {
 class _DriverHistoryState extends State<DriverHistory> {
   FirebaseAuth auth = FirebaseAuth.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
+  final dateController = TextEditingController();
+  final timeController = TextEditingController();
+  final seatController = TextEditingController();
+  final priceController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -45,16 +49,9 @@ class _DriverHistoryState extends State<DriverHistory> {
             );
           }
 
-          final now = DateTime.now();
           final sortedDocs = snapshot.data!.docs.where((doc) {
-            final rideDate = DateFormat('dd-MM-yyyy').parse(doc['date']);
-            final rideDateTime =
-                DateTime(rideDate.year, rideDate.month, rideDate.day);
             final rideStatus = doc['status'];
-            return rideDateTime
-                        .isAfter(now.subtract(const Duration(days: 1))) &&
-                    rideStatus == 'cancel' ||
-                rideStatus == 'completed';
+            return rideStatus == 'cancel' || rideStatus == 'completed';
           }).toList();
 
           sortedDocs.sort((a, b) {
@@ -191,7 +188,6 @@ class _DriverHistoryState extends State<DriverHistory> {
                             ),
                             Text(
                               sortedDocs[index]['date'],
-                              // snapshot.data!.docs[index]['date'],
                               style: const TextStyle(fontSize: 13),
                             ),
                           ],
@@ -214,39 +210,268 @@ class _DriverHistoryState extends State<DriverHistory> {
                         const SizedBox(
                           height: 5,
                         ),
-                        Row(
-                          children: [
-                            SizedBox(
-                              width: 120,
-                              child: ElevatedButton.icon(
+                        ElevatedButtonTheme(
+                            data: ElevatedButtonThemeData(
+                              style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all(Colors.blue),
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                padding: MaterialStateProperty.all(
+                                  const EdgeInsets.symmetric(
+                                      horizontal: 8.0, vertical: 5.0),
+                                ),
+                                shape: MaterialStateProperty.all(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            child: Row(
+                              children: [
+                                ElevatedButton.icon(
                                   onPressed: () async {
-                                    await firestore
-                                        .collection('rides')
-                                        .doc(sortedDocs[index].id)
-                                        .update({'status': 'stop'});
+                                    await showDialog(
+                                        context: context,
+                                        builder: (context) => AlertDialog(
+                                              title:
+                                                  const Text('Recreate Ride'),
+                                              content: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  GestureDetector(
+                                                    onTap: () async {
+                                                      DateTime? datePicked =
+                                                          await showDatePicker(
+                                                              context: context,
+                                                              initialDate:
+                                                                  DateTime
+                                                                      .now(),
+                                                              firstDate:
+                                                                  DateTime
+                                                                      .now(),
+                                                              lastDate:
+                                                                  DateTime(
+                                                                      2024));
+                                                      if (datePicked != null) {
+                                                        setState(() {
+                                                          dateController.text =
+                                                              '${datePicked.day}-${datePicked.month}-${datePicked.year}';
+                                                        });
+                                                      }
+                                                    },
+                                                    child: TextFormField(
+                                                        controller:
+                                                            dateController,
+                                                        enabled: false,
+                                                        showCursor: false,
+                                                        decoration:
+                                                            const InputDecoration(
+                                                                contentPadding:
+                                                                    EdgeInsets.only(
+                                                                        top:
+                                                                            15.0,
+                                                                        bottom:
+                                                                            15.0),
+                                                                prefixIcon:
+                                                                    Icon(
+                                                                  Icons
+                                                                      .date_range,
+                                                                  color: Color(
+                                                                      0xff4BA0FE),
+                                                                  size: 20,
+                                                                ),
+                                                                filled: true,
+                                                                fillColor:
+                                                                    Colors
+                                                                        .white,
+                                                                hintText:
+                                                                    'Select Date',
+                                                                border:
+                                                                    OutlineInputBorder())),
+                                                  ),
+                                                  const SizedBox(
+                                                    height: 10,
+                                                  ),
+                                                  GestureDetector(
+                                                    onTap: () async {
+                                                      TimeOfDay? timePicked =
+                                                          await showTimePicker(
+                                                              context: context,
+                                                              initialTime:
+                                                                  TimeOfDay
+                                                                      .now());
+                                                      if (timePicked != null) {
+                                                        String setTime =
+                                                            "${timePicked.hour}:${timePicked.minute}:00";
+                                                        setState(() {
+                                                          timeController
+                                                              .text = DateFormat
+                                                                  .jm()
+                                                              .format(DateFormat(
+                                                                      "hh:mm:ss")
+                                                                  .parse(
+                                                                      setTime));
+                                                        });
+                                                      }
+                                                    },
+                                                    child: TextFormField(
+                                                      controller:
+                                                          timeController,
+                                                      enabled: false,
+                                                      showCursor: false,
+                                                      decoration:
+                                                          const InputDecoration(
+                                                              contentPadding:
+                                                                  EdgeInsets.only(
+                                                                      top: 15.0,
+                                                                      bottom:
+                                                                          15.0),
+                                                              prefixIcon: Icon(
+                                                                Icons.timer,
+                                                                color: Color(
+                                                                    0xff4BA0FE),
+                                                                size: 20,
+                                                              ),
+                                                              filled: true,
+                                                              fillColor:
+                                                                  Colors.white,
+                                                              hintText:
+                                                                  'Select Time',
+                                                              border:
+                                                                  OutlineInputBorder()),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(
+                                                    height: 10,
+                                                  ),
+                                                  TextFormField(
+                                                    controller: seatController,
+                                                    keyboardType:
+                                                        TextInputType.number,
+                                                    decoration:
+                                                        const InputDecoration(
+                                                            contentPadding:
+                                                                EdgeInsets.only(
+                                                                    top: 15.0,
+                                                                    bottom:
+                                                                        15.0),
+                                                            prefixIcon: Icon(
+                                                              Icons
+                                                                  .event_seat_sharp,
+                                                              color: Color(
+                                                                  0xff4BA0FE),
+                                                              size: 20,
+                                                            ),
+                                                            filled: true,
+                                                            fillColor:
+                                                                Colors.white,
+                                                            hintText:
+                                                                'Required Seats',
+                                                            border:
+                                                                OutlineInputBorder()),
+                                                  ),
+                                                  const SizedBox(
+                                                    height: 10,
+                                                  ),
+                                                  TextFormField(
+                                                    controller: priceController,
+                                                    keyboardType:
+                                                        TextInputType.number,
+                                                    decoration:
+                                                        const InputDecoration(
+                                                            contentPadding:
+                                                                EdgeInsets.only(
+                                                                    top: 15.0,
+                                                                    bottom:
+                                                                        15.0),
+                                                            prefixIcon: Icon(
+                                                              Icons
+                                                                  .attach_money,
+                                                              color: Color(
+                                                                  0xff4BA0FE),
+                                                              size: 20,
+                                                            ),
+                                                            filled: true,
+                                                            fillColor:
+                                                                Colors.white,
+                                                            hintText:
+                                                                'Price Per Seat',
+                                                            border:
+                                                                OutlineInputBorder()),
+                                                  ),
+                                                ],
+                                              ),
+                                              actions: [
+                                                TextButton(
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                  child: const Text('Cancel'),
+                                                ),
+                                                ElevatedButton(
+                                                    onPressed: () async {
+                                                      int totalSeats =
+                                                          int.parse(
+                                                              seatController
+                                                                  .text);
+                                                      if (dateController.text.isNotEmpty &&
+                                                          timeController.text
+                                                              .isNotEmpty &&
+                                                          seatController.text
+                                                              .isNotEmpty &&
+                                                          priceController.text
+                                                              .isNotEmpty) {
+                                                        await firestore
+                                                            .collection('rides')
+                                                            .doc(sortedDocs[
+                                                                    index]
+                                                                .id)
+                                                            .update({
+                                                          'status': 'stop',
+                                                          'date': dateController
+                                                              .text,
+                                                          'time': timeController
+                                                              .text,
+                                                          'price':
+                                                              priceController
+                                                                  .text,
+                                                          'require-pess':
+                                                              totalSeats,
+                                                          'reservedSeats': 0
+                                                        }).then((value) {
+                                                          Navigator.of(context)
+                                                              .pop();
+                                                        });
+                                                      }
+                                                    },
+                                                    child: const Text('Save'))
+                                              ],
+                                            ));
                                   },
                                   icon: const Icon(Icons.create),
-                                  label: const Text("Recreate")),
-                            ),
-                            const SizedBox(
-                              width: 5,
-                            ),
-                            SizedBox(
-                              width: 120,
-                              child: ElevatedButton.icon(
-                                  onPressed: () {
-                                    firestore.runTransaction(
-                                        (Transaction transaction) async {
-                                      transaction.delete(
-                                          snapshot.data!.docs[index].reference);
-                                    });
+                                  label: const Text('Recreate'),
+                                ),
+                                const SizedBox(
+                                  width: 5.0,
+                                ),
+                                ElevatedButton.icon(
+                                  onPressed: () async {
+                                    await firestore.runTransaction(
+                                      (Transaction transaction) async {
+                                        transaction.delete(
+                                            sortedDocs[index].reference);
+                                      },
+                                    );
                                   },
+                                  label: const Text(
+                                    "Remove",
+                                    style: TextStyle(fontSize: 12),
+                                  ),
                                   icon: const Icon(Icons.cancel),
-                                  label: const Text("Remove",
-                                      style: TextStyle(fontSize: 12))),
-                            )
-                          ],
-                        ),
+                                ),
+                              ],
+                            ))
                       ],
                     ),
                   ),
