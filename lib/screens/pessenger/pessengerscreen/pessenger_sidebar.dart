@@ -165,10 +165,10 @@ class _PessengerSidebarState extends State<PessengerSidebar> {
               },
               child: const ListTile(
                 leading: Icon(
-                  Icons.notifications,
+                  Icons.calendar_month,
                   color: Color(0xff4BA0FE),
                 ),
-                title: Text("My Rides"),
+                title: Text("My Trips"),
               ),
             ),
             GestureDetector(

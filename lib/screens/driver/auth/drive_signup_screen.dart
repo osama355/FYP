@@ -44,11 +44,11 @@ class _DriveSignUp extends State<DriveSignUp> {
     passController.dispose();
   }
 
-  void signUp() {
+  void signUp() async {
     setState(() {
       loading = true;
     });
-    _auth
+    await _auth
         .createUserWithEmailAndPassword(
             email: emailController.text.toString(),
             password: passController.text.toString())
