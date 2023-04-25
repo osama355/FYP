@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drive_sharing_app/screens/driver/driverscreens/driver_home_screen.dart';
 import 'package:drive_sharing_app/screens/driver/driverscreens/driver_profile_screen.dart';
 import 'package:drive_sharing_app/screens/driver/driverscreens/driver_requests.dart';
+import 'package:drive_sharing_app/screens/driver/driverscreens/googlemap/live_location.dart';
 import 'package:drive_sharing_app/screens/driver/driverscreens/history.dart';
 import 'package:drive_sharing_app/screens/driver/driverscreens/my_rides.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -215,6 +216,22 @@ class _DriverSidebarState extends State<DriverSidebar> {
                   color: Color(0xff4BA0FE),
                 ),
                 title: Text("Sign out"),
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const LiveLocation()));
+              },
+              child: const ListTile(
+                leading: Icon(
+                  Icons.history,
+                  color: Color(0xff4BA0FE),
+                ),
+                title: Text("Location"),
               ),
             ),
           ],
