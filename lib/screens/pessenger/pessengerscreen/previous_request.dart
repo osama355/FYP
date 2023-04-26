@@ -42,12 +42,12 @@ class _PreviousRequestsState extends State<PreviousRequests> {
             final rideDate = DateFormat('dd-MM-yyyy').parse(doc['date']);
             final rideDateTime =
                 DateTime(rideDate.year, rideDate.month, rideDate.day);
-            final reqStatus = doc['request_Status'];
+            final reqStatus = doc['request_status'];
             if (reqStatus == 'Accepted' || reqStatus == 'Cancel') {
               return rideDateTime
                   .isBefore(now.subtract(const Duration(days: 1)));
             }
-            return true;
+            return false;
           }).toList();
 
           sortedDocs.sort((a, b) {
@@ -137,7 +137,7 @@ class _PreviousRequestsState extends State<PreviousRequests> {
                               width: 5,
                             ),
                             Text(
-                              'STart : ${sortedDocs[index]['driver_source']}',
+                              'Start : ${sortedDocs[index]['driver_source']}',
                               style: const TextStyle(fontSize: 13),
                             )
                           ],
@@ -207,20 +207,20 @@ class _PreviousRequestsState extends State<PreviousRequests> {
                           children: [
                             MaterialButton(
                               onPressed: () {
-                                if (sortedDocs[index]['request_Status'] ==
+                                if (sortedDocs[index]['request_status'] ==
                                     "Accepted") {
                                   // Navigator.push(context,route)
                                 }
                               },
                               height: 30.0,
                               minWidth: 60.0,
-                              color: sortedDocs[index]['request_Status'] ==
+                              color: sortedDocs[index]['request_status'] ==
                                       'Cancel'
                                   ? Colors.red
                                   : const Color(0xff4BA0FE),
                               textColor: Colors.white,
                               child: Text(
-                                '${sortedDocs[index]['request_Status']}',
+                                '${sortedDocs[index]['request_status']}',
                                 style: const TextStyle(fontSize: 13),
                               ),
                             ),

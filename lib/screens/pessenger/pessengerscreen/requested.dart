@@ -42,7 +42,7 @@ class _RequestedState extends State<Requested> {
             final rideDate = DateFormat('dd-MM-yyyy').parse(doc['date']);
             final rideDateTime =
                 DateTime(rideDate.year, rideDate.month, rideDate.day);
-            final reqStatus = doc['request_Status'];
+            final reqStatus = doc['request_status'];
             return rideDateTime
                         .isAfter(now.subtract(const Duration(days: 1))) &&
                     reqStatus == 'Pending' ||
@@ -136,7 +136,7 @@ class _RequestedState extends State<Requested> {
                               width: 5,
                             ),
                             Text(
-                              'STart : ${sortedDocs[index]['driver_source']}',
+                              'Start : ${sortedDocs[index]['driver_source']}',
                               style: const TextStyle(fontSize: 13),
                             )
                           ],
@@ -206,7 +206,7 @@ class _RequestedState extends State<Requested> {
                           children: [
                             MaterialButton(
                               onPressed: () {
-                                if (sortedDocs[index]['request_Status'] ==
+                                if (sortedDocs[index]['request_status'] ==
                                     "Accepted") {
                                   // Navigator.push(context,route)
                                 }
@@ -216,13 +216,13 @@ class _RequestedState extends State<Requested> {
                               color: const Color(0xff4BA0FE),
                               textColor: Colors.white,
                               child: Text(
-                                '${sortedDocs[index]['request_Status']}',
+                                '${sortedDocs[index]['request_status']}',
                                 style: const TextStyle(fontSize: 13),
                               ),
                             ),
                             MaterialButton(
                               onPressed: () async {
-                                if (sortedDocs[index]['request_Status'] ==
+                                if (sortedDocs[index]['request_status'] ==
                                     'Rejected') {
                                   await firestore.runTransaction(
                                       (Transaction transaction) async {
@@ -233,7 +233,7 @@ class _RequestedState extends State<Requested> {
                                   await firestore
                                       .collection('requests')
                                       .doc(sortedDocs[index].id)
-                                      .update({'request_Status': 'Cancel'});
+                                      .update({'request_status': 'Cancel'});
                                 }
                               },
                               height: 30.0,
@@ -241,7 +241,7 @@ class _RequestedState extends State<Requested> {
                               color: const Color(0xff4BA0FE),
                               textColor: Colors.white,
                               child: Text(
-                                sortedDocs[index]['request_Status'] ==
+                                sortedDocs[index]['request_status'] ==
                                         "Rejected"
                                     ? "Delete Request"
                                     : "Cancel Request",

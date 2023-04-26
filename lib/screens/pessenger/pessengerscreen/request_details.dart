@@ -179,7 +179,8 @@ class _RequestDetailsState extends State<RequestDetails> {
       'pass_pickup_lng': searchStartPosition!.geometry!.location!.lng,
       'pass_dest_lat': searchEndPosition!.geometry!.location!.lat,
       'pass_dest_lng': searchEndPosition!.geometry!.location!.lng,
-      'request_Status': 'Pending'
+      'request_status': 'Pending',
+      'ride_status': 'Stop'
     }).then((value) {
       Utils().toastMessage("Request has been sent");
       Navigator.push(context,

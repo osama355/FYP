@@ -1,3 +1,4 @@
+import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/join_ride.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -42,12 +43,16 @@ class _UpcomingRequestsState extends State<UpcomingRequests> {
             final rideDate = DateFormat('dd-MM-yyyy').parse(doc['date']);
             final rideDateTime =
                 DateTime(rideDate.year, rideDate.month, rideDate.day);
-            final reqStatus = doc['request_Status'];
+            final reqStatus = doc['request_status'];
+            final rideStatus = doc['ride_status'];
             if (reqStatus == 'Accepted' || reqStatus == 'Cancel') {
-              return rideDateTime
-                  .isAfter(now.subtract(const Duration(days: 1)));
+              if (rideStatus == 'Stop' || rideStatus == 'Start') {
+                return rideDateTime
+                    .isAfter(now.subtract(const Duration(days: 1)));
+              }
+              return false;
             }
-            return true;
+            return false;
           }).toList();
 
           sortedDocs.sort((a, b) {
@@ -94,33 +99,120 @@ class _UpcomingRequestsState extends State<UpcomingRequests> {
                         Row(
                           children: [
                             CircleAvatar(
-                                backgroundColor: sortedDocs[index]
-                                            ['driver_profile_url'] !=
-                                        ""
-                                    ? Colors.transparent
-                                    : const Color(0xff4BA0FE),
-                                child: SizedBox(
-                                  width: 60,
-                                  height: 60,
-                                  child: ClipOval(
-                                    child: sortedDocs[index]
-                                                ['driver_profile_url'] !=
-                                            ""
-                                        ? Image.network(sortedDocs[index]
-                                            ['driver_profile_url'])
-                                        : const Icon(
-                                            Icons.person,
-                                            color: Colors.white,
-                                          ),
-                                  ),
-                                )),
-                            const SizedBox(
-                              width: 10,
+                              backgroundColor:
+                                  sortedDocs[index]['driver_profile_url'] != ""
+                                      ? Colors.transparent
+                                      : const Color(0xff4BA0FE),
+                              child: SizedBox(
+                                width: 60,
+                                height: 60,
+                                child: ClipOval(
+                                  child: sortedDocs[index]
+                                              ['driver_profile_url'] !=
+                                          ""
+                                      ? Image.network(sortedDocs[index]
+                                          ['driver_profile_url'])
+                                      : const Icon(
+                                          Icons.person,
+                                          color: Colors.white,
+                                        ),
+                                ),
+                              ),
                             ),
-                            Text(
-                              sortedDocs[index]['driver_name'],
-                              style: const TextStyle(fontSize: 13),
-                            )
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Text(
+                                sortedDocs[index]['driver_name'],
+                                style: const TextStyle(fontSize: 13),
+                              ),
+                            ),
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: ElevatedButton(
+                                onPressed: sortedDocs[index]['ride_status'] ==
+                                            'Start' &&
+                                        sortedDocs[index]['request_status'] !=
+                                            'Cancel'
+                                    ? () {
+                                        String driver_id =
+                                            sortedDocs[index]['driver_id'];
+                                        String driver_name =
+                                            sortedDocs[index]['driver_name'];
+                                        String driver_source =
+                                            sortedDocs[index]['driver_source'];
+                                        double driver_source_lat =
+                                            sortedDocs[index]
+                                                ['driver_source_lat'];
+                                        double driver_source_lng =
+                                            sortedDocs[index]
+                                                ['driver_source_lng'];
+                                        String driver_via =
+                                            sortedDocs[index]['driver_via'];
+                                        double driver_via_lat =
+                                            sortedDocs[index]['driver_via_lat'];
+                                        double driver_via_lng =
+                                            sortedDocs[index]['driver_via_lng'];
+                                        String driver_destination =
+                                            sortedDocs[index]
+                                                ['driver_destination'];
+                                        double driver_destination_lat =
+                                            sortedDocs[index]
+                                                ['driver_destination_lat'];
+                                        double driver_destination_lng =
+                                            sortedDocs[index]
+                                                ['driver_destination_lng'];
+
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) => JoinRide(
+                                                      driver_name: driver_name,
+                                                      driver_id: driver_id,
+                                                      driver_source:
+                                                          driver_source,
+                                                      driver_source_lat:
+                                                          driver_source_lat,
+                                                      driver_source_lng:
+                                                          driver_source_lng,
+                                                      driver_via: driver_via,
+                                                      driver_via_lat:
+                                                          driver_via_lat,
+                                                      driver_via_lng:
+                                                          driver_via_lng,
+                                                      driver_destination:
+                                                          driver_destination,
+                                                      driver_destination_lat:
+                                                          driver_destination_lat,
+                                                      driver_destination_lng:
+                                                          driver_destination_lng,
+                                                    )));
+                                      }
+                                    : null,
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: sortedDocs[index]
+                                                  ['ride_status'] ==
+                                              'Start' &&
+                                          sortedDocs[index]['request_status'] !=
+                                              'Cancel'
+                                      ? const Color(0xff4BA0FE)
+                                      : Colors.grey[300],
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                ),
+                                child: Text(
+                                  "Join",
+                                  style: TextStyle(
+                                      color: sortedDocs[index]['ride_status'] ==
+                                                  'Start' &&
+                                              sortedDocs[index]
+                                                      ['request_status'] !=
+                                                  'Cancel'
+                                          ? Colors.white
+                                          : Colors.grey),
+                                ),
+                              ),
+                            ),
                           ],
                         ),
                         const SizedBox(
@@ -137,7 +229,7 @@ class _UpcomingRequestsState extends State<UpcomingRequests> {
                               width: 5,
                             ),
                             Text(
-                              'STart : ${sortedDocs[index]['driver_source']}',
+                              'Start : ${sortedDocs[index]['driver_source']}',
                               style: const TextStyle(fontSize: 13),
                             )
                           ],
@@ -205,39 +297,37 @@ class _UpcomingRequestsState extends State<UpcomingRequests> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            MaterialButton(
-                              onPressed: () {
-                                if (sortedDocs[index]['request_Status'] ==
-                                    "Accepted") {
-                                  // Navigator.push(context,route)
-                                }
-                              },
-                              height: 30.0,
-                              minWidth: 60.0,
-                              color: sortedDocs[index]['request_Status'] ==
-                                      'Cancel'
-                                  ? Colors.red
-                                  : const Color(0xff4BA0FE),
-                              textColor: Colors.white,
-                              child: Text(
-                                '${sortedDocs[index]['request_Status']}',
-                                style: const TextStyle(fontSize: 13),
-                              ),
+                            Text(
+                              '${sortedDocs[index]['request_status']}',
+                              style: TextStyle(
+                                  fontSize: 13,
+                                  color: sortedDocs[index]['request_status'] ==
+                                          "Cancel"
+                                      ? Colors.red
+                                      : const Color(0xff4BA0FE)),
                             ),
                             MaterialButton(
-                              onPressed: () {
-                                firestore.runTransaction(
-                                    (Transaction transaction) async {
-                                  transaction
-                                      .delete(sortedDocs[index].reference);
-                                });
-                              },
+                              onPressed: sortedDocs[index]['request_status'] ==
+                                      'Cancel'
+                                  ? () async {
+                                      await firestore.runTransaction(
+                                          (Transaction transaction) async {
+                                        transaction.delete(
+                                            sortedDocs[index].reference);
+                                      });
+                                    }
+                                  : () async {
+                                      await firestore
+                                          .collection('requests')
+                                          .doc(sortedDocs[index].id)
+                                          .update({'request_status': "Cancel"});
+                                    },
                               height: 30.0,
                               minWidth: 60.0,
                               color: const Color(0xff4BA0FE),
                               textColor: Colors.white,
                               child: Text(
-                                sortedDocs[index]['request_Status'] == "Cancel"
+                                sortedDocs[index]['request_status'] == "Cancel"
                                     ? "Delete Request"
                                     : "Cancle Request",
                                 style: const TextStyle(fontSize: 13),

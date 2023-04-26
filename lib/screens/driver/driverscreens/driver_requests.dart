@@ -88,7 +88,7 @@ class _DriverRequestsState extends State<DriverRequests> {
             }
 
             final pendingRides = snapshot.data!.docs.where((doc) {
-              return doc.get('request_Status') == 'Pending';
+              return doc.get('request_status') == 'Pending';
             }).toList();
 
             if (pendingRides.isEmpty) {
@@ -227,7 +227,7 @@ class _DriverRequestsState extends State<DriverRequests> {
                             children: [
                               ElevatedButton(
                                   onPressed: pendingRides[index]
-                                              ['request_Status'] ==
+                                              ['request_status'] ==
                                           'Pending'
                                       ? () async {
                                           isAccept = true;
@@ -248,7 +248,7 @@ class _DriverRequestsState extends State<DriverRequests> {
                                               .collection('requests')
                                               .doc(pendingRides[index].id)
                                               .update({
-                                            'request_Status': "Accepted"
+                                            'request_status': "Accepted"
                                           });
                                           firestore
                                               .collection('rides')
@@ -270,7 +270,7 @@ class _DriverRequestsState extends State<DriverRequests> {
                               ),
                               ElevatedButton(
                                   onPressed: pendingRides[index]
-                                              ['request_Status'] ==
+                                              ['request_status'] ==
                                           'Pending'
                                       ? () {
                                           isAccept = false;
@@ -286,10 +286,10 @@ class _DriverRequestsState extends State<DriverRequests> {
                                               .collection('requests')
                                               .doc(pendingRides[index].id)
                                               .update({
-                                            'request_Status': "Rejected"
+                                            'request_status': "Rejected"
                                           });
                                         }
-                                      : pendingRides[index]['request_Status'] ==
+                                      : pendingRides[index]['request_status'] ==
                                               "Rejected"
                                           ? () {
                                               firestore.runTransaction(
@@ -303,10 +303,10 @@ class _DriverRequestsState extends State<DriverRequests> {
                                           : null,
                                   child: Text(
                                       snapshot.data!.docs[index]
-                                                      ['request_Status'] ==
+                                                      ['request_status'] ==
                                                   'Pending' ||
                                               snapshot.data!.docs[index]
-                                                      ['request_Status'] ==
+                                                      ['request_status'] ==
                                                   "Accepted"
                                           ? "Reject"
                                           : "Delete",
