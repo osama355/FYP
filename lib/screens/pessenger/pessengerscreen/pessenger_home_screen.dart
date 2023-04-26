@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drive_sharing_app/firebase_services/local_push_notification.dart';
@@ -9,6 +11,8 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart' as loc;
+import 'package:permission_handler/permission_handler.dart';
 
 class PessePostScreen extends StatefulWidget {
   const PessePostScreen({super.key});
@@ -19,23 +23,15 @@ class PessePostScreen extends StatefulWidget {
 
 class _PessePostScreenState extends State<PessePostScreen> {
   FirebaseAuth auth = FirebaseAuth.instance;
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   final Completer<GoogleMapController> mapController = Completer();
-
   static const CameraPosition kGooglePlex =
       CameraPosition(target: LatLng(33.6844, 73.0479), zoom: 14);
-
   final List<Marker> _markers = <Marker>[];
 
-  storeNotificationToken() async {
-    String? token = await FirebaseMessaging.instance.getToken();
-    await FirebaseFirestore.instance
-        .collection('app')
-        .doc('user')
-        .collection('pessenger')
-        .doc(auth.currentUser?.uid)
-        .set({'token': token}, SetOptions(merge: true));
-  }
+  final loc.Location location = loc.Location();
+  StreamSubscription<loc.LocationData>? _locationSubscription;
 
   Future<Position> getCurrentLocation() async {
     await Geolocator.requestPermission()
@@ -47,17 +43,92 @@ class _PessePostScreenState extends State<PessePostScreen> {
 
   initStatefCurrentLocation() async {
     getCurrentLocation().then((value) async {
-      _markers.add(Marker(
-          markerId: const MarkerId('1'),
-          position: LatLng(value.latitude, value.longitude),
-          infoWindow: const InfoWindow(title: "My current location")));
-      CameraPosition cameraPosition = CameraPosition(
-          target: LatLng(value.latitude, value.longitude), zoom: 14);
+      try {
+        print("My current location");
+        print("${value.latitude} ${value.longitude}");
+        _markers.add(Marker(
+            markerId: const MarkerId('1'),
+            position: LatLng(value.latitude, value.longitude),
+            infoWindow: const InfoWindow(title: "My current location")));
+        CameraPosition cameraPosition = CameraPosition(
+            target: LatLng(value.latitude, value.longitude), zoom: 14);
 
-      final GoogleMapController controller = await mapController.future;
-      controller.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
-      setState(() {});
+        final GoogleMapController controller = await mapController.future;
+        controller
+            .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+        setState(() {});
+      } catch (e) {
+        print(e);
+      }
     });
+  }
+
+  //////////////////////////////////
+
+  Future<void> _listenLocation() async {
+    _locationSubscription = location.onLocationChanged.handleError((onError) {
+      print(onError);
+      _locationSubscription?.cancel();
+      setState(() {
+        _locationSubscription = null;
+      });
+    }).listen((loc.LocationData currentLocation) async {
+      await firestore
+          .collection('app')
+          .doc('user')
+          .collection('pessenger')
+          .doc(auth.currentUser!.uid)
+          .update({
+        'live_latitude': currentLocation.latitude,
+        'live_longitude': currentLocation.longitude,
+      });
+    });
+  }
+
+  _requestPermission() async {
+    var status = await Permission.location.request();
+    if (status.isGranted) {
+      print('done');
+    } else if (status.isDenied) {
+      _requestPermission();
+    } else if (status.isPermanentlyDenied) {
+      openAppSettings();
+    }
+  }
+
+  handleLive() async {
+    final user = auth.currentUser;
+    final driverDoc = await firestore
+        .collection('app')
+        .doc('user')
+        .collection('pessenger')
+        .doc(user?.uid)
+        .get();
+
+    if (driverDoc.data()?['status'] == 'pessenger') {
+      location.changeSettings(
+          interval: 300, accuracy: loc.LocationAccuracy.high);
+      location.enableBackgroundMode(enable: true);
+    }
+  }
+
+  stopListening() {
+    _locationSubscription?.cancel();
+    setState(() {
+      _locationSubscription = null;
+    });
+  }
+
+///////////////////////////////////////
+
+  storeNotificationToken() async {
+    String? token = await FirebaseMessaging.instance.getToken();
+    await FirebaseFirestore.instance
+        .collection('app')
+        .doc('user')
+        .collection('pessenger')
+        .doc(auth.currentUser?.uid)
+        .set({'token': token}, SetOptions(merge: true));
   }
 
   @override
@@ -69,6 +140,8 @@ class _PessePostScreenState extends State<PessePostScreen> {
     });
     storeNotificationToken();
     initStatefCurrentLocation();
+    _requestPermission();
+    handleLive();
   }
 
   @override
@@ -185,6 +258,23 @@ class _PessePostScreenState extends State<PessePostScreen> {
                       ),
                     ),
                   ))
+                ],
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              Row(
+                children: [
+                  TextButton(
+                      onPressed: () {
+                        _listenLocation();
+                      },
+                      child: const Text('Get Live')),
+                  TextButton(
+                      onPressed: () {
+                        stopListening();
+                      },
+                      child: const Text('Stop Live')),
                 ],
               ),
               const SizedBox(

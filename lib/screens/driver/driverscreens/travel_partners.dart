@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drive_sharing_app/screens/driver/driverscreens/googlemap/driver_map_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -31,9 +33,6 @@ class _TravelPartnersState extends State<TravelPartners> {
   FirebaseAuth auth = FirebaseAuth.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  final CollectionReference requestCollection =
-      FirebaseFirestore.instance.collection('requests');
-
   @override
   void initState() {
     super.initState();
@@ -42,6 +41,9 @@ class _TravelPartnersState extends State<TravelPartners> {
   @override
   Widget build(BuildContext context) {
     final user = auth.currentUser;
+    final CollectionReference requestCollection =
+        FirebaseFirestore.instance.collection('requests');
+    List<String> requestIds = [];
 
     return Scaffold(
         appBar: AppBar(
@@ -73,10 +75,13 @@ class _TravelPartnersState extends State<TravelPartners> {
                     itemBuilder: (context, index) {
                       if (snapshot.data!.docs[index]['driver_id'] ==
                           user?.uid) {
-                        if (snapshot.data!.docs[index]['request_Status'] ==
+                        if (snapshot.data!.docs[index]['request_status'] ==
                             "Accepted") {
                           if (snapshot.data!.docs[index]['ride_id'] ==
                               widget.rideId) {
+                            String requestId = snapshot.data!.docs[index].id;
+                            requestIds.add(requestId);
+
                             return Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Container(
@@ -232,18 +237,33 @@ class _TravelPartnersState extends State<TravelPartners> {
                       MaterialStateProperty.all<Color>(const Color(0xff4BA0FE)),
                 ),
                 onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => DriverMapScreen(
-                                rideId: widget.rideId,
-                                startPositionLat: widget.startPositionLat,
-                                startPositionLng: widget.startPositionLng,
-                                midPositionLat: widget.midPositionLat,
-                                midPositionLng: widget.midPositionLng,
-                                endPositionLat: widget.endPositionLat,
-                                endPositionLng: widget.endPositionLng,
-                              )));
+                  try {
+                    requestCollection
+                        .where('ride_id', isEqualTo: widget.rideId)
+                        .get()
+                        .then((snapshot) {
+                      snapshot.docs.forEach((doc) {
+                        requestCollection
+                            .doc(doc.id)
+                            .update({'ride_status': 'Start'});
+                      });
+                    });
+
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => DriverMapScreen(
+                                  rideId: widget.rideId,
+                                  startPositionLat: widget.startPositionLat,
+                                  startPositionLng: widget.startPositionLng,
+                                  midPositionLat: widget.midPositionLat,
+                                  midPositionLng: widget.midPositionLng,
+                                  endPositionLat: widget.endPositionLat,
+                                  endPositionLng: widget.endPositionLng,
+                                )));
+                  } catch (e) {
+                    print(e);
+                  }
                 },
                 child: const Text(
                   "Start Ride",

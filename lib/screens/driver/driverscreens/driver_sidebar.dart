@@ -217,6 +217,22 @@ class _DriverSidebarState extends State<DriverSidebar> {
                 title: Text("Sign out"),
               ),
             ),
+            // GestureDetector(
+            //   onTap: () {
+            //     Navigator.pop(context);
+            //     Navigator.push(
+            //         context,
+            //         MaterialPageRoute(
+            //             builder: (context) => const LiveLocation()));
+            //   },
+            //   child: const ListTile(
+            //     leading: Icon(
+            //       Icons.history,
+            //       color: Color(0xff4BA0FE),
+            //     ),
+            //     title: Text("Location"),
+            //   ),
+            // ),
           ],
         ),
       ),

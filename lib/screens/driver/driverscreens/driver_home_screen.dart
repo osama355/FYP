@@ -9,6 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../../../firebase_services/local_push_notification.dart';
+import 'package:location/location.dart' as loc;
+import 'package:permission_handler/permission_handler.dart';
 
 class DriverPost extends StatefulWidget {
   const DriverPost({super.key});
@@ -19,12 +21,16 @@ class DriverPost extends StatefulWidget {
 
 class _DriverPost extends State<DriverPost> {
   FirebaseAuth auth = FirebaseAuth.instance;
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   final Completer<GoogleMapController> mapController = Completer();
   static const CameraPosition kGooglePlex =
       CameraPosition(target: LatLng(33.6844, 73.0479), zoom: 14);
 
   final List<Marker> _markers = <Marker>[];
+
+  final loc.Location location = loc.Location();
+  StreamSubscription<loc.LocationData>? _locationSubscription;
 
   Future<Position> getCurrentLocation() async {
     await Geolocator.requestPermission()
@@ -38,31 +44,97 @@ class _DriverPost extends State<DriverPost> {
 
   initStatefCurrentLocation() async {
     getCurrentLocation().then((value) async {
-      print("My current location");
-      print("${value.latitude} ${value.longitude}");
+      try {
+        print("My current location");
+        print("${value.latitude} ${value.longitude}");
+        _markers.add(Marker(
+            markerId: const MarkerId('1'),
+            position: LatLng(value.latitude, value.longitude),
+            infoWindow: const InfoWindow(title: "My current location")));
+        CameraPosition cameraPosition = CameraPosition(
+            target: LatLng(value.latitude, value.longitude), zoom: 14);
 
-      _markers.add(Marker(
-          markerId: const MarkerId('1'),
-          position: LatLng(value.latitude, value.longitude),
-          infoWindow: const InfoWindow(title: "My current location")));
-      CameraPosition cameraPosition = CameraPosition(
-          target: LatLng(value.latitude, value.longitude), zoom: 14);
-
-      final GoogleMapController controller = await mapController.future;
-      controller.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
-      setState(() {});
+        final GoogleMapController controller = await mapController.future;
+        controller
+            .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+        setState(() {});
+      } catch (e) {
+        print(e);
+      }
     });
   }
 
-  storeNotificationToken() async {
+  //////////////////////////////////
+
+  Future<void> _listenLocation() async {
+    _locationSubscription = location.onLocationChanged.handleError((onError) {
+      print(onError);
+      _locationSubscription?.cancel();
+      setState(() {
+        _locationSubscription = null;
+      });
+    }).listen((loc.LocationData currentLocation) async {
+      await firestore
+          .collection('app')
+          .doc('user')
+          .collection('driver')
+          .doc(auth.currentUser!.uid)
+          .update({
+        'live_latitude': currentLocation.latitude,
+        'live_longitude': currentLocation.longitude,
+      });
+    });
+  }
+
+  _requestPermission() async {
+    var status = await Permission.location.request();
+    if (status.isGranted) {
+      print('done');
+    } else if (status.isDenied) {
+      _requestPermission();
+    } else if (status.isPermanentlyDenied) {
+      openAppSettings();
+    }
+  }
+
+  handleLive() async {
     final user = auth.currentUser;
-    String? token = await FirebaseMessaging.instance.getToken();
-    await FirebaseFirestore.instance
+    final driverDoc = await firestore
         .collection('app')
         .doc('user')
         .collection('driver')
-        .doc(user!.uid)
-        .set({'token': token}, SetOptions(merge: true));
+        .doc(user?.uid)
+        .get();
+
+    if (driverDoc.data()?['status'] == 'driver') {
+      location.changeSettings(
+          interval: 300, accuracy: loc.LocationAccuracy.high);
+      location.enableBackgroundMode(enable: true);
+    }
+  }
+
+  stopListening() {
+    _locationSubscription?.cancel();
+    setState(() {
+      _locationSubscription = null;
+    });
+  }
+
+///////////////////////////////////////
+
+  storeNotificationToken() async {
+    try {
+      final user = auth.currentUser;
+      String? token = await FirebaseMessaging.instance.getToken();
+      await FirebaseFirestore.instance
+          .collection('app')
+          .doc('user')
+          .collection('driver')
+          .doc(user!.uid)
+          .set({'token': token}, SetOptions(merge: true));
+    } catch (e) {
+      print(e);
+    }
   }
 
   @override
@@ -74,6 +146,8 @@ class _DriverPost extends State<DriverPost> {
     });
     storeNotificationToken();
     initStatefCurrentLocation();
+    _requestPermission();
+    handleLive();
   }
 
   @override
@@ -176,6 +250,20 @@ class _DriverPost extends State<DriverPost> {
               ),
               const SizedBox(
                 height: 40,
+              ),
+              Row(
+                children: [
+                  TextButton(
+                      onPressed: () {
+                        _listenLocation();
+                      },
+                      child: const Text('Get Live')),
+                  TextButton(
+                      onPressed: () {
+                        stopListening();
+                      },
+                      child: const Text('Stop Live')),
+                ],
               ),
               SizedBox(
                 height: 280,
