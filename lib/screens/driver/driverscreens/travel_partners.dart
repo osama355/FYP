@@ -1,9 +1,11 @@
 // ignore_for_file: avoid_print
-
+import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drive_sharing_app/screens/driver/driverscreens/googlemap/driver_map_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import '../../../utils/utils.dart';
+import 'package:http/http.dart' as http;
 
 class TravelPartners extends StatefulWidget {
   //prop from my_ride.dart
@@ -32,6 +34,44 @@ class TravelPartners extends StatefulWidget {
 class _TravelPartnersState extends State<TravelPartners> {
   FirebaseAuth auth = FirebaseAuth.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
+  late bool isAccept;
+
+  sendNotification1(
+      String title, String token, String source, String destination) async {
+    final data = {
+      'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+      'id': 1,
+      'status': 'done',
+      'message': title
+    };
+    try {
+      http.Response response =
+          await http.post(Uri.parse('https://fcm.googleapis.com/fcm/send'),
+              headers: <String, String>{
+                'Content-Type': 'application/json',
+                'Authorization':
+                    'key=AAAADnkker0:APA91bEJO2ufASuDfJNV6yaKiiAES-O0X-jkQW2UL1ciN8hVCgXkCKSsKAQ4jO_7UNUzwrwVAC0iX3Ihu4xvLwsJifoYkVzo1QbYMyJyBXNj4_5f-S39WR9AI2QsYGzBc_jz5myyY5re'
+              },
+              body: jsonEncode(<String, dynamic>{
+                'notification': <String, dynamic>{
+                  'title': title,
+                  'body':
+                      'Your ride from $source to $destination hase been started'
+                },
+                'priority': 'high',
+                'data': data,
+                'to': token
+              }));
+
+      if (response.statusCode == 200) {
+        Utils().toastMessage("Notification has been send");
+      } else {
+        Utils().toastMessage("Somethin went wrong");
+      }
+    } catch (e) {
+      Utils().toastMessage(e.toString());
+    }
+  }
 
   @override
   void initState() {
@@ -236,31 +276,44 @@ class _TravelPartnersState extends State<TravelPartners> {
                   backgroundColor:
                       MaterialStateProperty.all<Color>(const Color(0xff4BA0FE)),
                 ),
-                onPressed: () {
+                onPressed: () async {
                   try {
-                    requestCollection
+                    await firestore
+                        .collection('rides')
+                        .doc(widget.rideId)
+                        .update({'status': 'start'});
+
+                    ///for request collection
+                    await requestCollection
                         .where('ride_id', isEqualTo: widget.rideId)
                         .get()
-                        .then((snapshot) {
-                      snapshot.docs.forEach((doc) {
+                        .then((snapshot) async {
+                      for (var doc in snapshot.docs) {
                         requestCollection
                             .doc(doc.id)
                             .update({'ride_status': 'Start'});
-                      });
+                        var requestedDoc =
+                            await requestCollection.doc(doc.id).get();
+                        String passToken = requestedDoc.get('pass_token');
+                        String passPickup = requestedDoc.get('pass_pickup');
+                        String passDest = requestedDoc.get('pass_dest');
+                        sendNotification1(
+                            'Ride', passToken, passPickup, passDest);
+                      }
+                    }).then((value) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => DriverMapScreen(
+                                    rideId: widget.rideId,
+                                    startPositionLat: widget.startPositionLat,
+                                    startPositionLng: widget.startPositionLng,
+                                    midPositionLat: widget.midPositionLat,
+                                    midPositionLng: widget.midPositionLng,
+                                    endPositionLat: widget.endPositionLat,
+                                    endPositionLng: widget.endPositionLng,
+                                  )));
                     });
-
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => DriverMapScreen(
-                                  rideId: widget.rideId,
-                                  startPositionLat: widget.startPositionLat,
-                                  startPositionLng: widget.startPositionLng,
-                                  midPositionLat: widget.midPositionLat,
-                                  midPositionLng: widget.midPositionLng,
-                                  endPositionLat: widget.endPositionLat,
-                                  endPositionLng: widget.endPositionLng,
-                                )));
                   } catch (e) {
                     print(e);
                   }

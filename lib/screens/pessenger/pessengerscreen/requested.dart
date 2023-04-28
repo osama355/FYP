@@ -230,10 +230,21 @@ class _RequestedState extends State<Requested> {
                                         .delete(sortedDocs[index].reference);
                                   });
                                 } else {
+                                  final remainSeats = await firestore
+                                      .collection('rides')
+                                      .doc(sortedDocs[index]['ride_id'])
+                                      .get();
                                   await firestore
                                       .collection('requests')
                                       .doc(sortedDocs[index].id)
                                       .update({'request_status': 'Cancel'});
+                                  await firestore
+                                      .collection('rides')
+                                      .doc(sortedDocs[index]['ride_id'])
+                                      .update({
+                                    'reservedSeats':
+                                        remainSeats.data()?['reservedSeats'] - 1
+                                  });
                                 }
                               },
                               height: 30.0,
