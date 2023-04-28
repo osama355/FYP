@@ -115,6 +115,12 @@ class _JoinRideState extends State<JoinRide> {
 
   void setCustomMarkerIcon() async {
     await BitmapDescriptor.fromAssetImage(
+            const ImageConfiguration(size: Size(25, 25)), "assets/driver.png")
+        .then((icon) {
+      currentLocationIcon = icon;
+    });
+
+    await BitmapDescriptor.fromAssetImage(
             const ImageConfiguration(size: Size(25, 25)), "assets/source.png")
         .then((icon) {
       sourceIcon = icon;
@@ -145,9 +151,9 @@ class _JoinRideState extends State<JoinRide> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: const Color(0xff4BA0FE),
         title: const Text(
           'Track Driver',
-          style: TextStyle(color: Colors.black, fontSize: 16),
         ),
       ),
       body: currentLocation == null
@@ -168,6 +174,7 @@ class _JoinRideState extends State<JoinRide> {
                 Marker(
                     markerId: const MarkerId("currentLocation"),
                     infoWindow: InfoWindow(title: widget.driver_name),
+                    icon: currentLocationIcon,
                     position: LatLng(currentLocation!.latitude!,
                         currentLocation!.longitude!)),
                 Marker(

@@ -1,9 +1,13 @@
+// ignore_for_file: non_constant_identifier_names
+import 'dart:convert';
 import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/join_ride.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 // ignore: depend_on_referenced_packages, unused_import
 import 'package:intl/intl.dart' show DateFormat;
+import 'package:http/http.dart' as http;
+import '../../../utils/utils.dart';
 
 class UpcomingRequests extends StatefulWidget {
   const UpcomingRequests({super.key});
@@ -15,6 +19,43 @@ class UpcomingRequests extends StatefulWidget {
 class _UpcomingRequestsState extends State<UpcomingRequests> {
   FirebaseAuth auth = FirebaseAuth.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+  sendNotification1(String title, String token, String passName, String source,
+      String destination) async {
+    final data = {
+      'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+      'id': 1,
+      'status': 'done',
+      'message': title
+    };
+    try {
+      http.Response response =
+          await http.post(Uri.parse('https://fcm.googleapis.com/fcm/send'),
+              headers: <String, String>{
+                'Content-Type': 'application/json',
+                'Authorization':
+                    'key=AAAADnkker0:APA91bEJO2ufASuDfJNV6yaKiiAES-O0X-jkQW2UL1ciN8hVCgXkCKSsKAQ4jO_7UNUzwrwVAC0iX3Ihu4xvLwsJifoYkVzo1QbYMyJyBXNj4_5f-S39WR9AI2QsYGzBc_jz5myyY5re'
+              },
+              body: jsonEncode(<String, dynamic>{
+                'notification': <String, dynamic>{
+                  'title': title,
+                  'body':
+                      '$passName has canceled his seat from $source to $destination'
+                },
+                'priority': 'high',
+                'data': data,
+                'to': token
+              }));
+
+      if (response.statusCode == 200) {
+        Utils().toastMessage("Notification has been send");
+      } else {
+        Utils().toastMessage("Somethin went wrong");
+      }
+    } catch (e) {
+      Utils().toastMessage(e.toString());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -317,10 +358,45 @@ class _UpcomingRequestsState extends State<UpcomingRequests> {
                                       });
                                     }
                                   : () async {
+                                      var requestedDriverDoc = await firestore
+                                          .collection('app')
+                                          .doc('user')
+                                          .collection('driver')
+                                          .doc(sortedDocs[index]['driver_id'])
+                                          .get();
+
+                                      final remainSeats = await firestore
+                                          .collection('rides')
+                                          .doc(sortedDocs[index]['ride_id'])
+                                          .get();
+                                      String driverToken =
+                                          await requestedDriverDoc.get('token');
+
+                                      sendNotification1(
+                                          'Cancel',
+                                          driverToken,
+                                          sortedDocs[index]['pass_name'],
+                                          sortedDocs[index]['pass_pickup'],
+                                          sortedDocs[index]['pass_dest']);
+
                                       await firestore
                                           .collection('requests')
                                           .doc(sortedDocs[index].id)
                                           .update({'request_status': "Cancel"});
+                                      await firestore
+                                          .collection('rides')
+                                          .doc(sortedDocs[index]['ride_id'])
+                                          .update({
+                                        'reservedSeats': remainSeats
+                                                .data()?['reservedSeats'] -
+                                            1
+                                      });
+                                      sendNotification1(
+                                          'Cancel',
+                                          driverToken,
+                                          sortedDocs[index]['pass_name'],
+                                          sortedDocs[index]['pass_pickup'],
+                                          sortedDocs[index]['Indus Hospital']);
                                     },
                               height: 30.0,
                               minWidth: 60.0,

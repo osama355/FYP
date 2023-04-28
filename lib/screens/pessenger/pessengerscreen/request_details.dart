@@ -146,8 +146,17 @@ class _RequestDetailsState extends State<RequestDetails> {
         .doc(uid)
         .get();
 
-    String token = widget.driver_token!;
+    // String token = widget.driver_token!;
     String passName = passData.data()?['name'];
+
+    var requestedDoc = await firestore
+        .collection('app')
+        .doc('user')
+        .collection('driver')
+        .doc(widget.driver_id)
+        .get();
+    String driverToken = await requestedDoc.get('token');
+
     await firestore.collection('requests').doc('$uid${DateTime.now()}').set({
       'driver_id': widget.driver_id,
       'pass_token': passData.data()?['token'],
@@ -188,7 +197,8 @@ class _RequestDetailsState extends State<RequestDetails> {
     }).catchError((error) {
       Utils().toastMessage(error);
     });
-    sendNotification("Request", token, passName);
+    // sendNotification("Request", token, passName);
+    sendNotification("Request", driverToken, passName);
   }
 
   @override

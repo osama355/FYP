@@ -87,18 +87,18 @@ class _DriverRequestsState extends State<DriverRequests> {
               );
             }
 
-            final pendingRides = snapshot.data!.docs.where((doc) {
+            final pendingRequest = snapshot.data!.docs.where((doc) {
               return doc.get('request_status') == 'Pending';
             }).toList();
 
-            if (pendingRides.isEmpty) {
+            if (pendingRequest.isEmpty) {
               return const Center(child: Text("No Request yet"));
             }
 
             return ListView.builder(
-              itemCount: pendingRides.length,
+              itemCount: pendingRequest.length,
               itemBuilder: (context, index) {
-                if (pendingRides[index]['driver_id'] == user?.uid) {
+                if (pendingRequest[index]['driver_id'] == user?.uid) {
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Container(
@@ -119,11 +119,12 @@ class _DriverRequestsState extends State<DriverRequests> {
                           Row(
                             children: [
                               ClipOval(
-                                child: pendingRides[index]
+                                child: pendingRequest[index]
                                             ['pass_profile_url'] !=
                                         ""
                                     ? Image.network(
-                                        pendingRides[index]['pass_profile_url'],
+                                        pendingRequest[index]
+                                            ['pass_profile_url'],
                                         width: 50,
                                         height: 50,
                                         fit: BoxFit.cover)
@@ -143,7 +144,7 @@ class _DriverRequestsState extends State<DriverRequests> {
                                 width: 10,
                               ),
                               Text(
-                                pendingRides[index]['pass_name'],
+                                pendingRequest[index]['pass_name'],
                                 style: const TextStyle(fontSize: 15),
                               ),
                             ],
@@ -162,7 +163,7 @@ class _DriverRequestsState extends State<DriverRequests> {
                                 width: 5,
                               ),
                               Text(
-                                pendingRides[index]['pass_phone'],
+                                pendingRequest[index]['pass_phone'],
                                 style: const TextStyle(fontSize: 13),
                               )
                             ],
@@ -181,7 +182,7 @@ class _DriverRequestsState extends State<DriverRequests> {
                                 width: 5,
                               ),
                               Text(
-                                'Pickup : ${pendingRides[index]['pass_pickup']}',
+                                'Pickup : ${pendingRequest[index]['pass_pickup']}',
                                 style: const TextStyle(fontSize: 13),
                               )
                             ],
@@ -200,7 +201,7 @@ class _DriverRequestsState extends State<DriverRequests> {
                                 width: 5,
                               ),
                               Text(
-                                'Drop : ${pendingRides[index]['pass_dest']}',
+                                'Drop : ${pendingRequest[index]['pass_dest']}',
                                 style: const TextStyle(fontSize: 13),
                               )
                             ],
@@ -215,7 +216,7 @@ class _DriverRequestsState extends State<DriverRequests> {
                                 style: TextStyle(fontSize: 13),
                               ),
                               Text(
-                                '${pendingRides[index]['date']}  ${snapshot.data!.docs[index]['time']}',
+                                '${pendingRequest[index]['date']}  ${snapshot.data!.docs[index]['time']}',
                                 style: const TextStyle(fontSize: 13),
                               ),
                             ],
@@ -226,19 +227,19 @@ class _DriverRequestsState extends State<DriverRequests> {
                           Row(
                             children: [
                               ElevatedButton(
-                                  onPressed: pendingRides[index]
+                                  onPressed: pendingRequest[index]
                                               ['request_status'] ==
                                           'Pending'
                                       ? () async {
                                           isAccept = true;
-                                          String token =
-                                              pendingRides[index]['pass_token'];
+                                          String token = pendingRequest[index]
+                                              ['pass_token'];
                                           String driverName =
-                                              pendingRides[index]
+                                              pendingRequest[index]
                                                   ['driver_name'];
                                           final remainSeats = await firestore
                                               .collection('rides')
-                                              .doc(pendingRides[index]
+                                              .doc(pendingRequest[index]
                                                   ['ride_id'])
                                               .get();
 
@@ -246,13 +247,13 @@ class _DriverRequestsState extends State<DriverRequests> {
                                               'Request', token, driverName);
                                           firestore
                                               .collection('requests')
-                                              .doc(pendingRides[index].id)
+                                              .doc(pendingRequest[index].id)
                                               .update({
                                             'request_status': "Accepted"
                                           });
                                           firestore
                                               .collection('rides')
-                                              .doc(pendingRides[index]
+                                              .doc(pendingRequest[index]
                                                   ['ride_id'])
                                               .update({
                                             'reservedSeats': remainSeats
@@ -269,43 +270,43 @@ class _DriverRequestsState extends State<DriverRequests> {
                                 width: 5,
                               ),
                               ElevatedButton(
-                                  onPressed: pendingRides[index]
+                                  onPressed: pendingRequest[index]
                                               ['request_status'] ==
                                           'Pending'
                                       ? () {
                                           isAccept = false;
-                                          String token =
-                                              pendingRides[index]['pass_token'];
+                                          String token = pendingRequest[index]
+                                              ['pass_token'];
                                           String driverName =
-                                              pendingRides[index]
+                                              pendingRequest[index]
                                                   ['driver_name'];
 
                                           sendNotification1(
                                               'Request', token, driverName);
                                           firestore
                                               .collection('requests')
-                                              .doc(pendingRides[index].id)
+                                              .doc(pendingRequest[index].id)
                                               .update({
                                             'request_status': "Rejected"
                                           });
                                         }
-                                      : pendingRides[index]['request_status'] ==
+                                      : pendingRequest[index]
+                                                  ['request_status'] ==
                                               "Rejected"
                                           ? () {
                                               firestore.runTransaction(
                                                   (Transaction
                                                       transaction) async {
                                                 transaction.delete(
-                                                    pendingRides[index]
+                                                    pendingRequest[index]
                                                         .reference);
                                               });
                                             }
                                           : null,
                                   child: Text(
-                                      snapshot.data!.docs[index]
-                                                      ['request_status'] ==
+                                      pendingRequest[index]['request_status'] ==
                                                   'Pending' ||
-                                              snapshot.data!.docs[index]
+                                              pendingRequest[index]
                                                       ['request_status'] ==
                                                   "Accepted"
                                           ? "Reject"
