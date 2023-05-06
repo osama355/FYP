@@ -120,7 +120,7 @@ class _RequestDetailsState extends State<RequestDetails> {
               body: jsonEncode(<String, dynamic>{
                 'notification': <String, dynamic>{
                   'title': title,
-                  'body': 'You have request by $passName'
+                  'body': 'You have request from $passName'
                 },
                 'priority': 'high',
                 'data': data,
@@ -191,14 +191,13 @@ class _RequestDetailsState extends State<RequestDetails> {
       'request_status': 'Pending',
       'ride_status': 'Stop'
     }).then((value) {
-      Utils().toastMessage("Request has been sent");
+      sendNotification("Request", driverToken, passName);
       Navigator.push(context,
           MaterialPageRoute(builder: (context) => const PassengerRequests()));
     }).catchError((error) {
       Utils().toastMessage(error);
     });
     // sendNotification("Request", token, passName);
-    sendNotification("Request", driverToken, passName);
   }
 
   @override

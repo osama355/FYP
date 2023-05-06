@@ -36,10 +36,14 @@ class _PessePostScreenState extends State<PessePostScreen> {
   Future<Position> getCurrentLocation() async {
     await Geolocator.requestPermission()
         .then((value) {})
-        .onError((error, stackTrace) {});
+        .onError((error, stackTrace) {
+      print("error$error");
+    });
 
     return await Geolocator.getCurrentPosition();
   }
+
+  //////////////////////////////////
 
   initStatefCurrentLocation() async {
     getCurrentLocation().then((value) async {
@@ -63,8 +67,6 @@ class _PessePostScreenState extends State<PessePostScreen> {
     });
   }
 
-  //////////////////////////////////
-
   Future<void> _listenLocation() async {
     _locationSubscription = location.onLocationChanged.handleError((onError) {
       print(onError);
@@ -85,32 +87,21 @@ class _PessePostScreenState extends State<PessePostScreen> {
     });
   }
 
-  _requestPermission() async {
-    var status = await Permission.location.request();
-    if (status.isGranted) {
-      print('done');
-    } else if (status.isDenied) {
-      _requestPermission();
-    } else if (status.isPermanentlyDenied) {
-      openAppSettings();
-    }
-  }
+  // handleLive() async {
+  //   final user = auth.currentUser;
+  //   final driverDoc = await firestore
+  //       .collection('app')
+  //       .doc('user')
+  //       .collection('pessenger')
+  //       .doc(user?.uid)
+  //       .get();
 
-  handleLive() async {
-    final user = auth.currentUser;
-    final driverDoc = await firestore
-        .collection('app')
-        .doc('user')
-        .collection('pessenger')
-        .doc(user?.uid)
-        .get();
-
-    if (driverDoc.data()?['status'] == 'pessenger') {
-      location.changeSettings(
-          interval: 300, accuracy: loc.LocationAccuracy.high);
-      location.enableBackgroundMode(enable: true);
-    }
-  }
+  //   if (driverDoc.data()?['status'] == 'pessenger') {
+  //     await location.changeSettings(
+  //         interval: 300, accuracy: loc.LocationAccuracy.high);
+  //     await location.enableBackgroundMode(enable: true);
+  //   }
+  // }
 
   stopListening() {
     _locationSubscription?.cancel();
@@ -122,13 +113,17 @@ class _PessePostScreenState extends State<PessePostScreen> {
 ///////////////////////////////////////
 
   storeNotificationToken() async {
-    String? token = await FirebaseMessaging.instance.getToken();
-    await FirebaseFirestore.instance
-        .collection('app')
-        .doc('user')
-        .collection('pessenger')
-        .doc(auth.currentUser?.uid)
-        .set({'token': token}, SetOptions(merge: true));
+    try {
+      String? token = await FirebaseMessaging.instance.getToken();
+      await FirebaseFirestore.instance
+          .collection('app')
+          .doc('user')
+          .collection('pessenger')
+          .doc(auth.currentUser?.uid)
+          .set({'token': token}, SetOptions(merge: true));
+    } catch (e) {
+      print(e);
+    }
   }
 
   @override
@@ -140,8 +135,7 @@ class _PessePostScreenState extends State<PessePostScreen> {
     });
     storeNotificationToken();
     initStatefCurrentLocation();
-    _requestPermission();
-    handleLive();
+    // handleLive();
   }
 
   @override
@@ -284,7 +278,9 @@ class _PessePostScreenState extends State<PessePostScreen> {
                 height: 280,
                 child: GoogleMap(
                     initialCameraPosition: kGooglePlex,
-                    markers: Set<Marker>.of(_markers),
+                    mapType: MapType.normal,
+                    myLocationButtonEnabled: true,
+                    myLocationEnabled: true,
                     onMapCreated: (GoogleMapController controller) {
                       mapController.complete(controller);
                     }),

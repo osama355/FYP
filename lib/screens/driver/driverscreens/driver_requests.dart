@@ -43,8 +43,8 @@ class _DriverRequestsState extends State<DriverRequests> {
                 'notification': <String, dynamic>{
                   'title': title,
                   'body': isAccept
-                      ? "Request has been accepted $driverName"
-                      : "Request has been rejected $driverName"
+                      ? "Request has been accepted by $driverName"
+                      : "Request has been rejected by $driverName"
                 },
                 'priority': 'high',
                 'data': data,
@@ -237,21 +237,20 @@ class _DriverRequestsState extends State<DriverRequests> {
                                           String driverName =
                                               pendingRequest[index]
                                                   ['driver_name'];
+
                                           final remainSeats = await firestore
                                               .collection('rides')
                                               .doc(pendingRequest[index]
                                                   ['ride_id'])
                                               .get();
 
-                                          sendNotification1(
-                                              'Request', token, driverName);
-                                          firestore
+                                          await firestore
                                               .collection('requests')
                                               .doc(pendingRequest[index].id)
                                               .update({
                                             'request_status': "Accepted"
                                           });
-                                          firestore
+                                          await firestore
                                               .collection('rides')
                                               .doc(pendingRequest[index]
                                                   ['ride_id'])
@@ -260,6 +259,9 @@ class _DriverRequestsState extends State<DriverRequests> {
                                                     .data()?['reservedSeats'] +
                                                 1
                                           });
+
+                                          sendNotification1(
+                                              'Request', token, driverName);
                                         }
                                       : null,
                                   child: const Text(
