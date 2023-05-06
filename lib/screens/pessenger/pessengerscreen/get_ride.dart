@@ -211,7 +211,9 @@ class _GetRideState extends State<GetRide> {
                         children: [
                           Text(
                               'Total seats : ${sortedDocs[index]['require-pess']}'),
-                          Text('Available : $availableSeats'),
+                          availableSeats <= 0
+                              ? const Text('Available : 0')
+                              : Text('Available : $availableSeats'),
                           MaterialButton(
                             onPressed: availableSeats == 0
                                 ? () {}

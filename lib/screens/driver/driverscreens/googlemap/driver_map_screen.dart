@@ -128,6 +128,9 @@ class _DriverMapScreenState extends State<DriverMapScreen> {
             child: GoogleMap(
               initialCameraPosition: initialPosition,
               markers: markers,
+              mapType: MapType.normal,
+              myLocationEnabled: true,
+              myLocationButtonEnabled: true,
               polylines: Set<Polyline>.of(polylines.values),
               onMapCreated: (GoogleMapController controller) {
                 _controller.complete(controller);

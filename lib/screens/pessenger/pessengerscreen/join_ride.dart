@@ -54,6 +54,15 @@ class _JoinRideState extends State<JoinRide> {
   BitmapDescriptor destinationIcon = BitmapDescriptor.defaultMarker;
   BitmapDescriptor currentLocationIcon = BitmapDescriptor.defaultMarker;
 
+  Marker _currentLocationMarker = const Marker(
+    markerId: MarkerId("currentLocation"),
+    infoWindow: InfoWindow(
+      title: 'Driver Location',
+      snippet: '',
+    ),
+    icon: BitmapDescriptor.defaultMarker,
+  );
+
   void getCurrentLocation() async {
     // Get the Firestore instance
     FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -71,8 +80,18 @@ class _JoinRideState extends State<JoinRide> {
     double longitude = locationDoc['live_longitude'];
 
     // Update the currentLocation variable with the fetched values
-    currentLocation =
-        LocationData.fromMap({'latitude': latitude, 'longitude': longitude});
+    setState(() {
+      currentLocation =
+          LocationData.fromMap({'latitude': latitude, 'longitude': longitude});
+      _currentLocationMarker = _currentLocationMarker.copyWith(
+        positionParam: LatLng(latitude, longitude),
+        iconParam: currentLocationIcon,
+        infoWindowParam: InfoWindow(
+          title: widget.driver_name,
+          snippet: '$latitude, $longitude',
+        ),
+      );
+    });
 
     // Animate the map camera to the current location
     GoogleMapController googleMapController = await _controller.future;
@@ -82,9 +101,6 @@ class _JoinRideState extends State<JoinRide> {
         target: LatLng(latitude, longitude),
       ),
     ));
-
-    // Update the UI to reflect the current location
-    setState(() {});
   }
 
   void getPolyPoints() async {
@@ -141,10 +157,17 @@ class _JoinRideState extends State<JoinRide> {
 
   @override
   void initState() {
-    getCurrentLocation();
+    super.initState();
     setCustomMarkerIcon();
     getPolyPoints();
-    super.initState();
+    Timer.periodic(const Duration(seconds: 3), (timer) {
+      getCurrentLocation();
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -159,6 +182,9 @@ class _JoinRideState extends State<JoinRide> {
       body: currentLocation == null
           ? const Center(child: Text("Loading..."))
           : GoogleMap(
+              mapType: MapType.normal,
+              myLocationButtonEnabled: true,
+              myLocationEnabled: true,
               initialCameraPosition: CameraPosition(
                   target: LatLng(
                       currentLocation!.latitude!, currentLocation!.longitude!),
@@ -168,15 +194,10 @@ class _JoinRideState extends State<JoinRide> {
                     polylineId: const PolylineId('route'),
                     points: polylineCordinates,
                     color: primaryColor,
-                    width: 6),
+                    width: 8),
               },
               markers: {
-                Marker(
-                    markerId: const MarkerId("currentLocation"),
-                    infoWindow: InfoWindow(title: widget.driver_name),
-                    icon: currentLocationIcon,
-                    position: LatLng(currentLocation!.latitude!,
-                        currentLocation!.longitude!)),
+                _currentLocationMarker,
                 Marker(
                     markerId: const MarkerId("source"),
                     infoWindow: InfoWindow(title: widget.driver_source),

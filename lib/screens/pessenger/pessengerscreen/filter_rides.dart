@@ -75,10 +75,6 @@ class _FilterRidesState extends State<FilterRides> {
                 }
               }
               return false;
-              // return rideDateTime
-              //         .isAfter(now.subtract(const Duration(days: 1))) &&
-              //     rideDestination == widget.endSearchText &&
-              //     rideDay == widget.dateText;
             }).toList();
 
             sortedDocs.sort((a, b) {
