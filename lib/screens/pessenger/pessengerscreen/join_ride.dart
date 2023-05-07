@@ -105,13 +105,11 @@ class _JoinRideState extends State<JoinRide> {
 
   void getPolyPoints() async {
     PolylinePoints polylinePoints = PolylinePoints();
-
     // Get the route between the source and via points
     PolylineResult result1 = await polylinePoints.getRouteBetweenCoordinates(
         google_api_key,
         PointLatLng(widget.driver_source_lat!, widget.driver_source_lng!),
         PointLatLng(widget.driver_via_lat!, widget.driver_via_lng!));
-
     // Get the route between the via and destination points
     PolylineResult result2 = await polylinePoints.getRouteBetweenCoordinates(
         google_api_key,

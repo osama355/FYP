@@ -43,10 +43,14 @@ class _RequestedState extends State<Requested> {
             final rideDateTime =
                 DateTime(rideDate.year, rideDate.month, rideDate.day);
             final reqStatus = doc['request_status'];
-            return rideDateTime
-                        .isAfter(now.subtract(const Duration(days: 1))) &&
-                    reqStatus == 'Pending' ||
-                reqStatus == 'Rejected';
+            final pass_id = doc['pass_id'];
+            if (pass_id == user?.uid) {
+              return rideDateTime
+                          .isAfter(now.subtract(const Duration(days: 1))) &&
+                      reqStatus == 'Pending' ||
+                  reqStatus == 'Rejected';
+            }
+            return false;
           }).toList();
 
           sortedDocs.sort((a, b) {
@@ -204,21 +208,14 @@ class _RequestedState extends State<Requested> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            MaterialButton(
-                              onPressed: () {
-                                if (sortedDocs[index]['request_status'] ==
-                                    "Accepted") {
-                                  // Navigator.push(context,route)
-                                }
-                              },
-                              height: 30.0,
-                              minWidth: 60.0,
-                              color: const Color(0xff4BA0FE),
-                              textColor: Colors.white,
-                              child: Text(
-                                '${sortedDocs[index]['request_status']}',
-                                style: const TextStyle(fontSize: 13),
-                              ),
+                            Text(
+                              '${sortedDocs[index]['request_status']}',
+                              style: TextStyle(
+                                  fontSize: 13,
+                                  color: sortedDocs[index]['request_status'] ==
+                                          "Cancel"
+                                      ? Colors.red
+                                      : const Color(0xff4BA0FE)),
                             ),
                             MaterialButton(
                               onPressed: () async {

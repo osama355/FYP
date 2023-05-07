@@ -34,8 +34,8 @@ class _DriverMapScreenState extends State<DriverMapScreen> {
   Map<PolylineId, Polyline> polylines = {};
   List<LatLng> polylineCoordinates = [];
   PolylinePoints polylinePoints = PolylinePoints();
-
   FirebaseFirestore firestore = FirebaseFirestore.instance;
+  Set<Marker> _markers = {};
 
   _addPolyLine() {
     PolylineId id = const PolylineId("poly");
@@ -60,7 +60,6 @@ class _DriverMapScreenState extends State<DriverMapScreen> {
         polylineCoordinates.add(LatLng(point.latitude, point.longitude));
       }
     }
-
     PolylineResult result2 = await polylinePoints.getRouteBetweenCoordinates(
       'AIzaSyCsAFe-3nLf0PkH2NIxcNheXEGeu__n2ew',
       PointLatLng(widget.midPositionLat!, widget.midPositionLng!),
@@ -82,6 +81,42 @@ class _DriverMapScreenState extends State<DriverMapScreen> {
         .update({'status': 'completed'});
   }
 
+  Future<BitmapDescriptor> getCustomMarkerIcon() async {
+    return await BitmapDescriptor.fromAssetImage(
+      ImageConfiguration(size: Size(25, 25)),
+      'assets/pass.png',
+    );
+  }
+
+  void _fetchPassengerLocations() async {
+    QuerySnapshot snapshot = await firestore.collection('requests').get();
+    snapshot.docs.forEach((doc) async {
+      String passengerId = doc['pass_id'];
+      DocumentSnapshot passengerDoc = await firestore
+          .collection('app')
+          .doc('user')
+          .collection('pessenger')
+          .doc(passengerId)
+          .get();
+
+      double lat = passengerDoc['live_latitude'];
+      double lng = passengerDoc['live_longitude'];
+      String passName = passengerDoc['name'];
+      BitmapDescriptor passLocationIcon = await getCustomMarkerIcon();
+
+      setState(() {
+        LatLng location = LatLng(lat, lng);
+        Marker marker = Marker(
+          markerId: MarkerId(passengerId),
+          position: location,
+          icon: passLocationIcon,
+          infoWindow: InfoWindow(title: passName, snippet: '$lat , $lng'),
+        );
+        _markers.add(marker);
+      });
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -89,6 +124,9 @@ class _DriverMapScreenState extends State<DriverMapScreen> {
       target: LatLng(widget.startPositionLat!, widget.startPositionLng!),
       zoom: 14.4746,
     );
+    Timer.periodic(const Duration(seconds: 3), (timer) {
+      _fetchPassengerLocations();
+    });
   }
 
   @override
@@ -107,6 +145,9 @@ class _DriverMapScreenState extends State<DriverMapScreen> {
           infoWindow: const InfoWindow(title: "Destination"),
           position: LatLng(widget.endPositionLat!, widget.endPositionLng!)),
     };
+
+    _markers.addAll(markers);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xff4BA0FE),
@@ -127,7 +168,7 @@ class _DriverMapScreenState extends State<DriverMapScreen> {
           Expanded(
             child: GoogleMap(
               initialCameraPosition: initialPosition,
-              markers: markers,
+              markers: _markers,
               mapType: MapType.normal,
               myLocationEnabled: true,
               myLocationButtonEnabled: true,
