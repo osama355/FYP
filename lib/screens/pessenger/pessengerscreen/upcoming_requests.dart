@@ -176,7 +176,7 @@ class _UpcomingRequestsState extends State<UpcomingRequests> {
                                           'Start' &&
                                       sortedDocs[index]['request_status'] !=
                                           'Cancel'
-                                  ? () {
+                                  ? () async {
                                       String driver_id =
                                           sortedDocs[index]['driver_id'];
                                       String driver_name =
