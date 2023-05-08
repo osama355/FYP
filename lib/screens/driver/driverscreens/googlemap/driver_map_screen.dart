@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drive_sharing_app/screens/driver/driverscreens/my_rides.dart';
+import 'package:drive_sharing_app/screens/pessenger/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -41,9 +42,9 @@ class _DriverMapScreenState extends State<DriverMapScreen> {
     PolylineId id = const PolylineId("poly");
     Polyline polyline = Polyline(
         polylineId: id,
-        color: Colors.green,
+        color: primaryColor,
         points: polylineCoordinates,
-        width: 5);
+        width: 8);
     polylines[id] = polyline;
     setState(() {});
   }
