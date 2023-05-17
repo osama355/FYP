@@ -36,7 +36,7 @@ class _DriverMapScreenState extends State<DriverMapScreen> {
   List<LatLng> polylineCoordinates = [];
   PolylinePoints polylinePoints = PolylinePoints();
   FirebaseFirestore firestore = FirebaseFirestore.instance;
-  Set<Marker> _markers = {};
+  final Set<Marker> _markers = {};
 
   _addPolyLine() {
     PolylineId id = const PolylineId("poly");
@@ -84,7 +84,7 @@ class _DriverMapScreenState extends State<DriverMapScreen> {
 
   Future<BitmapDescriptor> getCustomMarkerIcon() async {
     return await BitmapDescriptor.fromAssetImage(
-      ImageConfiguration(size: Size(25, 25)),
+      const ImageConfiguration(size: Size(25, 25)),
       'assets/pass.png',
     );
   }

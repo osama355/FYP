@@ -148,10 +148,10 @@ class _SetRouteState extends State<SetRoute> {
                         Utils().toastMessage("Please give a proper route");
                       }
                     },
-                    child: SizedBox(
+                    child: const SizedBox(
                       height: 30,
                       child: Row(
-                        children: const [
+                        children: [
                           Text(
                             "Create",
                             style: TextStyle(

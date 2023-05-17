@@ -89,10 +89,10 @@ class _SearchRideState extends State<SearchRide> {
                                         )));
                           }
                         },
-                        child: SizedBox(
+                        child: const SizedBox(
                           height: 30,
                           child: Row(
-                            children: const [
+                            children: [
                               Text(
                                 "Search",
                                 style: TextStyle(
