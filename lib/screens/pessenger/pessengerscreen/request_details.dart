@@ -219,10 +219,10 @@ class _RequestDetailsState extends State<RequestDetails> {
                     onTap: () {
                       createRequest();
                     },
-                    child: SizedBox(
+                    child: const SizedBox(
                       height: 30,
                       child: Row(
-                        children: const [
+                        children: [
                           Text(
                             "Request",
                             style: TextStyle(
