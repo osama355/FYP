@@ -1,5 +1,4 @@
 // ignore_for_file: non_constant_identifier_names
-
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -39,17 +38,18 @@ class _PreviousRequestsState extends State<PreviousRequests> {
             );
           }
 
-          final now = DateTime.now();
+          // final now = DateTime.now();
           final sortedDocs = snapshot.data!.docs.where((doc) {
-            final rideDate = DateFormat('dd-MM-yyyy').parse(doc['date']);
-            final rideDateTime =
-                DateTime(rideDate.year, rideDate.month, rideDate.day);
+            // final rideDate = DateFormat('dd-MM-yyyy').parse(doc['date']);
+            // final rideDateTime =
+            //     DateTime(rideDate.year, rideDate.month, rideDate.day);
             final reqStatus = doc['request_status'];
             final pass_id = doc['pass_id'];
             if (pass_id == user?.uid) {
-              if (reqStatus == 'Accepted' || reqStatus == 'Cancel') {
-                return rideDateTime
-                    .isBefore(now.subtract(const Duration(days: 1)));
+              if (reqStatus == 'Accepted' ||
+                  reqStatus == 'Cancel' ||
+                  reqStatus == 'Complete') {
+                return true;
               }
             }
             return false;
@@ -208,25 +208,14 @@ class _PreviousRequestsState extends State<PreviousRequests> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          MaterialButton(
-                            onPressed: () {
-                              if (sortedDocs[index]['request_status'] ==
-                                  "Accepted") {
-                                // Navigator.push(context,route)
-                              }
-                            },
-                            height: 30.0,
-                            minWidth: 60.0,
-                            color:
-                                sortedDocs[index]['request_status'] == 'Cancel'
+                          Text('${sortedDocs[index]['request_status']}',
+                              style: TextStyle(
+                                fontSize: 13,
+                                color: sortedDocs[index]['request_status'] ==
+                                        'Cancel'
                                     ? Colors.red
                                     : const Color(0xff4BA0FE),
-                            textColor: Colors.white,
-                            child: Text(
-                              '${sortedDocs[index]['request_status']}',
-                              style: const TextStyle(fontSize: 13),
-                            ),
-                          ),
+                              )),
                           MaterialButton(
                             onPressed: () {
                               firestore.runTransaction(
@@ -239,7 +228,7 @@ class _PreviousRequestsState extends State<PreviousRequests> {
                             color: const Color(0xff4BA0FE),
                             textColor: Colors.white,
                             child: const Text(
-                              "Delete Request",
+                              "Delete",
                               style: TextStyle(fontSize: 13),
                             ),
                           )

@@ -88,7 +88,7 @@ class _UpcomingRequestsState extends State<UpcomingRequests> {
             final rideStatus = doc['ride_status'];
             final pass_id = doc['pass_id'];
             if (pass_id == user?.uid) {
-              if (reqStatus == 'Accepted' || reqStatus == 'Cancel') {
+              if (reqStatus == 'Accepted' || reqStatus == 'Join') {
                 if (rideStatus == 'Stop' || rideStatus == 'Start') {
                   return rideDateTime
                       .isAfter(now.subtract(const Duration(days: 1)));
@@ -359,40 +359,44 @@ class _UpcomingRequestsState extends State<UpcomingRequests> {
                                           .delete(sortedDocs[index].reference);
                                     });
                                   }
-                                : () async {
-                                    var requestedDriverDoc = await firestore
-                                        .collection('app')
-                                        .doc('user')
-                                        .collection('driver')
-                                        .doc(sortedDocs[index]['driver_id'])
-                                        .get();
+                                : sortedDocs[index]['request_status'] == 'Join'
+                                    ? null
+                                    : () async {
+                                        var requestedDriverDoc = await firestore
+                                            .collection('app')
+                                            .doc('user')
+                                            .collection('driver')
+                                            .doc(sortedDocs[index]['driver_id'])
+                                            .get();
 
-                                    final remainSeats = await firestore
-                                        .collection('rides')
-                                        .doc(sortedDocs[index]['ride_id'])
-                                        .get();
-                                    String driverToken =
-                                        await requestedDriverDoc.get('token');
+                                        final remainSeats = await firestore
+                                            .collection('rides')
+                                            .doc(sortedDocs[index]['ride_id'])
+                                            .get();
+                                        String driverToken =
+                                            await requestedDriverDoc
+                                                .get('token');
 
-                                    await firestore
-                                        .collection('requests')
-                                        .doc(sortedDocs[index].id)
-                                        .update({'request_status': "Cancel"});
-                                    await firestore
-                                        .collection('rides')
-                                        .doc(sortedDocs[index]['ride_id'])
-                                        .update({
-                                      'reservedSeats':
-                                          remainSeats.data()?['reservedSeats'] -
+                                        await firestore
+                                            .collection('requests')
+                                            .doc(sortedDocs[index].id)
+                                            .update(
+                                                {'request_status': "Cancel"});
+                                        await firestore
+                                            .collection('rides')
+                                            .doc(sortedDocs[index]['ride_id'])
+                                            .update({
+                                          'reservedSeats': remainSeats
+                                                  .data()?['reservedSeats'] -
                                               1
-                                    });
-                                    sendNotification1(
-                                        'Cancel',
-                                        driverToken,
-                                        sortedDocs[index]['pass_name'],
-                                        sortedDocs[index]['pass_pickup'],
-                                        sortedDocs[index]['pass_dest']);
-                                  },
+                                        });
+                                        sendNotification1(
+                                            'Cancel',
+                                            driverToken,
+                                            sortedDocs[index]['pass_name'],
+                                            sortedDocs[index]['pass_pickup'],
+                                            sortedDocs[index]['pass_dest']);
+                                      },
                             height: 30.0,
                             minWidth: 60.0,
                             color: const Color(0xff4BA0FE),
