@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print
 import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:drive_sharing_app/screens/driver/driverscreens/chat/driver_chat.dart';
 import 'package:drive_sharing_app/screens/driver/driverscreens/googlemap/driver_map_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -83,7 +84,6 @@ class _TravelPartnersState extends State<TravelPartners> {
     final user = auth.currentUser;
     final CollectionReference requestCollection =
         FirebaseFirestore.instance.collection('requests');
-    List<String> requestIds = [];
 
     return Scaffold(
         appBar: AppBar(
@@ -110,156 +110,251 @@ class _TravelPartnersState extends State<TravelPartners> {
                       child: Text("No Request Yet"),
                     );
                   }
-                  return ListView.builder(
-                    itemCount: snapshot.data!.docs.length,
-                    itemBuilder: (context, index) {
-                      if (snapshot.data!.docs[index]['driver_id'] ==
-                          user?.uid) {
-                        if (snapshot.data!.docs[index]['request_status'] ==
-                            "Accepted") {
-                          if (snapshot.data!.docs[index]['ride_id'] ==
-                              widget.rideId) {
-                            String requestId = snapshot.data!.docs[index].id;
-                            requestIds.add(requestId);
+                  final sortedDoc = snapshot.data!.docs.where((doc) {
+                    final reqStatus = doc['request_status'];
+                    final driverId = doc['driver_id'];
+                    if (driverId == user!.uid) {
+                      return reqStatus == 'Accepted';
+                    }
+                    return false;
+                  }).toList();
 
-                            return Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Container(
-                                padding: const EdgeInsets.all(15.0),
-                                decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(5.0),
-                                    boxShadow: [
-                                      BoxShadow(
-                                          color: Colors.grey.withOpacity(0.5),
-                                          spreadRadius: 5,
-                                          blurRadius: 7,
-                                          offset: const Offset(0, 3)),
-                                    ]),
-                                child: Column(
+                  if (sortedDoc.isEmpty) {
+                    return const Center(
+                      child: Text('No Request'),
+                    );
+                  }
+
+                  return ListView.builder(
+                    itemCount: sortedDoc.length,
+                    itemBuilder: (context, index) {
+                      if (sortedDoc[index]['ride_id'] == widget.rideId) {
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Container(
+                            padding: const EdgeInsets.all(15.0),
+                            decoration: BoxDecoration(
+                                color: sortedDoc[index]['request_status'] ==
+                                        'Complete'
+                                    ? Colors.grey.withOpacity(0.5)
+                                    : Colors.white,
+                                borderRadius: BorderRadius.circular(5.0),
+                                boxShadow: [
+                                  BoxShadow(
+                                      color: Colors.grey.withOpacity(0.5),
+                                      spreadRadius: 5,
+                                      blurRadius: 7,
+                                      offset: const Offset(0, 3)),
+                                ]),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
                                   children: [
-                                    Row(
-                                      children: [
-                                        ClipOval(
-                                          child: snapshot.data!.docs[index]
-                                                      ['pass_profile_url'] !=
-                                                  ""
-                                              ? Image.network(
-                                                  snapshot.data!.docs[index]
-                                                      ['pass_profile_url'],
-                                                  width: 50,
-                                                  height: 50,
-                                                  fit: BoxFit.cover)
-                                              : Container(
-                                                  width: 60,
-                                                  height: 60,
-                                                  decoration:
-                                                      const BoxDecoration(
-                                                          color: Color(
-                                                              0xff4BA0FE)),
-                                                  child: const Icon(
-                                                    Icons.person,
-                                                    size: 40,
-                                                    color: Colors.white,
-                                                  ),
-                                                ),
-                                        ),
-                                        const SizedBox(
-                                          width: 10,
-                                        ),
-                                        Text(
-                                          snapshot.data!.docs[index]
-                                              ['pass_name'],
-                                          style: const TextStyle(fontSize: 15),
-                                        ),
-                                      ],
+                                    ClipOval(
+                                      child: sortedDoc[index]
+                                                  ['pass_profile_url'] !=
+                                              ""
+                                          ? Image.network(
+                                              sortedDoc[index]
+                                                  ['pass_profile_url'],
+                                              width: 50,
+                                              height: 50,
+                                              fit: BoxFit.cover)
+                                          : Container(
+                                              width: 60,
+                                              height: 60,
+                                              decoration: const BoxDecoration(
+                                                  color: Color(0xff4BA0FE)),
+                                              child: const Icon(
+                                                Icons.person,
+                                                size: 40,
+                                                color: Colors.white,
+                                              ),
+                                            ),
                                     ),
                                     const SizedBox(
-                                      height: 10,
+                                      width: 10,
                                     ),
-                                    Row(
-                                      children: [
-                                        const Icon(
-                                          Icons.phone,
-                                          color: Color(0xff4BA0FE),
-                                          size: 15,
-                                        ),
-                                        const SizedBox(
-                                          width: 5,
-                                        ),
-                                        Text(
-                                          snapshot.data!.docs[index]
-                                              ['pass_phone'],
-                                          style: const TextStyle(fontSize: 13),
-                                        )
-                                      ],
-                                    ),
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    Row(
-                                      children: [
-                                        const Icon(
-                                          Icons.circle,
-                                          color: Colors.green,
-                                          size: 10,
-                                        ),
-                                        const SizedBox(
-                                          width: 5,
-                                        ),
-                                        Text(
-                                          'Pickup : ${snapshot.data!.docs[index]['pass_pickup']}',
-                                          style: const TextStyle(fontSize: 13),
-                                        )
-                                      ],
-                                    ),
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    Row(
-                                      children: [
-                                        const Icon(
-                                          Icons.circle,
-                                          color: Colors.red,
-                                          size: 10.0,
-                                        ),
-                                        const SizedBox(
-                                          width: 5,
-                                        ),
-                                        Text(
-                                          'Drop : ${snapshot.data!.docs[index]['pass_dest']}',
-                                          style: const TextStyle(fontSize: 13),
-                                        )
-                                      ],
-                                    ),
-                                    const SizedBox(
-                                      height: 5,
-                                    ),
-                                    Row(
-                                      children: [
-                                        const Text(
-                                          "Time : ",
-                                          style: TextStyle(fontSize: 13),
-                                        ),
-                                        Text(
-                                          '${snapshot.data!.docs[index]['date']}  ${snapshot.data!.docs[index]['time']}',
-                                          style: const TextStyle(fontSize: 13),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(
-                                      height: 5,
+                                    Text(
+                                      sortedDoc[index]['pass_name'],
+                                      style: const TextStyle(fontSize: 15),
                                     ),
                                   ],
                                 ),
-                              ),
-                            );
-                          }
-                        }
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.phone,
+                                      color: Color(0xff4BA0FE),
+                                      size: 15,
+                                    ),
+                                    const SizedBox(
+                                      width: 5,
+                                    ),
+                                    Text(
+                                      sortedDoc[index]['pass_phone'],
+                                      style: const TextStyle(fontSize: 13),
+                                    )
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.circle,
+                                      color: Colors.green,
+                                      size: 10,
+                                    ),
+                                    const SizedBox(
+                                      width: 5,
+                                    ),
+                                    Text(
+                                      'Pickup : ${sortedDoc[index]['pass_pickup']}',
+                                      style: const TextStyle(fontSize: 13),
+                                    )
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.circle,
+                                      color: Colors.red,
+                                      size: 10.0,
+                                    ),
+                                    const SizedBox(
+                                      width: 5,
+                                    ),
+                                    Text(
+                                      'Drop : ${sortedDoc[index]['pass_dest']}',
+                                      style: const TextStyle(fontSize: 13),
+                                    )
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                                Text(
+                                  "Time : ${sortedDoc[index]['date']}  ${sortedDoc[index]['time']}",
+                                  style: const TextStyle(fontSize: 13),
+                                ),
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    SizedBox(
+                                      width: 120,
+                                      child: TextButton(
+                                        style: ButtonStyle(
+                                          textStyle: MaterialStateProperty.all<
+                                              TextStyle>(
+                                            const TextStyle(
+                                              fontSize: 16.0,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          foregroundColor:
+                                              MaterialStateProperty.all<Color>(
+                                                  Colors.white),
+                                          backgroundColor:
+                                              MaterialStateProperty.all<Color>(
+                                                  const Color(0xff4BA0FE)),
+                                          padding: MaterialStateProperty.all<
+                                              EdgeInsetsGeometry>(
+                                            const EdgeInsets.symmetric(
+                                                horizontal: 16.0,
+                                                vertical: 8.0),
+                                          ),
+                                          shape: MaterialStateProperty.all<
+                                              RoundedRectangleBorder>(
+                                            RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(5.0),
+                                            ),
+                                          ),
+                                        ),
+                                        onPressed: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      const DriverChat()));
+                                        },
+                                        child: const Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Icon(
+                                              Icons.chat,
+                                              size: 15.0,
+                                            ),
+                                            SizedBox(width: 10),
+                                            Text('Chat'),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 120,
+                                      child: TextButton(
+                                          style: ButtonStyle(
+                                            textStyle: MaterialStateProperty
+                                                .all<TextStyle>(
+                                              const TextStyle(
+                                                fontSize: 16.0,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            foregroundColor:
+                                                MaterialStateProperty.all<
+                                                    Color>(Colors.white),
+                                            backgroundColor:
+                                                MaterialStateProperty.all<
+                                                        Color>(
+                                                    const Color(0xff4BA0FE)),
+                                            padding: MaterialStateProperty.all<
+                                                EdgeInsetsGeometry>(
+                                              const EdgeInsets.symmetric(
+                                                  horizontal: 16.0,
+                                                  vertical: 8.0),
+                                            ),
+                                            shape: MaterialStateProperty.all<
+                                                RoundedRectangleBorder>(
+                                              RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(5.0),
+                                              ),
+                                            ),
+                                          ),
+                                          onPressed: () async {
+                                            await firestore
+                                                .collection('requests')
+                                                .doc(sortedDoc[index].id)
+                                                .update({
+                                              'request_status': 'Complete'
+                                            });
+                                          },
+                                          child: const Text('Complete')),
+                                    )
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
                       }
-                      return const SizedBox(
-                        height: 0,
-                      );
+                      return null;
                     },
                   );
                 },
@@ -286,6 +381,7 @@ class _TravelPartnersState extends State<TravelPartners> {
                     ///for request collection
                     await requestCollection
                         .where('ride_id', isEqualTo: widget.rideId)
+                        .where('request_status', isEqualTo: 'Accepted')
                         .get()
                         .then((snapshot) async {
                       for (var doc in snapshot.docs) {

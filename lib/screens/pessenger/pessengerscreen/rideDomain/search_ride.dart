@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/filter_rides.dart';
+import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/rideDomain/filter_rides.dart';
 import 'package:flutter/material.dart';
 import 'package:google_place/google_place.dart';
 

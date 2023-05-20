@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:drive_sharing_app/screens/driver/driverscreens/my_rides.dart';
-import 'package:drive_sharing_app/screens/pessenger/constant.dart';
+import 'package:drive_sharing_app/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -93,28 +92,31 @@ class _DriverMapScreenState extends State<DriverMapScreen> {
     QuerySnapshot snapshot = await firestore.collection('requests').get();
     snapshot.docs.forEach((doc) async {
       String passengerId = doc['pass_id'];
-      DocumentSnapshot passengerDoc = await firestore
-          .collection('app')
-          .doc('user')
-          .collection('pessenger')
-          .doc(passengerId)
-          .get();
+      String requestStatus = doc['request_status'];
+      if (requestStatus == 'Accepted') {
+        DocumentSnapshot passengerDoc = await firestore
+            .collection('app')
+            .doc('user')
+            .collection('pessenger')
+            .doc(passengerId)
+            .get();
 
-      double lat = passengerDoc['live_latitude'];
-      double lng = passengerDoc['live_longitude'];
-      String passName = passengerDoc['name'];
-      BitmapDescriptor passLocationIcon = await getCustomMarkerIcon();
+        double lat = passengerDoc['live_latitude'];
+        double lng = passengerDoc['live_longitude'];
+        String passName = passengerDoc['name'];
+        BitmapDescriptor passLocationIcon = await getCustomMarkerIcon();
 
-      setState(() {
-        LatLng location = LatLng(lat, lng);
-        Marker marker = Marker(
-          markerId: MarkerId(passengerId),
-          position: location,
-          icon: passLocationIcon,
-          infoWindow: InfoWindow(title: passName, snippet: '$lat , $lng'),
-        );
-        _markers.add(marker);
-      });
+        setState(() {
+          LatLng location = LatLng(lat, lng);
+          Marker marker = Marker(
+            markerId: MarkerId(passengerId),
+            position: location,
+            icon: passLocationIcon,
+            infoWindow: InfoWindow(title: passName, snippet: '$lat , $lng'),
+          );
+          _markers.add(marker);
+        });
+      }
     });
   }
 
@@ -155,8 +157,7 @@ class _DriverMapScreenState extends State<DriverMapScreen> {
         title: const Text("Ride Node"),
         leading: IconButton(
           onPressed: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const MyRides()));
+            Navigator.pop(context);
           },
           icon: const CircleAvatar(
             backgroundColor: Colors.white,

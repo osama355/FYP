@@ -1,10 +1,10 @@
 // ignore_for_file: non_constant_identifier_names
 import 'dart:async';
-import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/request_details.dart';
+import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/requestDomain/request_details.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import '../../../utils/map_utils.dart';
+import '../../../../utils/map_utils.dart';
 
 class SeeCompleteRideInfo extends StatefulWidget {
   //props from get_ride
