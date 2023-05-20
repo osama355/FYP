@@ -5,8 +5,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
-import '../../../utils/utils.dart';
-import '../../../widgets/round_button.dart';
+import '../../../../utils/utils.dart';
+import '../../../../widgets/round_button.dart';
 
 class PessengerProfileScreen extends StatefulWidget {
   const PessengerProfileScreen({super.key});

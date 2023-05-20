@@ -1,7 +1,7 @@
 // ignore_for_file: non_constant_identifier_names
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:drive_sharing_app/screens/pessenger/constant.dart';
+import 'package:drive_sharing_app/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';

@@ -2,9 +2,9 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drive_sharing_app/firebase_services/local_push_notification.dart';
-import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/get_ride.dart';
-import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/pessenger_sidebar.dart';
-import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/search_ride.dart';
+import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/rideDomain/get_ride.dart';
+import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/pass/pessenger_sidebar.dart';
+import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/rideDomain/search_ride.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';

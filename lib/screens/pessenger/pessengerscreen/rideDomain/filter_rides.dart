@@ -1,8 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/see_complete_ride_info.dart';
+import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/rideDomain/see_complete_ride_info.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-// ignore: depend_on_referenced_packages
 import 'package:intl/intl.dart' show DateFormat;
 
 class FilterRides extends StatefulWidget {

@@ -1,6 +1,6 @@
-import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/previous_request.dart';
-import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/requested.dart';
-import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/upcoming_requests.dart';
+import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/requestDomain/previous_request.dart';
+import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/requestDomain/requested.dart';
+import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/requestDomain/upcoming_requests.dart';
 import 'package:flutter/material.dart';
 
 class PassengerRequests extends StatefulWidget {

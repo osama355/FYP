@@ -1,4 +1,4 @@
-import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/pessenger_home_screen.dart';
+import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/pass/pessenger_home_screen.dart';
 import 'package:drive_sharing_app/utils/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';

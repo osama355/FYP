@@ -1,13 +1,13 @@
 // ignore_for_file: non_constant_identifier_names
 import 'dart:convert';
-import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/join_ride.dart';
+import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/rideDomain/join_ride.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 // ignore: depend_on_referenced_packages, unused_import
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:http/http.dart' as http;
-import '../../../utils/utils.dart';
+import '../../../../utils/utils.dart';
 
 class UpcomingRequests extends StatefulWidget {
   const UpcomingRequests({super.key});
