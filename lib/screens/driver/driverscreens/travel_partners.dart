@@ -285,11 +285,19 @@ class _TravelPartnersState extends State<TravelPartners> {
                                           ),
                                         ),
                                         onPressed: () {
+                                          String driverId = user!.uid;
+                                          String passId =
+                                              sortedDoc[index]['pass_id'];
+                                          String passName =
+                                              sortedDoc[index]['pass_name'];
                                           Navigator.push(
                                               context,
                                               MaterialPageRoute(
                                                   builder: (context) =>
-                                                      const DriverChat()));
+                                                      DriverChat(
+                                                          driverId: driverId,
+                                                          passId: passId,
+                                                          passName: passName)));
                                         },
                                         child: const Row(
                                           mainAxisAlignment:
