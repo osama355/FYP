@@ -114,7 +114,7 @@ class _TravelPartnersState extends State<TravelPartners> {
                     final reqStatus = doc['request_status'];
                     final driverId = doc['driver_id'];
                     if (driverId == user!.uid) {
-                      return reqStatus == 'Accepted';
+                      return reqStatus == 'Accepted' || reqStatus == 'Join';
                     }
                     return false;
                   }).toList();

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:drive_sharing_app/screens/driver/driverscreens/chat/see_reviews.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 // ignore: depend_on_referenced_packages, unused_import
@@ -228,6 +229,7 @@ class _DriverHistoryState extends State<DriverHistory> {
                               ),
                             ),
                             child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 ElevatedButton.icon(
                                   onPressed: () async {
@@ -452,9 +454,6 @@ class _DriverHistoryState extends State<DriverHistory> {
                                   icon: const Icon(Icons.create),
                                   label: const Text('Recreate'),
                                 ),
-                                const SizedBox(
-                                  width: 5.0,
-                                ),
                                 ElevatedButton.icon(
                                   onPressed: () async {
                                     await firestore.runTransaction(
@@ -469,6 +468,21 @@ class _DriverHistoryState extends State<DriverHistory> {
                                     style: TextStyle(fontSize: 12),
                                   ),
                                   icon: const Icon(Icons.cancel),
+                                ),
+                                ElevatedButton.icon(
+                                  onPressed: () {
+                                    String rideId = sortedDocs[index].id;
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                SeeReviews(rideId: rideId)));
+                                  },
+                                  label: const Text(
+                                    "See Reviews",
+                                    style: TextStyle(fontSize: 12),
+                                  ),
+                                  icon: const Icon(Icons.reviews),
                                 ),
                               ],
                             ))

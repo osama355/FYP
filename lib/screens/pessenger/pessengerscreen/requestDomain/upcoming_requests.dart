@@ -1,10 +1,10 @@
-// ignore_for_file: non_constant_identifier_names
+// ignore_for_file: non_constant_identifier_names, use_build_context_synchronously
 import 'dart:convert';
+import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/chat/pass_chat.dart';
 import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/rideDomain/join_ride.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-// ignore: depend_on_referenced_packages, unused_import
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:http/http.dart' as http;
 import '../../../../utils/utils.dart';
@@ -177,6 +177,11 @@ class _UpcomingRequestsState extends State<UpcomingRequests> {
                                       sortedDocs[index]['request_status'] !=
                                           'Cancel'
                                   ? () async {
+                                      await firestore
+                                          .collection('requests')
+                                          .doc(sortedDocs[index].id)
+                                          .update({'request_status': 'Join'});
+
                                       String driver_id =
                                           sortedDocs[index]['driver_id'];
                                       String driver_name =
@@ -348,6 +353,26 @@ class _UpcomingRequestsState extends State<UpcomingRequests> {
                                         "Cancel"
                                     ? Colors.red
                                     : const Color(0xff4BA0FE)),
+                          ),
+                          MaterialButton(
+                            onPressed: () {
+                              String passId = user!.uid;
+                              String driverId = sortedDocs[index]['driver_id'];
+                              String driverName =
+                                  sortedDocs[index]['driver_name'];
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => PassChat(
+                                          passId: passId,
+                                          driverId: driverId,
+                                          driverName: driverName)));
+                            },
+                            height: 30.0,
+                            minWidth: 60.0,
+                            color: const Color(0xff4BA0FE),
+                            textColor: Colors.white,
+                            child: const Text('Chat'),
                           ),
                           MaterialButton(
                             onPressed: sortedDocs[index]['request_status'] ==

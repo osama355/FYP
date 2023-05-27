@@ -15,6 +15,7 @@ class GetRide extends StatefulWidget {
 class _GetRideState extends State<GetRide> {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   FirebaseAuth auth = FirebaseAuth.instance;
+  int rating = 2;
   @override
   void initState() {
     super.initState();
@@ -81,6 +82,9 @@ class _GetRideState extends State<GetRide> {
                   sortedDocs[index]['reservedSeats'];
               final time = DateFormat('HH:mm')
                   .format(DateFormat.jm().parse(sortedDocs[index]['time']));
+
+              // String driverId = sortedDocs[index]['driver-id'];
+
               return Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Container(
@@ -99,32 +103,56 @@ class _GetRideState extends State<GetRide> {
                   child: Column(
                     children: [
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          CircleAvatar(
-                              backgroundColor:
-                                  sortedDocs[index]['profile_url'] != ""
-                                      ? Colors.transparent
-                                      : const Color(0xff4BA0FE),
-                              child: SizedBox(
-                                width: 60,
-                                height: 60,
-                                child: ClipOval(
-                                  child: sortedDocs[index]['profile_url'] != ""
-                                      ? Image.network(
-                                          sortedDocs[index]['profile_url'])
-                                      : const Icon(
-                                          Icons.person,
-                                          color: Colors.white,
-                                        ),
-                                ),
-                              )),
-                          const SizedBox(
-                            width: 10,
+                          Row(
+                            children: [
+                              CircleAvatar(
+                                  backgroundColor:
+                                      sortedDocs[index]['profile_url'] != ""
+                                          ? Colors.transparent
+                                          : const Color(0xff4BA0FE),
+                                  child: SizedBox(
+                                    width: 60,
+                                    height: 60,
+                                    child: ClipOval(
+                                      child: sortedDocs[index]['profile_url'] !=
+                                              ""
+                                          ? Image.network(
+                                              sortedDocs[index]['profile_url'])
+                                          : const Icon(
+                                              Icons.person,
+                                              color: Colors.white,
+                                            ),
+                                    ),
+                                  )),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              Text(
+                                sortedDocs[index]['driver-name'],
+                                style: const TextStyle(fontSize: 13),
+                              ),
+                            ],
                           ),
-                          Text(
-                            sortedDocs[index]['driver-name'],
-                            style: const TextStyle(fontSize: 13),
-                          ),
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: List.generate(5, (index) {
+                              if (index < rating) {
+                                return const Icon(
+                                  Icons.star,
+                                  size: 15.0,
+                                  color: Colors.yellow,
+                                );
+                              } else {
+                                return const Icon(
+                                  Icons.star,
+                                  size: 15.0,
+                                  color: Colors.yellow,
+                                );
+                              }
+                            }),
+                          )
                         ],
                       ),
                       const SizedBox(
