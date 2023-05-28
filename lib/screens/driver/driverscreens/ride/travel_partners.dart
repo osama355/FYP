@@ -5,7 +5,7 @@ import 'package:drive_sharing_app/screens/driver/driverscreens/chat/driver_chat.
 import 'package:drive_sharing_app/screens/driver/driverscreens/googlemap/driver_map_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import '../../../utils/utils.dart';
+import '../../../../utils/utils.dart';
 import 'package:http/http.dart' as http;
 
 class TravelPartners extends StatefulWidget {
@@ -114,7 +114,7 @@ class _TravelPartnersState extends State<TravelPartners> {
                     final reqStatus = doc['request_status'];
                     final driverId = doc['driver_id'];
                     if (driverId == user!.uid) {
-                      return reqStatus == 'Accepted';
+                      return reqStatus == 'Accepted' || reqStatus == 'Join';
                     }
                     return false;
                   }).toList();

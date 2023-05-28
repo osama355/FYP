@@ -1,22 +1,24 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../../../../utils/utils.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 
-class DriverChat extends StatefulWidget {
-  final String driverId;
+class PassChat extends StatefulWidget {
   final String passId;
-  final String passName;
-
-  const DriverChat(
-      {required this.driverId, required this.passId, required this.passName});
+  final String driverId;
+  final String driverName;
+  const PassChat(
+      {super.key,
+      required this.passId,
+      required this.driverId,
+      required this.driverName});
 
   @override
-  State<DriverChat> createState() => _DriverChatState();
+  State<PassChat> createState() => _PassChatState();
 }
 
-class _DriverChatState extends State<DriverChat> {
+class _PassChatState extends State<PassChat> {
   late TextEditingController _messageController;
   final firestore = FirebaseFirestore.instance;
 
@@ -64,12 +66,12 @@ class _DriverChatState extends State<DriverChat> {
     }
   }
 
-  Future<String> getPassToken() async {
+  Future<String> getDriverToken() async {
     final token = await firestore
         .collection('app')
         .doc('user')
-        .collection('pessenger')
-        .doc(widget.passId)
+        .collection('driver')
+        .doc(widget.driverId)
         .get();
     final tokenData = token.data();
     if (tokenData != null) {
@@ -84,15 +86,15 @@ class _DriverChatState extends State<DriverChat> {
         .doc('${widget.driverId}_${widget.passId}')
         .collection('messages')
         .add({
-      'sender': 'driver',
+      'sender': 'passenger',
       'message': message,
       'timestamp': DateTime.now(),
     });
 
     _messageController.clear();
 
-    String passToken = await getPassToken();
-    sendNotification1(passToken, message);
+    String driverToken = await getDriverToken();
+    sendNotification1(driverToken, message);
   }
 
   void _deleteMessage(String messageId) {
@@ -108,7 +110,7 @@ class _DriverChatState extends State<DriverChat> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.passName),
+        title: Text(widget.driverName),
       ),
       body: Column(
         children: [
@@ -154,9 +156,9 @@ class _DriverChatState extends State<DriverChat> {
                       child: ListTile(
                         title: Text(message['message']),
                         subtitle: Text(
-                          message['sender'] == 'driver'
+                          message['sender'] == 'passenger'
                               ? 'You'
-                              : widget.passName,
+                              : widget.driverName,
                         ),
                       ),
                     );

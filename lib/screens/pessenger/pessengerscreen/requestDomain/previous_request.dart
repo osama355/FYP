@@ -1,4 +1,5 @@
 // ignore_for_file: non_constant_identifier_names
+import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/chat/review.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -37,17 +38,21 @@ class _PreviousRequestsState extends State<PreviousRequests> {
             );
           }
 
-          // final now = DateTime.now();
+          final now = DateTime.now();
           final sortedDocs = snapshot.data!.docs.where((doc) {
-            // final rideDate = DateFormat('dd-MM-yyyy').parse(doc['date']);
-            // final rideDateTime =
-            //     DateTime(rideDate.year, rideDate.month, rideDate.day);
+            final rideDate = DateFormat('dd-MM-yyyy').parse(doc['date']);
+            final rideDateTime =
+                DateTime(rideDate.year, rideDate.month, rideDate.day);
             final reqStatus = doc['request_status'];
             final pass_id = doc['pass_id'];
             if (pass_id == user?.uid) {
-              if (reqStatus == 'Accepted' ||
-                  reqStatus == 'Cancel' ||
-                  reqStatus == 'Complete') {
+              if (reqStatus == 'Accepted') {
+                return rideDateTime
+                    .isAfter(now.subtract(const Duration(days: -1)));
+              } else if (reqStatus == 'Cancel') {
+                return true;
+              }
+              if (reqStatus == 'Complete') {
                 return true;
               }
             }
@@ -95,34 +100,62 @@ class _PreviousRequestsState extends State<PreviousRequests> {
                   child: Column(
                     children: [
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          CircleAvatar(
-                              backgroundColor:
-                                  sortedDocs[index]['driver_profile_url'] != ""
-                                      ? Colors.transparent
-                                      : const Color(0xff4BA0FE),
-                              child: SizedBox(
-                                width: 60,
-                                height: 60,
-                                child: ClipOval(
-                                  child: sortedDocs[index]
+                          Row(
+                            children: [
+                              CircleAvatar(
+                                  backgroundColor: sortedDocs[index]
                                               ['driver_profile_url'] !=
                                           ""
-                                      ? Image.network(sortedDocs[index]
-                                          ['driver_profile_url'])
-                                      : const Icon(
-                                          Icons.person,
-                                          color: Colors.white,
-                                        ),
-                                ),
-                              )),
-                          const SizedBox(
-                            width: 10,
+                                      ? Colors.transparent
+                                      : const Color(0xff4BA0FE),
+                                  child: SizedBox(
+                                    width: 60,
+                                    height: 60,
+                                    child: ClipOval(
+                                      child: sortedDocs[index]
+                                                  ['driver_profile_url'] !=
+                                              ""
+                                          ? Image.network(sortedDocs[index]
+                                              ['driver_profile_url'])
+                                          : const Icon(
+                                              Icons.person,
+                                              color: Colors.white,
+                                            ),
+                                    ),
+                                  )),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              Text(
+                                sortedDocs[index]['driver_name'],
+                                style: const TextStyle(fontSize: 13),
+                              )
+                            ],
                           ),
-                          Text(
-                            sortedDocs[index]['driver_name'],
-                            style: const TextStyle(fontSize: 13),
-                          )
+                          MaterialButton(
+                            onPressed: () {
+                              String rideId = sortedDocs[index]['ride_id'];
+                              String driverId = sortedDocs[index]['driver_id'];
+                              String passName = sortedDocs[index]['pass_name'];
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => ReviewDriver(
+                                          rideId: rideId,
+                                          driverId: driverId,
+                                          passName: passName)));
+                            },
+                            height: 30.0,
+                            minWidth: 60.0,
+                            color: const Color(0xff4BA0FE),
+                            textColor: Colors.white,
+                            child: const Text(
+                              "Review",
+                              style: TextStyle(fontSize: 13),
+                            ),
+                          ),
                         ],
                       ),
                       const SizedBox(
@@ -208,12 +241,9 @@ class _PreviousRequestsState extends State<PreviousRequests> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text('${sortedDocs[index]['request_status']}',
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 13,
-                                color: sortedDocs[index]['request_status'] ==
-                                        'Cancel'
-                                    ? Colors.red
-                                    : const Color(0xff4BA0FE),
+                                color: Color(0xff4BA0FE),
                               )),
                           MaterialButton(
                             onPressed: () {

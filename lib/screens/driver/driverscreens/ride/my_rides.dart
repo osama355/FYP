@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:drive_sharing_app/screens/driver/driverscreens/driver_home_screen.dart';
-import 'package:drive_sharing_app/screens/driver/driverscreens/travel_partners.dart';
+import 'package:drive_sharing_app/screens/driver/driverscreens/profile/driver_home_screen.dart';
+import 'package:drive_sharing_app/screens/driver/driverscreens/ride/travel_partners.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 // ignore: depend_on_referenced_packages, unused_import

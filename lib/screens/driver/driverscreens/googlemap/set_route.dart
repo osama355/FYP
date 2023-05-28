@@ -4,7 +4,7 @@ import 'package:drive_sharing_app/utils/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_place/google_place.dart';
-import '../my_rides.dart';
+import '../ride/my_rides.dart';
 
 class SetRoute extends StatefulWidget {
   // props from ceate_ride
