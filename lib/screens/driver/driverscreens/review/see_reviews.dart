@@ -41,7 +41,7 @@ class _SeeReviewsState extends State<SeeReviews> {
             }
 
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const CircularProgressIndicator();
+              return const Center(child: CircularProgressIndicator());
             }
             final data = snapshot.data;
             final reviews = data?['rating'] as List<dynamic>?;

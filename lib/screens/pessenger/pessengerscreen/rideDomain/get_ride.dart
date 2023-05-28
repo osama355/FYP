@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:drive_sharing_app/screens/driver/driverscreens/review/average_review.dart';
 import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/rideDomain/see_complete_ride_info.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -83,7 +84,7 @@ class _GetRideState extends State<GetRide> {
               final time = DateFormat('HH:mm')
                   .format(DateFormat.jm().parse(sortedDocs[index]['time']));
 
-              // String driverId = sortedDocs[index]['driver-id'];
+              String driverId = sortedDocs[index]['driver-id'];
 
               return Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -135,24 +136,7 @@ class _GetRideState extends State<GetRide> {
                               ),
                             ],
                           ),
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: List.generate(5, (index) {
-                              if (index < rating) {
-                                return const Icon(
-                                  Icons.star,
-                                  size: 15.0,
-                                  color: Colors.yellow,
-                                );
-                              } else {
-                                return const Icon(
-                                  Icons.star,
-                                  size: 15.0,
-                                  color: Colors.yellow,
-                                );
-                              }
-                            }),
-                          )
+                          AverageRating(driverId: driverId)
                         ],
                       ),
                       const SizedBox(

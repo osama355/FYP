@@ -1,13 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:drive_sharing_app/screens/driver/driverscreens/driver_home_screen.dart';
-import 'package:drive_sharing_app/screens/driver/driverscreens/driver_profile_screen.dart';
-import 'package:drive_sharing_app/screens/driver/driverscreens/driver_requests.dart';
-import 'package:drive_sharing_app/screens/driver/driverscreens/history.dart';
-import 'package:drive_sharing_app/screens/driver/driverscreens/my_rides.dart';
+import 'package:drive_sharing_app/screens/driver/driverscreens/profile/driver_home_screen.dart';
+import 'package:drive_sharing_app/screens/driver/driverscreens/profile/driver_profile_screen.dart';
+import 'package:drive_sharing_app/screens/driver/driverscreens/request/driver_requests.dart';
+import 'package:drive_sharing_app/screens/driver/driverscreens/ride/my_rides.dart';
+import 'package:drive_sharing_app/screens/driver/driverscreens/ride/history.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import '../../../utils/utils.dart';
-import '../auth/main_driver_signup.dart';
+import '../../../../utils/utils.dart';
+import '../../auth/main_driver_signup.dart';
 
 class DriverSidebar extends StatefulWidget {
   const DriverSidebar({super.key});

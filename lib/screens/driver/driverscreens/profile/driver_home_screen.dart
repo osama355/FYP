@@ -1,14 +1,14 @@
 // ignore_for_file: avoid_print
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:drive_sharing_app/screens/driver/driverscreens/driver_sidebar.dart';
+import 'package:drive_sharing_app/screens/driver/driverscreens/profile/driver_sidebar.dart';
 import 'package:drive_sharing_app/screens/driver/driverscreens/googlemap/create_ride.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import '../../../firebase_services/local_push_notification.dart';
+import '../../../../firebase_services/local_push_notification.dart';
 import 'package:location/location.dart' as loc;
 
 class DriverPost extends StatefulWidget {

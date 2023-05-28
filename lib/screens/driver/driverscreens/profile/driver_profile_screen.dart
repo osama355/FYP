@@ -1,11 +1,12 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:drive_sharing_app/screens/driver/driverscreens/review/average_review.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
-import '../../../utils/utils.dart';
-import '../../../widgets/round_button.dart';
+import '../../../../utils/utils.dart';
+import '../../../../widgets/round_button.dart';
 
 class DriverProfileScreen extends StatefulWidget {
   const DriverProfileScreen({super.key});
@@ -162,6 +163,7 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
                 const SizedBox(
                   height: 20,
                 ),
+                AverageRating(driverId: auth.currentUser!.uid),
                 StreamBuilder(
                   stream: firestore
                       .collection("app")
@@ -290,7 +292,7 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
                         ),
                         const SizedBox(
                           height: 30,
-                        )
+                        ),
                       ],
                     );
                   },
