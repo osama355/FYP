@@ -1,7 +1,10 @@
+// ignore_for_file: use_build_context_synchronously
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drive_sharing_app/constant.dart';
+import 'package:drive_sharing_app/screens/driver/driverscreens/profile/driver_home_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../../../../utils/map_utils.dart';
@@ -36,6 +39,11 @@ class _DriverMapScreenState extends State<DriverMapScreen> {
   PolylinePoints polylinePoints = PolylinePoints();
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   final Set<Marker> _markers = {};
+
+  BitmapDescriptor sourceIcon = BitmapDescriptor.defaultMarker;
+  BitmapDescriptor viaIcon = BitmapDescriptor.defaultMarker;
+  BitmapDescriptor destinationIcon = BitmapDescriptor.defaultMarker;
+  BitmapDescriptor currentLocationIcon = BitmapDescriptor.defaultMarker;
 
   _addPolyLine() {
     PolylineId id = const PolylineId("poly");
@@ -79,6 +87,8 @@ class _DriverMapScreenState extends State<DriverMapScreen> {
         .collection('rides')
         .doc(widget.rideId)
         .update({'status': 'completed'});
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => DriverPost()));
   }
 
   Future<BitmapDescriptor> getCustomMarkerIcon() async {
@@ -93,7 +103,7 @@ class _DriverMapScreenState extends State<DriverMapScreen> {
     snapshot.docs.forEach((doc) async {
       String passengerId = doc['pass_id'];
       String requestStatus = doc['request_status'];
-      if (requestStatus == 'Accepted') {
+      if (requestStatus == 'Accepted' || requestStatus == 'Join') {
         DocumentSnapshot passengerDoc = await firestore
             .collection('app')
             .doc('user')
@@ -120,6 +130,30 @@ class _DriverMapScreenState extends State<DriverMapScreen> {
     });
   }
 
+  void setCustomMarkerIcon() async {
+    await BitmapDescriptor.fromAssetImage(
+            const ImageConfiguration(size: Size(25, 25)), "assets/source.png")
+        .then((icon) {
+      sourceIcon = icon;
+    });
+
+    await BitmapDescriptor.fromAssetImage(
+            const ImageConfiguration(size: Size(25, 25)), "assets/via.png")
+        .then((icon) {
+      viaIcon = icon;
+    });
+
+    await BitmapDescriptor.fromAssetImage(
+            const ImageConfiguration(size: Size(25, 25)), "assets/dest.png")
+        .then((icon) {
+      destinationIcon = icon;
+    });
+  }
+
+  Future<ByteData> getBytesFromAsset(String path) {
+    return rootBundle.load(path);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -127,23 +161,32 @@ class _DriverMapScreenState extends State<DriverMapScreen> {
       target: LatLng(widget.startPositionLat!, widget.startPositionLng!),
       zoom: 14.4746,
     );
+    setCustomMarkerIcon();
     Timer.periodic(const Duration(seconds: 3), (timer) {
       _fetchPassengerLocations();
     });
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     Set<Marker> markers = {
       Marker(
+          icon: sourceIcon,
           markerId: const MarkerId('start'),
           infoWindow: const InfoWindow(title: "Starting point"),
           position: LatLng(widget.startPositionLat!, widget.startPositionLng!)),
       Marker(
+          icon: viaIcon,
           markerId: const MarkerId('Via'),
           infoWindow: const InfoWindow(title: "Via route"),
           position: LatLng(widget.midPositionLat!, widget.midPositionLng!)),
       Marker(
+          icon: destinationIcon,
           markerId: const MarkerId('End'),
           infoWindow: const InfoWindow(title: "Destination"),
           position: LatLng(widget.endPositionLat!, widget.endPositionLng!)),
