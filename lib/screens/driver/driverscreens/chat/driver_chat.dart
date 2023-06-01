@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../../../../utils/utils.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -136,6 +137,8 @@ class _DriverChatState extends State<DriverChat> {
                   itemCount: messages.length,
                   itemBuilder: (context, index) {
                     var message = messages[index];
+                    var messageTime = message['timestamp'].toDate();
+                    var formattedTime = DateFormat.jm().format(messageTime);
                     return Dismissible(
                       key: Key(message.id),
                       direction: DismissDirection.endToStart,
@@ -154,10 +157,7 @@ class _DriverChatState extends State<DriverChat> {
                       child: ListTile(
                         title: Text(message['message']),
                         subtitle: Text(
-                          message['sender'] == 'driver'
-                              ? 'You'
-                              : widget.passName,
-                        ),
+                            '${message['sender'] == 'driver' ? 'You' : widget.passName} - $formattedTime'),
                       ),
                     );
                   },
