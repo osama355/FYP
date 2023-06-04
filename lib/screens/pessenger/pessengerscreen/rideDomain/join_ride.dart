@@ -1,4 +1,4 @@
-// ignore_for_file: non_constant_identifier_names
+// ignore_for_file: non_constant_identifier_names, avoid_function_literals_in_foreach_calls
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drive_sharing_app/constant.dart';
@@ -20,6 +20,7 @@ class JoinRide extends StatefulWidget {
   final String? driver_destination;
   final double? driver_destination_lat;
   final double? driver_destination_lng;
+  final String? price;
 
   const JoinRide(
       {super.key,
@@ -33,7 +34,8 @@ class JoinRide extends StatefulWidget {
       this.driver_via_lng,
       this.driver_destination,
       this.driver_destination_lat,
-      this.driver_destination_lng});
+      this.driver_destination_lng,
+      this.price});
 
   @override
   State<JoinRide> createState() => _JoinRideState();
@@ -41,11 +43,6 @@ class JoinRide extends StatefulWidget {
 
 class _JoinRideState extends State<JoinRide> {
   final Completer<GoogleMapController> _controller = Completer();
-  // static const LatLng sourceLocation =
-  //     LatLng(24.838936827647146, 67.18275557672);
-  // static const LatLng destination =
-  //     LatLng(24.828155327577175, 67.15949246272677);
-  // static const LatLng viaLocation = LatLng(24.828430249803496, 67.1594569);
 
   List<LatLng> polylineCordinates = [];
   LocationData? currentLocation;
@@ -173,76 +170,82 @@ class _JoinRideState extends State<JoinRide> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xff4BA0FE),
         title: const Text(
           'Track Driver',
         ),
+        backgroundColor: const Color(0xff4BA0FE),
       ),
       body: currentLocation == null
-          ? const Center(child: Text("Loading..."))
-          : Column(
-              children: [
-                Expanded(
-                  child: GoogleMap(
-                    mapType: MapType.normal,
-                    myLocationButtonEnabled: true,
-                    myLocationEnabled: true,
-                    initialCameraPosition: CameraPosition(
-                        target: LatLng(currentLocation!.latitude!,
-                            currentLocation!.longitude!),
-                        zoom: 13.5),
-                    polylines: {
-                      Polyline(
-                          polylineId: const PolylineId('route'),
-                          points: polylineCordinates,
-                          color: primaryColor,
-                          width: 8),
-                    },
-                    markers: {
-                      _currentLocationMarker,
-                      Marker(
-                          markerId: const MarkerId("source"),
-                          infoWindow: InfoWindow(title: widget.driver_source),
-                          icon: sourceIcon,
-                          position: LatLng(widget.driver_source_lat!,
-                              widget.driver_source_lng!)),
-                      Marker(
-                          markerId: const MarkerId("via"),
-                          infoWindow: InfoWindow(title: widget.driver_via),
-                          icon: viaIcon,
-                          position: LatLng(
-                              widget.driver_via_lat!, widget.driver_via_lng!)),
-                      Marker(
-                          markerId: const MarkerId("destination"),
-                          infoWindow:
-                              InfoWindow(title: widget.driver_destination),
-                          icon: destinationIcon,
-                          position: LatLng(widget.driver_destination_lat!,
-                              widget.driver_destination_lng!)),
-                    },
-                    onMapCreated: (mapController) {
-                      _controller.complete(mapController);
-                    },
-                  ),
-                ),
-                Container(
-                  width: double.infinity,
-                  height: 50,
-                  color: Colors.white,
-                  child: ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all<Color>(
-                          const Color(0xff4BA0FE)),
+          ? const Center(child: CircularProgressIndicator())
+          : SafeArea(
+              child: Column(
+                children: [
+                  Expanded(
+                    child: GoogleMap(
+                      mapType: MapType.normal,
+                      myLocationButtonEnabled: true,
+                      myLocationEnabled: true,
+                      trafficEnabled: true,
+                      initialCameraPosition: CameraPosition(
+                          target: LatLng(currentLocation!.latitude!,
+                              currentLocation!.longitude!),
+                          zoom: 13.5),
+                      polylines: {
+                        Polyline(
+                            polylineId: const PolylineId('route'),
+                            points: polylineCordinates,
+                            color: primaryColor,
+                            width: 8),
+                      },
+                      markers: {
+                        _currentLocationMarker,
+                        Marker(
+                            markerId: const MarkerId("source"),
+                            infoWindow: InfoWindow(title: widget.driver_source),
+                            icon: sourceIcon,
+                            position: LatLng(widget.driver_source_lat!,
+                                widget.driver_source_lng!)),
+                        Marker(
+                            markerId: const MarkerId("via"),
+                            infoWindow: InfoWindow(title: widget.driver_via),
+                            icon: viaIcon,
+                            position: LatLng(widget.driver_via_lat!,
+                                widget.driver_via_lng!)),
+                        Marker(
+                            markerId: const MarkerId("destination"),
+                            infoWindow:
+                                InfoWindow(title: widget.driver_destination),
+                            icon: destinationIcon,
+                            position: LatLng(widget.driver_destination_lat!,
+                                widget.driver_destination_lng!)),
+                      },
+                      onMapCreated: (mapController) {
+                        _controller.complete(mapController);
+                      },
                     ),
-                    onPressed: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => Payment()));
-                    },
-                    child: const Text('Payment',
-                        style: TextStyle(color: Colors.white, fontSize: 20)),
                   ),
-                ),
-              ],
+                  Container(
+                    width: double.infinity,
+                    height: 50,
+                    color: Colors.white,
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            const Color(0xff4BA0FE)),
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    Payment(price: widget.price)));
+                      },
+                      child: const Text('Payment',
+                          style: TextStyle(color: Colors.white, fontSize: 20)),
+                    ),
+                  ),
+                ],
+              ),
             ),
     );
   }

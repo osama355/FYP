@@ -59,7 +59,8 @@ dependencies:
   location: ^4.4.0
   flutter_svg: ^1.1.6
   intl: ^0.18.1
-  flutter_stripe: ^9.2.0
+  flutter_stripe: ^9.2.1
+  crypto: ^3.0.3
 
 
 

@@ -378,6 +378,7 @@ class _SeeCompleteRideInfoState extends State<SeeCompleteRideInfo> {
                   double via_lng = widget.via_lng!;
                   double destination_lat = widget.destination_lat!;
                   double destination_lng = widget.destination_lng!;
+                  String price = widget.price!;
 
                   Navigator.push(
                       context,
@@ -403,6 +404,7 @@ class _SeeCompleteRideInfoState extends State<SeeCompleteRideInfo> {
                                 via_lng: via_lng,
                                 destination_lat: destination_lat,
                                 destination_lng: destination_lng,
+                                price: price,
                               )));
                 },
                 child: const Text(

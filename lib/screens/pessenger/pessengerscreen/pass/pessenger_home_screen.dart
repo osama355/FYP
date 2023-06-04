@@ -109,85 +109,95 @@ class _PessePostScreenState extends State<PessePostScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.only(left: 20.0, right: 20.0, top: 10.0),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              const SizedBox(
-                height: 10,
+        child: Column(
+          children: [
+            const SizedBox(
+              height: 10,
+            ),
+            Container(
+              width: MediaQuery.of(context).size.width * 0.9,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20.0),
+                color: const Color(0xff4BA0FE),
               ),
-              Container(
-                width: MediaQuery.of(context).size.width * 0.9,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20.0),
-                    color: const Color(0xff4BA0FE)),
-                height: 120,
-                child: const Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.drive_eta,
-                        size: 60,
-                        color: Colors.white,
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Text(
-                        "Welcome to Ride Node",
-                        style: TextStyle(fontSize: 20, color: Colors.white),
-                      )
-                    ],
-                  ),
+              height: 120,
+              child: const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.drive_eta,
+                      size: 60,
+                      color: Colors.white,
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      "Welcome to Ride Node",
+                      style: TextStyle(fontSize: 20, color: Colors.white),
+                    )
+                  ],
                 ),
               ),
-              const SizedBox(
-                height: 20,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    flex: 1,
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const SearchRide()));
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: const Color(0xff4BA0FE),
-                          borderRadius: BorderRadius.circular(10.0),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  flex: 1,
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const SearchRide(),
                         ),
-                        height: 100,
-                        child: const Center(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                "Search ",
-                                style: TextStyle(
-                                    fontSize: 20, color: Colors.white),
+                      );
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: const Color(0xff4BA0FE),
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      height: 100,
+                      child: const Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "Search ",
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.white,
                               ),
-                              Icon(Icons.search, size: 20, color: Colors.white)
-                            ],
-                          ),
+                            ),
+                            Icon(
+                              Icons.search,
+                              size: 20,
+                              color: Colors.white,
+                            )
+                          ],
                         ),
                       ),
                     ),
                   ),
-                  const SizedBox(
-                    width: 20,
-                  ),
-                  Expanded(
-                      child: GestureDetector(
+                ),
+                const SizedBox(
+                  width: 20,
+                ),
+                Expanded(
+                  child: GestureDetector(
                     onTap: () {
                       Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const GetRide()));
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const GetRide(),
+                        ),
+                      );
                     },
                     child: Container(
                       decoration: BoxDecoration(
@@ -198,33 +208,64 @@ class _PessePostScreenState extends State<PessePostScreen> {
                       child: const Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text("Get ",
-                              style:
-                                  TextStyle(fontSize: 20, color: Colors.white)),
-                          Icon(Icons.directions_car,
-                              size: 20, color: Colors.white)
+                          Text(
+                            "Get ",
+                            style: TextStyle(
+                              fontSize: 20,
+                              color: Colors.white,
+                            ),
+                          ),
+                          Icon(
+                            Icons.directions_car,
+                            size: 20,
+                            color: Colors.white,
+                          )
                         ],
                       ),
                     ),
-                  ))
-                ],
-              ),
-              const SizedBox(
-                height: 70,
-              ),
-              SizedBox(
-                height: 280,
-                child: GoogleMap(
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 70,
+            ),
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(20.0),
+                    topRight: Radius.circular(20.0),
+                  ),
+                  border: Border.all(
+                    color: const Color(0xff4BA0FE),
+                    width: 1.0,
+                  ),
+                ),
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(20.0),
+                    topRight: Radius.circular(20.0),
+                  ),
+                  child: GoogleMap(
                     initialCameraPosition: kGooglePlex,
                     mapType: MapType.normal,
                     myLocationButtonEnabled: true,
                     myLocationEnabled: true,
                     onMapCreated: (GoogleMapController controller) {
                       mapController.complete(controller);
-                    }),
+                    },
+                    zoomControlsEnabled: false,
+                    compassEnabled: true,
+                    buildingsEnabled: true,
+                    indoorViewEnabled: false,
+                    trafficEnabled: false,
+                    minMaxZoomPreference: MinMaxZoomPreference(10, 18),
+                  ),
+                ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

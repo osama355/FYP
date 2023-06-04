@@ -31,6 +31,7 @@ class RequestDetails extends StatefulWidget {
   final double? via_lng;
   final double? destination_lat;
   final double? destination_lng;
+  final String? price;
 
   const RequestDetails({
     super.key,
@@ -54,6 +55,7 @@ class RequestDetails extends StatefulWidget {
     this.via_lng,
     this.destination_lat,
     this.destination_lng,
+    this.price,
   });
 
   @override
@@ -189,7 +191,8 @@ class _RequestDetailsState extends State<RequestDetails> {
       'pass_dest_lat': searchEndPosition!.geometry!.location!.lat,
       'pass_dest_lng': searchEndPosition!.geometry!.location!.lng,
       'request_status': 'Pending',
-      'ride_status': 'Stop'
+      'ride_status': 'Stop',
+      'price': widget.price
     }).then((value) {
       sendNotification("Request", driverToken, passName);
       Navigator.push(context,

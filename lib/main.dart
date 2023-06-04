@@ -16,9 +16,9 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
   Stripe.publishableKey =
       'pk_test_51KBPsTJa2WHpSkDzRgyTfs264jguLa5UDUi868ovyPejPmjiS6qoa40bHD0fsnBhIGmnRTQw3JpypWXFjePvbjnJ00fvpzFm7k';
+  await Firebase.initializeApp();
   LocalNotificationService.initialize();
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
   runApp(const MyApp());
