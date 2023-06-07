@@ -206,6 +206,17 @@ class _RequestedState extends State<Requested> {
                             ),
                           ],
                         ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        Row(
+                          children: [
+                            Text(
+                              'Price : ${sortedDocs[index]['price']} Rs',
+                              style: const TextStyle(fontSize: 13),
+                            ),
+                          ],
+                        ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [

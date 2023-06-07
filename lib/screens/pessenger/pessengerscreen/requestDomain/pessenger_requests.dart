@@ -1,3 +1,4 @@
+import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/pass/pessenger_sidebar.dart';
 import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/requestDomain/previous_request.dart';
 import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/requestDomain/requested.dart';
 import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/requestDomain/upcoming_requests.dart';
@@ -16,15 +17,16 @@ class _PassengerRequestsState extends State<PassengerRequests> {
     return DefaultTabController(
         length: 3,
         child: Scaffold(
+          drawer: const PessengerSidebar(),
           appBar: AppBar(
-            automaticallyImplyLeading: false,
+            // automaticallyImplyLeading: false,
             backgroundColor: const Color(0xff4BA0FE),
-            leading: GestureDetector(
-              onTap: () {
-                Navigator.pop(context);
-              },
-              child: const Icon(Icons.arrow_back),
-            ),
+            // leading: GestureDetector(
+            //   onTap: () {
+            //     Navigator.pop(context);
+            //   },
+            //   child: const Icon(Icons.arrow_back),
+            // ),
             title: const Text("My Trips"),
             bottom: const TabBar(
               unselectedLabelColor: Colors.white,

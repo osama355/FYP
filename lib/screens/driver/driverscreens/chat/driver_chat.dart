@@ -11,7 +11,10 @@ class DriverChat extends StatefulWidget {
   final String passName;
 
   const DriverChat(
-      {required this.driverId, required this.passId, required this.passName});
+      {super.key,
+      required this.driverId,
+      required this.passId,
+      required this.passName});
 
   @override
   State<DriverChat> createState() => _DriverChatState();

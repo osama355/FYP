@@ -109,104 +109,120 @@ class _DriverPost extends State<DriverPost> {
       ),
       body: Padding(
         padding: const EdgeInsets.only(left: 20.0, right: 20.0, top: 5.0),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Container(
-                width: MediaQuery.of(context).size.width * 0.9,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20.0),
-                    color: const Color(0xff4BA0FE)),
-                height: 120,
-                child: const Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.drive_eta,
-                        size: 60,
-                        color: Colors.white,
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Text(
-                        "Welcome to Ride Node",
-                        style: TextStyle(fontSize: 20.0, color: Colors.white),
-                      )
-                    ],
-                  ),
+        child: Column(
+          children: [
+            Container(
+              width: MediaQuery.of(context).size.width * 0.9,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20.0),
+                color: const Color(0xff4BA0FE),
+              ),
+              height: 120,
+              child: const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.drive_eta,
+                      size: 60,
+                      color: Colors.white,
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      "Welcome to Ride Node",
+                      style: TextStyle(fontSize: 20.0, color: Colors.white),
+                    )
+                  ],
                 ),
               ),
-              const SizedBox(
-                height: 10,
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Container(
+              height: 120,
+              width: MediaQuery.of(context).size.width * 0.9,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20.0),
+                color: const Color(0xff4BA0FE),
               ),
-              Container(
-                height: 120,
-                width: MediaQuery.of(context).size.width * 0.9,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20.0),
-                    color: const Color(0xff4BA0FE)),
-                child: const Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.mode_of_travel,
-                        size: 60,
-                        color: Colors.white,
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Text(
-                        "Share and travel",
-                        style: TextStyle(fontSize: 20.0, color: Colors.white),
-                      )
-                    ],
-                  ),
+              child: const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.mode_of_travel,
+                      size: 60,
+                      color: Colors.white,
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      "Share and travel",
+                      style: TextStyle(fontSize: 20.0, color: Colors.white),
+                    )
+                  ],
                 ),
               ),
-              const SizedBox(
-                height: 20,
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            TextField(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const CreateRide(),
+                    fullscreenDialog: true,
+                  ),
+                );
+              },
+              autofocus: false,
+              showCursor: false,
+              keyboardType: TextInputType.none,
+              decoration: InputDecoration(
+                hintText: 'Create ride',
+                hintStyle: const TextStyle(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 20,
+                  color: Colors.grey,
+                ),
+                filled: true,
+                fillColor: Colors.grey[200],
+                border: InputBorder.none,
               ),
-              TextField(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const CreateRide(),
-                          fullscreenDialog: true));
-                },
-                autofocus: false,
-                showCursor: false,
-                keyboardType: TextInputType.none,
-                decoration: InputDecoration(
-                    hintText: 'Create ride',
-                    hintStyle: const TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 20,
-                        color: Colors.grey),
-                    filled: true,
-                    fillColor: Colors.grey[200],
-                    border: InputBorder.none),
-              ),
-              const SizedBox(
-                height: 40,
-              ),
-              SizedBox(
-                height: 280,
-                child: GoogleMap(
+            ),
+            const SizedBox(
+              height: 40,
+            ),
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: const Color(0xff4BA0FE),
+                    width: 1.0,
+                  ),
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20.0),
+                  child: GoogleMap(
                     initialCameraPosition: kGooglePlex,
                     mapType: MapType.normal,
                     myLocationButtonEnabled: true,
                     myLocationEnabled: true,
                     onMapCreated: (GoogleMapController controller) {
                       mapController.complete(controller);
-                    }),
+                    },
+                  ),
+                ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

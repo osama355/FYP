@@ -1,4 +1,4 @@
-// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously, avoid_function_literals_in_foreach_calls
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drive_sharing_app/constant.dart';
@@ -88,7 +88,7 @@ class _DriverMapScreenState extends State<DriverMapScreen> {
         .doc(widget.rideId)
         .update({'status': 'completed'});
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => DriverPost()));
+        context, MaterialPageRoute(builder: (context) => const DriverPost()));
   }
 
   Future<BitmapDescriptor> getCustomMarkerIcon() async {
@@ -103,29 +103,32 @@ class _DriverMapScreenState extends State<DriverMapScreen> {
     snapshot.docs.forEach((doc) async {
       String passengerId = doc['pass_id'];
       String requestStatus = doc['request_status'];
-      if (requestStatus == 'Accepted' || requestStatus == 'Join') {
-        DocumentSnapshot passengerDoc = await firestore
-            .collection('app')
-            .doc('user')
-            .collection('pessenger')
-            .doc(passengerId)
-            .get();
+      String rideId = doc['ride_id'];
+      if (rideId == widget.rideId) {
+        if (requestStatus == 'Accepted' || requestStatus == 'Join') {
+          DocumentSnapshot passengerDoc = await firestore
+              .collection('app')
+              .doc('user')
+              .collection('pessenger')
+              .doc(passengerId)
+              .get();
 
-        double lat = passengerDoc['live_latitude'];
-        double lng = passengerDoc['live_longitude'];
-        String passName = passengerDoc['name'];
-        BitmapDescriptor passLocationIcon = await getCustomMarkerIcon();
+          double lat = passengerDoc['live_latitude'];
+          double lng = passengerDoc['live_longitude'];
+          String passName = passengerDoc['name'];
+          BitmapDescriptor passLocationIcon = await getCustomMarkerIcon();
 
-        setState(() {
-          LatLng location = LatLng(lat, lng);
-          Marker marker = Marker(
-            markerId: MarkerId(passengerId),
-            position: location,
-            icon: passLocationIcon,
-            infoWindow: InfoWindow(title: passName, snippet: '$lat , $lng'),
-          );
-          _markers.add(marker);
-        });
+          setState(() {
+            LatLng location = LatLng(lat, lng);
+            Marker marker = Marker(
+              markerId: MarkerId(passengerId),
+              position: location,
+              icon: passLocationIcon,
+              infoWindow: InfoWindow(title: passName, snippet: '$lat , $lng'),
+            );
+            _markers.add(marker);
+          });
+        }
       }
     });
   }
@@ -216,6 +219,7 @@ class _DriverMapScreenState extends State<DriverMapScreen> {
               markers: _markers,
               mapType: MapType.normal,
               myLocationEnabled: true,
+              trafficEnabled: true,
               myLocationButtonEnabled: true,
               polylines: Set<Polyline>.of(polylines.values),
               onMapCreated: (GoogleMapController controller) {

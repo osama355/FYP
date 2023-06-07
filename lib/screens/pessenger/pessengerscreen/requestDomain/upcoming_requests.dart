@@ -209,6 +209,7 @@ class _UpcomingRequestsState extends State<UpcomingRequests> {
                                       double driver_destination_lng =
                                           sortedDocs[index]
                                               ['driver_destination_lng'];
+                                      String price = sortedDocs[index]['price'];
 
                                       Navigator.push(
                                           context,
@@ -233,6 +234,7 @@ class _UpcomingRequestsState extends State<UpcomingRequests> {
                                                         driver_destination_lat,
                                                     driver_destination_lng:
                                                         driver_destination_lng,
+                                                    price: price,
                                                   )));
                                     }
                                   : null,
@@ -338,6 +340,17 @@ class _UpcomingRequestsState extends State<UpcomingRequests> {
                         children: [
                           Text(
                             'Car : ${sortedDocs[index]['car_name']} | ${sortedDocs[index]['car_model']}',
+                            style: const TextStyle(fontSize: 13),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            'Price : ${sortedDocs[index]['price']} Rs',
                             style: const TextStyle(fontSize: 13),
                           ),
                         ],

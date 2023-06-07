@@ -112,8 +112,9 @@ class _TravelPartnersState extends State<TravelPartners> {
                   }
                   final sortedDoc = snapshot.data!.docs.where((doc) {
                     final reqStatus = doc['request_status'];
-                    final driverId = doc['driver_id'];
-                    if (driverId == user!.uid) {
+                    final rideId = doc['ride_id'];
+
+                    if (rideId == widget.rideId) {
                       return reqStatus == 'Accepted' || reqStatus == 'Join';
                     }
                     return false;
@@ -384,7 +385,7 @@ class _TravelPartnersState extends State<TravelPartners> {
                     await firestore
                         .collection('rides')
                         .doc(widget.rideId)
-                        .update({'status': 'start'});
+                        .update({'status': 'Start'});
 
                     ///for request collection
                     await requestCollection
