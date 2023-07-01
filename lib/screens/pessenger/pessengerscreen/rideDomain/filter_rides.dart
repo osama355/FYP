@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:drive_sharing_app/screens/driver/driverscreens/review/average_review.dart';
 import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/rideDomain/see_complete_ride_info.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -41,13 +42,13 @@ class _FilterRidesState extends State<FilterRides> {
           ),
         ),
         body: StreamBuilder(
-          stream: rides.snapshots(),
+          stream: rides.orderBy('date').orderBy('time').snapshots(),
           builder: (context, snapshot) {
             if (snapshot.hasError) {
               return const Text("Something went wrong");
             }
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Text("Loading");
+              return const Center(child: CircularProgressIndicator());
             }
             if (snapshot.data!.docs.isEmpty) {
               return const Center(
@@ -92,7 +93,7 @@ class _FilterRidesState extends State<FilterRides> {
 
             if (sortedDocs.isEmpty) {
               return const Center(
-                  child: Text("No ride available according to your search"));
+                  child: Text("No Ride Available According to Your Search"));
             }
             return ListView.builder(
               // itemCount: snapshot.data?.docs.length,
@@ -104,6 +105,7 @@ class _FilterRidesState extends State<FilterRides> {
                     sortedDocs[index]['reservedSeats'];
                 final time = DateFormat('HH:mm')
                     .format(DateFormat.jm().parse(sortedDocs[index]['time']));
+                String driverId = sortedDocs[index]['driver-id'];
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Container(
@@ -122,33 +124,40 @@ class _FilterRidesState extends State<FilterRides> {
                     child: Column(
                       children: [
                         Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            CircleAvatar(
-                                backgroundColor:
-                                    sortedDocs[index]['profile_url'] != ""
-                                        ? Colors.transparent
-                                        : const Color(0xff4BA0FE),
-                                child: SizedBox(
-                                  width: 60,
-                                  height: 60,
-                                  child: ClipOval(
-                                    child: sortedDocs[index]['profile_url'] !=
-                                            ""
-                                        ? Image.network(
-                                            sortedDocs[index]['profile_url'])
-                                        : const Icon(
-                                            Icons.person,
-                                            color: Colors.white,
-                                          ),
-                                  ),
-                                )),
-                            const SizedBox(
-                              width: 10,
+                            Row(
+                              children: [
+                                CircleAvatar(
+                                    backgroundColor:
+                                        sortedDocs[index]['profile_url'] != ""
+                                            ? Colors.transparent
+                                            : const Color(0xff4BA0FE),
+                                    child: SizedBox(
+                                      width: 60,
+                                      height: 60,
+                                      child: ClipOval(
+                                        child: sortedDocs[index]
+                                                    ['profile_url'] !=
+                                                ""
+                                            ? Image.network(sortedDocs[index]
+                                                ['profile_url'])
+                                            : const Icon(
+                                                Icons.person,
+                                                color: Colors.white,
+                                              ),
+                                      ),
+                                    )),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                Text(
+                                  sortedDocs[index]['driver-name'],
+                                  style: const TextStyle(fontSize: 13),
+                                )
+                              ],
                             ),
-                            Text(
-                              sortedDocs[index]['driver-name'],
-                              style: const TextStyle(fontSize: 13),
-                            )
+                            AverageRating(driverId: driverId)
                           ],
                         ),
                         const SizedBox(
@@ -235,13 +244,14 @@ class _FilterRidesState extends State<FilterRides> {
                           children: [
                             Text(
                                 'Tottal seats : ${sortedDocs[index]['require-pess']}'),
-                            Text('Available : $availableSeats'),
+                            availableSeats <= 0
+                                ? const Text('Available : 0')
+                                : Text('Available : $availableSeats'),
                             MaterialButton(
                               onPressed: availableSeats == 0
                                   ? () {}
                                   : () async {
-                                      String rideId =
-                                          snapshot.data!.docs[index].id;
+                                      String rideId = sortedDocs[index].id;
                                       String profileUrl =
                                           sortedDocs[index]['profile_url'];
                                       String driverToken =
