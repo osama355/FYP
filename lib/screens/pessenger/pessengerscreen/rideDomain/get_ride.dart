@@ -38,7 +38,7 @@ class _GetRideState extends State<GetRide> {
             return const Text("Something went wrong");
           }
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: Text("Loading"));
+            return const Center(child: CircularProgressIndicator());
           }
           if (snapshot.data!.docs.isEmpty) {
             return const Center(
@@ -72,7 +72,7 @@ class _GetRideState extends State<GetRide> {
           });
 
           if (sortedDocs.isEmpty) {
-            return const Center(child: Text("No ride yet"));
+            return const Center(child: Text("No Ride Available Yet"));
           }
 
           return ListView.builder(

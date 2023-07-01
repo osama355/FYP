@@ -86,7 +86,7 @@ class _AverageRatingState extends State<AverageRating> {
             ),
           ],
         ),
-        Text('$averageRating'),
+        Text('${averageRating.toStringAsFixed(1)}'),
       ],
     );
   }

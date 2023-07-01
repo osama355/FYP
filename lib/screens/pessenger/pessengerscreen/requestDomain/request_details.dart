@@ -3,6 +3,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/requestDomain/pessenger_requests.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:drive_sharing_app/utils/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -63,6 +64,8 @@ class RequestDetails extends StatefulWidget {
 }
 
 class _RequestDetailsState extends State<RequestDetails> {
+  String apiKey = 'AIzaSyCsAFe-3nLf0PkH2NIxcNheXEGeu__n2ew';
+
   TextEditingController searchStartController = TextEditingController();
   TextEditingController searchEndController = TextEditingController();
 
@@ -82,7 +85,7 @@ class _RequestDetailsState extends State<RequestDetails> {
   @override
   void initState() {
     super.initState();
-    String apiKey = 'AIzaSyCsAFe-3nLf0PkH2NIxcNheXEGeu__n2ew';
+    // String apiKey = 'AIzaSyCsAFe-3nLf0PkH2NIxcNheXEGeu__n2ew';
     googlePlace = GooglePlace(apiKey);
     searchStartFocusNode = FocusNode();
     searchEndFocusNode = FocusNode();
@@ -139,7 +142,23 @@ class _RequestDetailsState extends State<RequestDetails> {
     }
   }
 
+  double calculatePathDistance() {
+    final double startLat = searchStartPosition!.geometry!.location!.lat!;
+    final double startLng = searchStartPosition!.geometry!.location!.lng!;
+    final double endLat = searchEndPosition!.geometry!.location!.lat!;
+    final double endLng = searchEndPosition!.geometry!.location!.lng!;
+    final distanceInMeters =
+        Geolocator.distanceBetween(startLat, startLng, endLat, endLng);
+    final distanceInKm = distanceInMeters / 1000;
+    return distanceInKm;
+  }
+
   void createRequest() async {
+    final double pathDistance = calculatePathDistance();
+    // print(
+    //     'Path Distance>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>$pathDistance');
+    final double totalPrice = pathDistance * double.parse(widget.price!);
+    final int totalPriceWithoutDecimals = totalPrice.round();
     final uid = auth.currentUser!.uid;
     final passData = await firestore
         .collection('app')
@@ -192,7 +211,7 @@ class _RequestDetailsState extends State<RequestDetails> {
       'pass_dest_lng': searchEndPosition!.geometry!.location!.lng,
       'request_status': 'Pending',
       'ride_status': 'Stop',
-      'price': widget.price
+      'price': totalPriceWithoutDecimals.toString(),
     }).then((value) {
       sendNotification("Request", driverToken, passName);
       Navigator.push(context,

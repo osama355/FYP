@@ -21,7 +21,7 @@ class _PaymentState extends State<Payment> {
     try {
       paymentINtent = await createPaymentIntent();
       var gpay = const PaymentSheetGooglePay(
-          merchantCountryCode: "PK", currencyCode: "INR", testEnv: true);
+          merchantCountryCode: "PK", currencyCode: "PKR", testEnv: true);
       await Stripe.instance.initPaymentSheet(
           paymentSheetParameters: SetupPaymentSheetParameters(
               paymentIntentClientSecret: paymentINtent!['client_secret'],
@@ -40,7 +40,7 @@ class _PaymentState extends State<Payment> {
       await Stripe.instance.presentPaymentSheet();
       print("done");
     } catch (e) {
-      print('Failde');
+      print('Failed');
     }
   }
 
@@ -48,7 +48,7 @@ class _PaymentState extends State<Payment> {
     try {
       Map<String, dynamic> body = {
         "amount": "${widget.price}00",
-        "currency": "INR",
+        "currency": "PKR",
       };
 
       http.Response response = await http.post(
