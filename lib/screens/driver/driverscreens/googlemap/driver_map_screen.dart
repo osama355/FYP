@@ -58,7 +58,7 @@ class _DriverMapScreenState extends State<DriverMapScreen> {
 
   _getPolyline() async {
     PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
-      'AIzaSyCsAFe-3nLf0PkH2NIxcNheXEGeu__n2ew',
+      google_api_key,
       PointLatLng(widget.startPositionLat!, widget.startPositionLng!),
       PointLatLng(widget.midPositionLat!, widget.midPositionLng!),
       travelMode: TravelMode.driving,
@@ -69,7 +69,7 @@ class _DriverMapScreenState extends State<DriverMapScreen> {
       }
     }
     PolylineResult result2 = await polylinePoints.getRouteBetweenCoordinates(
-      'AIzaSyCsAFe-3nLf0PkH2NIxcNheXEGeu__n2ew',
+      google_api_key,
       PointLatLng(widget.midPositionLat!, widget.midPositionLng!),
       PointLatLng(widget.endPositionLat!, widget.endPositionLng!),
       travelMode: TravelMode.driving,

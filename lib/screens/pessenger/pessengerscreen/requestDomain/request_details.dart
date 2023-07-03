@@ -2,6 +2,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:drive_sharing_app/constant.dart';
 import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/requestDomain/pessenger_requests.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:drive_sharing_app/utils/utils.dart';
@@ -64,7 +65,7 @@ class RequestDetails extends StatefulWidget {
 }
 
 class _RequestDetailsState extends State<RequestDetails> {
-  String apiKey = 'AIzaSyCsAFe-3nLf0PkH2NIxcNheXEGeu__n2ew';
+  // String apiKey = 'AIzaSyCsAFe-3nLf0PkH2NIxcNheXEGeu__n2ew';
 
   TextEditingController searchStartController = TextEditingController();
   TextEditingController searchEndController = TextEditingController();
@@ -86,7 +87,7 @@ class _RequestDetailsState extends State<RequestDetails> {
   void initState() {
     super.initState();
     // String apiKey = 'AIzaSyCsAFe-3nLf0PkH2NIxcNheXEGeu__n2ew';
-    googlePlace = GooglePlace(apiKey);
+    googlePlace = GooglePlace(google_api_key);
     searchStartFocusNode = FocusNode();
     searchEndFocusNode = FocusNode();
   }

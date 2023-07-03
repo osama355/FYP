@@ -1,9 +1,11 @@
 // ignore_for_file: non_constant_identifier_names
 import 'dart:async';
+import 'package:drive_sharing_app/constant.dart';
 import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/requestDomain/request_details.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 import '../../../../utils/map_utils.dart';
 
 class SeeCompleteRideInfo extends StatefulWidget {
@@ -81,7 +83,7 @@ class _SeeCompleteRideInfoState extends State<SeeCompleteRideInfo> {
 
   _getPolyline() async {
     PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
-      'AIzaSyCsAFe-3nLf0PkH2NIxcNheXEGeu__n2ew',
+      google_api_key,
       PointLatLng(widget.source_lat!, widget.source_lng!),
       PointLatLng(widget.via_lat!, widget.via_lng!),
       travelMode: TravelMode.driving,
@@ -93,7 +95,7 @@ class _SeeCompleteRideInfoState extends State<SeeCompleteRideInfo> {
     }
 
     PolylineResult result2 = await polylinePoints.getRouteBetweenCoordinates(
-      'AIzaSyCsAFe-3nLf0PkH2NIxcNheXEGeu__n2ew',
+      google_api_key,
       PointLatLng(widget.via_lat!, widget.via_lng!),
       PointLatLng(widget.destination_lat!, widget.destination_lng!),
       travelMode: TravelMode.driving,
@@ -190,9 +192,6 @@ class _SeeCompleteRideInfoState extends State<SeeCompleteRideInfo> {
               ),
             ),
           ),
-          const SizedBox(
-            height: 20,
-          ),
           Padding(
             padding: const EdgeInsets.only(left: 20),
             child: Row(
@@ -200,7 +199,7 @@ class _SeeCompleteRideInfoState extends State<SeeCompleteRideInfo> {
                 const Icon(
                   Icons.circle,
                   color: Colors.green,
-                  size: 10.0,
+                  size: 12.0,
                 ),
                 const SizedBox(
                   width: 5,
@@ -210,13 +209,24 @@ class _SeeCompleteRideInfoState extends State<SeeCompleteRideInfo> {
             ),
           ),
           Padding(
+            padding: const EdgeInsets.only(left: 25.0),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Container(
+                width: 2.0,
+                height: 20.0,
+                color: const Color(0xff4BA0FE),
+              ),
+            ),
+          ),
+          Padding(
             padding: const EdgeInsets.only(left: 20),
             child: Row(
               children: [
                 const Icon(
                   Icons.circle,
                   color: Colors.blue,
-                  size: 10.0,
+                  size: 12.0,
                 ),
                 const SizedBox(
                   width: 5,
@@ -226,13 +236,24 @@ class _SeeCompleteRideInfoState extends State<SeeCompleteRideInfo> {
             ),
           ),
           Padding(
+            padding: const EdgeInsets.only(left: 25.0),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Container(
+                width: 2.0,
+                height: 20.0,
+                color: const Color(0xff4BA0FE),
+              ),
+            ),
+          ),
+          Padding(
             padding: const EdgeInsets.only(left: 20),
             child: Row(
               children: [
                 const Icon(
                   Icons.circle,
                   color: Colors.red,
-                  size: 10.0,
+                  size: 12.0,
                 ),
                 const SizedBox(
                   width: 5,
@@ -244,26 +265,31 @@ class _SeeCompleteRideInfoState extends State<SeeCompleteRideInfo> {
           const SizedBox(
             height: 20,
           ),
-          Padding(
-            padding: const EdgeInsets.only(left: 20),
-            child: Row(
-              children: [
-                const Icon(
-                  Icons.phone,
-                  size: 20,
-                  color: Color(0xff4BA0FE),
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text('Phone'),
-                    Text('${widget.phone}'),
-                  ],
-                )
-              ],
+          GestureDetector(
+            onTap: () {
+              launchUrlString('tel:${widget.phone}');
+            },
+            child: Padding(
+              padding: const EdgeInsets.only(left: 20),
+              child: Row(
+                children: [
+                  const Icon(
+                    Icons.phone,
+                    size: 20,
+                    color: Color(0xff4BA0FE),
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text('Phone'),
+                      Text('${widget.phone}'),
+                    ],
+                  )
+                ],
+              ),
             ),
           ),
           const SizedBox(
@@ -324,7 +350,7 @@ class _SeeCompleteRideInfoState extends State<SeeCompleteRideInfo> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Estimated fare : ${widget.price}/seat'),
+                Text('Estimated fare : ${widget.price}/Km'),
                 Text("Total Seats : ${widget.seats}")
               ],
             ),

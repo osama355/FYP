@@ -23,10 +23,12 @@ class DriverChat extends StatefulWidget {
 class _DriverChatState extends State<DriverChat> {
   late TextEditingController _messageController;
   final firestore = FirebaseFirestore.instance;
+  late Future<String> passProfileURL;
 
   @override
   void initState() {
     super.initState();
+    passProfileURL = getProfileUrl();
     _messageController = TextEditingController();
   }
 
@@ -82,6 +84,20 @@ class _DriverChatState extends State<DriverChat> {
     return '';
   }
 
+  Future<String> getProfileUrl() async {
+    final url = await firestore
+        .collection('app')
+        .doc('user')
+        .collection('pessenger')
+        .doc(widget.passId)
+        .get();
+    final profileUrl = url.data();
+    if (profileUrl != null) {
+      return profileUrl['dp'];
+    }
+    return '';
+  }
+
   void _sendMessage(String message) async {
     FirebaseFirestore.instance
         .collection('chats')
@@ -113,6 +129,34 @@ class _DriverChatState extends State<DriverChat> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.passName),
+        actions: [
+          FutureBuilder<String>(
+            future: passProfileURL,
+            builder: (context, snapshot) {
+              if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+                return Padding(
+                  padding: const EdgeInsets.only(right: 16.0),
+                  child: CircleAvatar(
+                    backgroundImage: NetworkImage(snapshot.data!),
+                    radius: 16,
+                    child: InkWell(
+                      onTap: () {
+                        // Handle profile image tapped
+                      },
+                    ),
+                  ),
+                );
+              } else {
+                return IconButton(
+                  icon: const Icon(Icons.account_circle),
+                  onPressed: () {
+                    // Handle profile icon tapped
+                  },
+                );
+              }
+            },
+          )
+        ],
       ),
       body: Column(
         children: [

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:drive_sharing_app/constant.dart';
 import 'package:drive_sharing_app/screens/pessenger/pessengerscreen/rideDomain/filter_rides.dart';
 import 'package:flutter/material.dart';
 import 'package:google_place/google_place.dart';
@@ -26,7 +27,7 @@ class _SearchRideState extends State<SearchRide> {
   @override
   void initState() {
     super.initState();
-    String apiKey = 'AIzaSyCsAFe-3nLf0PkH2NIxcNheXEGeu__n2ew';
+    String apiKey = google_api_key;
     googlePlace = GooglePlace(apiKey);
     searchEndFocusNode = FocusNode();
   }

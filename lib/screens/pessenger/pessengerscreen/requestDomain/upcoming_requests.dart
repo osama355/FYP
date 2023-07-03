@@ -7,6 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher_string.dart';
 import '../../../../utils/utils.dart';
 
 class UpcomingRequests extends StatefulWidget {
@@ -267,6 +268,31 @@ class _UpcomingRequestsState extends State<UpcomingRequests> {
                       ),
                       const SizedBox(
                         height: 10,
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          launchUrlString(
+                              'tel:${sortedDocs[index]['driver_phone']}');
+                        },
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.phone,
+                              color: Color(0xff4BA0FE),
+                              size: 15,
+                            ),
+                            const SizedBox(
+                              width: 5,
+                            ),
+                            Text(
+                              'Phone : ${sortedDocs[index]['driver_phone']}',
+                              style: const TextStyle(fontSize: 13),
+                            )
+                          ],
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 5,
                       ),
                       Row(
                         children: [

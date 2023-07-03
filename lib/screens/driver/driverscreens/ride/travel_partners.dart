@@ -5,6 +5,7 @@ import 'package:drive_sharing_app/screens/driver/driverscreens/chat/driver_chat.
 import 'package:drive_sharing_app/screens/driver/driverscreens/googlemap/driver_map_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 import '../../../../utils/utils.dart';
 import 'package:http/http.dart' as http;
 
@@ -186,21 +187,27 @@ class _TravelPartnersState extends State<TravelPartners> {
                                 const SizedBox(
                                   height: 10,
                                 ),
-                                Row(
-                                  children: [
-                                    const Icon(
-                                      Icons.phone,
-                                      color: Color(0xff4BA0FE),
-                                      size: 15,
-                                    ),
-                                    const SizedBox(
-                                      width: 5,
-                                    ),
-                                    Text(
-                                      sortedDoc[index]['pass_phone'],
-                                      style: const TextStyle(fontSize: 13),
-                                    )
-                                  ],
+                                GestureDetector(
+                                  onTap: () {
+                                    launchUrlString(
+                                        'tel:${sortedDoc[index]['pass_phone']}');
+                                  },
+                                  child: Row(
+                                    children: [
+                                      const Icon(
+                                        Icons.phone,
+                                        color: Color(0xff4BA0FE),
+                                        size: 15,
+                                      ),
+                                      const SizedBox(
+                                        width: 5,
+                                      ),
+                                      Text(
+                                        sortedDoc[index]['pass_phone'],
+                                        style: const TextStyle(fontSize: 13),
+                                      )
+                                    ],
+                                  ),
                                 ),
                                 const SizedBox(
                                   height: 10,
@@ -250,6 +257,10 @@ class _TravelPartnersState extends State<TravelPartners> {
                                 const SizedBox(
                                   height: 5,
                                 ),
+                                Text(
+                                  "Price : Rs ${sortedDoc[index]['price']}",
+                                  style: const TextStyle(fontSize: 13),
+                                ),
                                 Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
@@ -285,7 +296,7 @@ class _TravelPartnersState extends State<TravelPartners> {
                                             ),
                                           ),
                                         ),
-                                        onPressed: () {
+                                        onPressed: () async {
                                           String driverId = user!.uid;
                                           String passId =
                                               sortedDoc[index]['pass_id'];
