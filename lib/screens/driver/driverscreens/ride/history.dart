@@ -398,7 +398,7 @@ class _DriverHistoryState extends State<DriverHistory> {
                                                             fillColor:
                                                                 Colors.white,
                                                             hintText:
-                                                                'Price Per Seat',
+                                                                'Price/Km',
                                                             border:
                                                                 OutlineInputBorder()),
                                                   ),

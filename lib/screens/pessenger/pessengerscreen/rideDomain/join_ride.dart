@@ -237,8 +237,10 @@ class _JoinRideState extends State<JoinRide> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>
-                                    Payment(price: widget.price)));
+                                builder: (context) => Payment(
+                                      price: widget.price,
+                                      driver_id: widget.driver_id,
+                                    )));
                       },
                       child: const Text('Payment',
                           style: TextStyle(color: Colors.white, fontSize: 20)),

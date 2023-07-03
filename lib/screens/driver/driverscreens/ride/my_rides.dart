@@ -230,6 +230,21 @@ class _MyRidesState extends State<MyRides> {
                         ),
                         Row(
                           children: [
+                            const Text(
+                              "Price : ",
+                              style: TextStyle(fontSize: 13),
+                            ),
+                            Text(
+                              '${sortedDocs[index]['price']}/Km',
+                              style: const TextStyle(fontSize: 13),
+                            )
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        Row(
+                          children: [
                             ElevatedButton(
                                 onPressed: () {
                                   String rideId = sortedDocs[index].id;

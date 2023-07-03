@@ -22,10 +22,12 @@ class PassChat extends StatefulWidget {
 class _PassChatState extends State<PassChat> {
   late TextEditingController _messageController;
   final firestore = FirebaseFirestore.instance;
+  late Future<String> driverProfileURL;
 
   @override
   void initState() {
     super.initState();
+    driverProfileURL = getProfileUrl();
     _messageController = TextEditingController();
   }
 
@@ -81,6 +83,20 @@ class _PassChatState extends State<PassChat> {
     return '';
   }
 
+  Future<String> getProfileUrl() async {
+    final url = await firestore
+        .collection('app')
+        .doc('user')
+        .collection('driver')
+        .doc(widget.driverId)
+        .get();
+    final profileUrl = url.data();
+    if (profileUrl != null) {
+      return profileUrl['dp'];
+    }
+    return '';
+  }
+
   void _sendMessage(String message) async {
     FirebaseFirestore.instance
         .collection('chats')
@@ -112,6 +128,34 @@ class _PassChatState extends State<PassChat> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.driverName),
+        actions: [
+          FutureBuilder<String>(
+            future: driverProfileURL,
+            builder: (context, snapshot) {
+              if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+                return Padding(
+                  padding: const EdgeInsets.only(right: 16.0),
+                  child: CircleAvatar(
+                    backgroundImage: NetworkImage(snapshot.data!),
+                    radius: 16,
+                    child: InkWell(
+                      onTap: () {
+                        // Handle profile image tapped
+                      },
+                    ),
+                  ),
+                );
+              } else {
+                return IconButton(
+                  icon: const Icon(Icons.account_circle),
+                  onPressed: () {
+                    // Handle profile icon tapped
+                  },
+                );
+              }
+            },
+          )
+        ],
       ),
       body: Column(
         children: [

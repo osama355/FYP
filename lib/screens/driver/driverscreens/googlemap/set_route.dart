@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:drive_sharing_app/constant.dart';
 import 'package:drive_sharing_app/utils/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -49,7 +50,7 @@ class _SetRouteState extends State<SetRoute> {
   @override
   void initState() {
     super.initState();
-    String apiKey = 'AIzaSyCsAFe-3nLf0PkH2NIxcNheXEGeu__n2ew';
+    String apiKey = google_api_key;
     googlePlace = GooglePlace(apiKey);
     startFocusNode = FocusNode();
     midFocusNode = FocusNode();
